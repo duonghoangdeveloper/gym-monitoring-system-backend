@@ -1,4 +1,4 @@
-import userRouter from './user/user.router';
+import userRouter from '../modules/user/user.router';
 
 export default app => {
   app.use('/users', userRouter);

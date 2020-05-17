@@ -1,6 +1,6 @@
 import multer from 'multer';
 
-export const imageUpload = multer({
+export default multer({
   limits: {
     fileSize: 1000000,
   },
@@ -8,7 +8,6 @@ export const imageUpload = multer({
     if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
       return cb(new Error('Please upload an image'));
     }
-
     cb(undefined, true);
   },
 });

@@ -1,7 +1,7 @@
 // Throw error, using mainly in controllers
-export const throwError = (message, code = 500, data) => {
+export const throwError = (message, statusCode = 500, data) => {
   const error = new Error(message);
-  error.code = code;
+  error.statusCode = statusCode;
   error.data = data;
   throw error;
 };

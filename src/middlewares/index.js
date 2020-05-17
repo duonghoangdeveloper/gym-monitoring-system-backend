@@ -1,5 +1,13 @@
 import auth from './auth';
-import generateRoleMiddleware from './generateRoleMiddleware';
-import imageUpload from './imageUpload';
+import catchErrorWrapper from './catchErrorWrapper';
+import generateRoleValidator from './generateRoleValidator';
+import imageValidator from './imageValidator';
+import validationHandler from './validationHandler';
 
-export { auth, generateRoleMiddleware, imageUpload };
+export {
+  auth,
+  catchErrorWrapper,
+  generateRoleValidator,
+  imageValidator,
+  validationHandler,
+};
