@@ -16,4 +16,6 @@ app.use((error, req, res, next) => {
   res.status(status).json({ message, data });
 });
 
+console.log('master');
+
 export default app;
