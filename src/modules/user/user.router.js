@@ -1,10 +1,27 @@
 import { Router } from 'express';
 
 import { generateRoleValidator, catchErrorWrapper } from '../../middlewares';
-import { signIn, signUp, signOut, signOutAll } from './user.controllers';
+import {
+  signIn,
+  signUp,
+  signOut,
+  signOutAll,
+  getUsers,
+} from './user.controllers';
 import * as userValidators from './user.validators';
+import { checkRole } from '../../utils/methods';
 
 const userRouter = new Router();
+
+// Get all users
+userRouter.get(
+  '/',
+  catchErrorWrapper(async (req, res) => {
+    checkRole(req.user, ['ADMIN']);
+    const users = await getUsers();
+    res.status(200).send({ users });
+  })
+);
 
 // Sign in
 userRouter.post(
