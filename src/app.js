@@ -16,6 +16,7 @@ app.use((error, req, res, next) => {
   res.status(status).json({ message, data });
 });
 
+console.log('tung');
 console.log('master');
 
 export default app;
