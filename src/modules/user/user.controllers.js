@@ -34,3 +34,8 @@ export const signOutAll = async user => {
   const signedOutUser = await user.save();
   return signedOutUser;
 };
+
+export const getUsers = async () => {
+  const users = await User.find({});
+  return users;
+};

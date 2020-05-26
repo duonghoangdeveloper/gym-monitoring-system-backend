@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema(
 
     // Authorization
     password: {
-      ...generateSchemaStringField('displayName', 3, 60),
+      ...generateSchemaStringField('password', 3, 60),
       required: true,
     },
     role: {
@@ -97,7 +97,7 @@ userSchema.methods.generateAuthToken = async function() {
     {
       expiresIn:
         process.env.NODE_ENV === 'dev' || process.env.NODE_ENV === 'test'
-          ? '7 minutes'
+          ? '30 minutes'
           : '7 days',
     }
   );
