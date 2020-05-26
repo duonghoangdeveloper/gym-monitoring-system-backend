@@ -18,5 +18,6 @@ app.use((error, req, res, next) => {
 
 console.log('tung');
 console.log('master');
+console.log('trin');
 
 export default app;
