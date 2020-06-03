@@ -2,9 +2,17 @@
   "extends": [
     "wesbos"
   ],
+  "plugins": [
+    "simple-import-sort",
+    "sort-keys-fix"
+  ],
   "rules": {
     "no-use-before-define": "off",
     "import/no-cycle": "off",
-    "no-plusplus": "off"
+    "no-plusplus": "off",
+    "sort-imports": "off",
+    "import/order": "off",
+    "simple-import-sort/sort": "warn",
+    "sort-keys-fix/sort-keys-fix": "warn"
   }
 }

@@ -1,5 +1,3 @@
-import configDatabase from './configDatabase';
-import configMiddlewares from './configMiddlewares';
-import configRouters from './configRouters';
-
-export { configDatabase, configMiddlewares, configRouters };
+export * from './config-database';
+export * from './config-middlewares';
+export * from './config-graphql';

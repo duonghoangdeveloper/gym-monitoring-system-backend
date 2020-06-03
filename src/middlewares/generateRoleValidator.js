@@ -1,5 +1,5 @@
-import * as enums from '../utils/enums';
-import { throwError } from '../utils/methods';
+import * as enums from '../common/enums';
+import { throwError } from '../common/services';
 
 // Pass role list to return role validation middleware
 export default (roles = enums.userRoles) => async (req, res, next) => {

@@ -1,9 +1,9 @@
 import validator from 'validator';
 
 export const email = {
-  type: String,
   lowercase: true,
   trim: true,
+  type: String,
   validate(value) {
     if (!validator.isEmail(value)) {
       throw new Error('Email is invalid');
@@ -21,52 +21,53 @@ export const url = {
 };
 
 export const float = {
-  type: Number,
   default: 0,
+  type: Number,
   validate: {
+    message: ({ value }) => `${value} is not a real number`,
     validator(value) {
       return !Number.isNaN(value) && Number.isFinite(value);
     },
-    message: ({ value }) => `${value} is not a real number`,
   },
 };
 
 export const integer = {
-  type: Number,
   default: 0,
+  type: Number,
   validate: {
+    message: ({ value }) => `${value} is not an integer`,
     validator(value) {
       return Number.isInteger(value);
     },
-    message: ({ value }) => `${value} is not an integer`,
   },
 };
 
 export const nonNegativeInteger = {
-  type: Number,
   default: 0,
+  type: Number,
   validate: {
+    message: ({ value }) => `${value} is not a non-negative integer`,
     validator(value) {
       return Number.isInteger(value) && value >= 0;
     },
-    message: ({ value }) => `${value} is not a non-negative integer`,
   },
 };
 
 export const positiveInteger = {
-  type: Number,
   default: 1,
+  type: Number,
   validate: {
+    message: ({ value }) => `${value} is not a positive integer`,
     validator(value) {
       return Number.isInteger(value) && value > 0;
     },
-    message: ({ value }) => `${value} is not a positive integer`,
   },
 };
 
 export const date = {
   type: Date,
   validate: {
+    message: ({ value }) => `${value} is not a valid date`,
     validator(value) {
       return (
         value.getUTCHours() === 0 &&
@@ -75,7 +76,6 @@ export const date = {
         value.getUTCMilliseconds() === 0
       );
     },
-    message: ({ value }) => `${value} is not a valid date`,
   },
 };
 

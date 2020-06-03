@@ -1,3 +1,4 @@
+/* eslint-disable sort-keys-fix/sort-keys-fix */
 import mongoose from 'mongoose';
 
 mongoose.Promise = global.Promise;
@@ -17,7 +18,7 @@ const connectOptions = {
   autoIndex: process.env.NODE_ENV === 'dev', // Not auto create index each time mongoose start up in test/prod => not impact performance
 };
 
-export default app => {
+export const configDatabase = app => {
   try {
     mongoose.connect(process.env.MONGODB_URL, connectOptions);
   } catch (e) {

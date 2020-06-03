@@ -1,22 +1,36 @@
-import { check } from 'express-validator';
+import validator from 'validator';
 
-import { validationHandler } from '../../middlewares';
+import { throwError } from '../../common/services';
 
-const USER_CHECKS = {
-  email: check('username').isEmail(),
-  password: check('password').isLength({ min: 6, max: 30 }),
-  displayName: check('displayName').isLength({ min: 3, max: 60 }),
+export const validateUsername = username => {
+  if (username.length < 6) {
+    throwError('Username length must be 6 at minimum', 422);
+  }
+  if (username.length > 30) {
+    throwError('Username length must be 30 at maximum', 422);
+  }
 };
 
-export const signIn = [
-  USER_CHECKS.email.optional(),
-  USER_CHECKS.password.optional(),
-  validationHandler,
-];
+export const validatePassword = password => {
+  if (password.length < 6) {
+    throwError('Password length must be 6 at minimum', 422);
+  }
+  if (password.length > 30) {
+    throwError('Password length must be 30 at maximum', 422);
+  }
+};
 
-export const signUp = [
-  USER_CHECKS.email.optional(),
-  USER_CHECKS.password.optional(),
-  USER_CHECKS.displayName.optional(),
-  validationHandler,
-];
+export const validateEmail = email => {
+  if (!validator.isEmail(email)) {
+    throwError('Email is invalid', 422);
+  }
+};
+
+export const validateDisplayName = displayName => {
+  if (displayName.length < 3) {
+    throwError('DisplayName length must be 3 at minimum', 422);
+  }
+  if (displayName.length > 60) {
+    throwError('DisplayName length must be 60 at maximum', 422);
+  }
+};

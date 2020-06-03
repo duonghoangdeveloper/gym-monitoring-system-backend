@@ -1,54 +1,74 @@
-import mongoose from 'mongoose';
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 
-import * as enums from '../../utils/enums';
-import { email, url } from '../../utils/modelFields';
+import { userRoles } from '../../common/enums';
+import { url } from '../../common/fields';
+import { generateSchemaEnumField } from '../../common/services';
 import {
-  generateSchemaStringField,
-  generateSchemaEnumField,
-} from '../../utils/modelMethods';
+  validateDisplayName,
+  validateEmail,
+  validatePassword,
+  validateUsername,
+} from './user.validators';
 
 const userSchema = new mongoose.Schema(
   {
-    // Keys
-    email: {
-      ...email,
-    },
-
-    // Authorization
-    password: {
-      ...generateSchemaStringField('displayName', 3, 60),
-      required: true,
-    },
-    role: {
-      ...generateSchemaEnumField(enums.userRoles),
-    },
-    tokens: {
-      type: [
-        {
-          type: String,
-          required: true,
-        },
-      ],
-      required: true,
-      default: [],
-    },
-
-    // Personal info
-    displayName: {
-      ...generateSchemaStringField('displayName', 3, 60),
-      required: true,
-    },
     avatar: {
-      url: {
-        ...url,
-      },
+      _id: false,
       key: {
         type: String,
       },
-      _id: false,
       timestamps: false,
+      url: {
+        ...url,
+      },
+    },
+
+    displayName: {
+      trim: true,
+      type: String,
+      validate(displayName) {
+        validateUsername(displayName);
+      },
+    },
+
+    email: {
+      trim: true,
+      type: String,
+      validate(email) {
+        validateEmail(email);
+      },
+    },
+
+    password: {
+      required: true,
+      trim: true,
+      type: String,
+    },
+
+    role: {
+      ...generateSchemaEnumField(userRoles),
+    },
+
+    tokens: {
+      default: [],
+      required: true,
+      type: [
+        {
+          required: true,
+          type: String,
+        },
+      ],
+    },
+
+    username: {
+      required: true,
+      trim: true,
+      type: String,
+      validate(username) {
+        validateUsername(username);
+      },
     },
   },
   {
@@ -57,23 +77,12 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-userSchema.index({ email: 1 }, { unique: true });
+userSchema.index({ username: 1 }, { unique: true });
 userSchema.index({ role: 1 });
 
-// Delete some private fields before sending to client
-userSchema.methods.toJSON = function() {
-  const user = this;
-  const userObject = user.toObject();
-
-  delete userObject.password;
-  delete userObject.tokens;
-
-  return userObject;
-};
-
 // Sign in
-userSchema.statics.findByCredentials = async (_email, password) => {
-  const user = await User.findOne({ email: _email });
+userSchema.statics.findByCredentials = async (username, password) => {
+  const user = await User.findOne({ username });
 
   if (!user) {
     throw new Error('Sign in failed');
@@ -130,4 +139,4 @@ userSchema.pre('save', async function(next) {
 });
 
 const User = mongoose.model('User', userSchema);
-export default User;
+export { User };
