@@ -1,4 +1,5 @@
 import { User } from './user.model';
+import { validateUsername } from './user.validators';
 
 export const signIn = async data => {
   const { username, password } = data;
@@ -11,6 +12,8 @@ export const signIn = async data => {
 
 export const signUp = async data => {
   const { username, password } = data;
+
+  validateUsername(username);
 
   const user = new User({
     password,

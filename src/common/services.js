@@ -8,7 +8,7 @@ export const throwError = (message, statusCode = 500, data) => {
   throw error;
 };
 
-export const checkRole = ({ user }, roles = userRoles) => {
+export const checkRole = (user, roles = userRoles) => {
   if (!user) {
     throwError('Unauthorized', 401);
   }

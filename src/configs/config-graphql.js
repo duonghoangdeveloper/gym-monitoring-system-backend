@@ -4,15 +4,12 @@ import { fileLoader, mergeResolvers, mergeTypes } from 'merge-graphql-schemas';
 import path from 'path';
 
 // Merge all schema.graphql in all modules to typeDefs
-const typesArray = fileLoader(
-  path.join(__dirname, '/../modules/**/*.graphql'),
-  {
-    recursive: true,
-  }
-);
+const typesArray = fileLoader(path.join(__dirname, '/../**/*.graphql'), {
+  recursive: true,
+});
 
 const resolversArray = fileLoader(
-  path.join(__dirname, '/../modules/**/*.resolvers.js'),
+  path.join(__dirname, '/../**/*.resolvers.js'),
   {
     recursive: true,
   }
