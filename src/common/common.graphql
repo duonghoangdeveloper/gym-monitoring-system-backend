@@ -1,3 +1,7 @@
+type Query {
+  isConnected: Boolean!
+}
+
 enum MutationType {
   CREATED
   UPDATED

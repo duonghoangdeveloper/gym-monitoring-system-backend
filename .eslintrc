@@ -7,6 +7,7 @@
     "sort-keys-fix"
   ],
   "rules": {
+    "no-nested-ternary": "off",
     "no-use-before-define": "off",
     "import/no-cycle": "off",
     "no-plusplus": "off",

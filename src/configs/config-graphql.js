@@ -27,7 +27,7 @@ const apolloServer = new ApolloServer({
   schema,
 });
 
-export const configGraphql = app => {
+export const configGraphQL = app => {
   apolloServer.applyMiddleware({
     app,
     path: '/graphql',
