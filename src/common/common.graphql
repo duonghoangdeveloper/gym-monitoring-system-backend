@@ -1,0 +1,23 @@
+type Query {
+  isConnected: Boolean!
+}
+
+enum MutationType {
+  CREATED
+  UPDATED
+  STATUS_UPDATED
+  DELETED
+}
+
+enum SortOrder {
+  asc
+  desc
+  ascending
+  descending
+}
+
+type File {
+  url: String
+}
+
+scalar Upload

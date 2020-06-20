@@ -1,0 +1,78 @@
+type User {
+  _id: ID!
+
+  # Authorization
+  username: String!
+  role: Role!
+
+  # Personal info
+  displayName: String
+  avatar: File
+  
+  # Timestamp
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Users {
+  data: [User!]!
+  total: Int!
+}
+
+type UserAuthPayload {
+  data: User!
+  token: String!
+}
+
+type Query {
+  auth: User!
+}
+
+type Mutation {
+  signUp(data: SignUpInput!): UserAuthPayload!
+  signIn(data: SignInInput!): UserAuthPayload!
+  signOut: User!
+  signOutAll: User!
+}
+
+input UsersQueryInput {
+  skip: Int
+  limit: Int
+  sort: UsersSortInput
+  search: UsersSearchInput
+  filter: UsersFilterInput
+}
+
+input UsersSortInput {
+  username: SortOrder
+  displayName: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+}
+
+input UsersSearchInput {
+  username: String
+  displayName: String
+}
+
+input UsersFilterInput {
+  role: [Role!]
+}
+
+input SignInInput {
+  username: String!
+  password: String!
+}
+
+input SignUpInput {
+  username: String!
+  password: String!
+}
+
+enum Role {
+  TRAINEE
+  TRAINER
+  GYM_MANAGER
+  GYM_OWNER
+  ADMIN
+}

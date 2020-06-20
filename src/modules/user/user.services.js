@@ -1,26 +1,28 @@
-import User from './user.model';
+import { User } from './user.model';
+import { validateUsername } from './user.validators';
 
 export const signIn = async data => {
-  const { email, password } = data;
+  const { username, password } = data;
 
-  const user = await User.findByCredentials(email, password);
+  const user = await User.findByCredentials(username, password);
   const token = await user.generateAuthToken();
 
-  return { user, token };
+  return { token, user };
 };
 
 export const signUp = async data => {
-  const { email, password, displayName } = data;
+  const { username, password } = data;
+
+  validateUsername(username);
 
   const user = new User({
-    email,
     password,
-    displayName,
+    username,
   });
 
   const token = await user.generateAuthToken(); // included saving
 
-  return { user, token };
+  return { token, user };
 };
 
 export const signOut = async (user, token) => {
