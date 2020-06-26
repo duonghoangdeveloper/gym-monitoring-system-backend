@@ -8,7 +8,7 @@ type User {
   # Personal info
   displayName: String
   gender: String
-  email: String!
+  email: String
   phone: String
   avatar: File
   
