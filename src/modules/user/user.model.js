@@ -8,7 +8,6 @@ import { generateSchemaEnumField } from '../../common/services';
 import {
   validateDisplayName,
   validateEmail,
-  validatePassword,
   validateUsername,
 } from './user.validators';
 
