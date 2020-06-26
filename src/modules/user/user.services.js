@@ -59,3 +59,14 @@ export const getUsers = async () => {
   const users = await User.find({});
   return users;
 };
+
+export const updateUser = async (user, data) => {
+  const { username } = data;
+
+  validateUsername(username);
+
+  user.username = username;
+
+  const updatedUser = await user.save();
+  return updatedUser;
+};

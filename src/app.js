@@ -16,8 +16,4 @@ app.use((error, req, res, next) => {
   res.status(status).json({ data, message });
 });
 
-console.log('tung');
-console.log('master');
-console.log('trin');
-
 export default app;

@@ -37,6 +37,7 @@ type Mutation {
   signOut: User!
   signOutAll: User!
   createUser(data: CreateUserInput!): User! 
+  updateProfile(data: UpdateProfileInput): User!
 }
 
 input UsersQueryInput {
@@ -78,8 +79,12 @@ input CreateUserInput {
   password: String!
   displayName: String
   gender: String
-  email: String!
+  email: String
   phone: String
+}
+
+input UpdateProfileInput {
+  username: String
 }
 
 enum Role {
