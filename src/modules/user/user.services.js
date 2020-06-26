@@ -1,3 +1,4 @@
+import { getDocumentById } from '../../common/services';
 import { User } from './user.model';
 import {
   validateEmail,
@@ -5,6 +6,9 @@ import {
   validatePhone,
   validateUsername,
 } from './user.validators';
+
+export const getUserById = async (_id, projection) =>
+  getDocumentById('User', _id, projection);
 
 export const signIn = async data => {
   const { username, password } = data;
@@ -59,9 +63,8 @@ export const createUser = async data => {
     username,
   });
 
-  const token = await user.generateAuthToken(); // included saving
-
-  return { token, user };
+  const createdUser = await user.save();
+  return createdUser;
 };
 
 export const getUsers = async () => {
@@ -78,4 +81,9 @@ export const updateUser = async (user, data) => {
 
   const updatedUser = await user.save();
   return updatedUser;
+};
+
+export const deleteUser = async user => {
+  const deletedUser = await user.remove();
+  return deletedUser;
 };

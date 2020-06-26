@@ -5,6 +5,8 @@ import {
 } from '../../common/services';
 import {
   createUser,
+  deleteUser,
+  getUserById,
   signIn,
   signOut,
   signUp,
@@ -12,10 +14,17 @@ import {
 } from './user.services';
 
 export const Mutation = {
-  async createUser(_, { data }) {
+  async createUser(_, { data }, { req }) {
     console.log(data);
-    const { user, token } = await createUser(data);
-    return generateAuthPayload({ document: user, token });
+    checkRole(req.user);
+    const createdUser = await createUser(data);
+    return generateDocumentPayload(createdUser);
+  },
+  async deleteUser(_, { _id }, { req }) {
+    checkRole(req.user);
+    const userToDelete = await getUserById(_id);
+    const deletedUser = await deleteUser(userToDelete);
+    return generateDocumentPayload(deletedUser);
   },
   async signIn(_, { data }) {
     const { user, token } = await signIn(data);

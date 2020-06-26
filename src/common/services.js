@@ -109,6 +109,20 @@ export const countDocuments = async modelName => {
   return documentsCount;
 };
 
+export const getDocumentById = async (modelName, _id, projection) => {
+  if (!models[modelName]) {
+    throwError('Invalid model name', 500);
+  }
+
+  const document = await models[modelName].findById(_id, projection);
+
+  if (!document) {
+    throwError(`${modelName} not found`, 404);
+  }
+
+  return document;
+};
+
 // Generate payload for 1 document to send to client, using in resolvers
 export const generateDocumentPayload = document => {
   const doc = {};
