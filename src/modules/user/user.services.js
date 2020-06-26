@@ -1,5 +1,10 @@
 import { User } from './user.model';
-import { validateUsername } from './user.validators';
+import {
+  validateEmail,
+  validatePassword,
+  validatePhone,
+  validateUsername,
+} from './user.validators';
 
 export const signIn = async data => {
   const { username, password } = data;
@@ -14,6 +19,7 @@ export const signUp = async data => {
   const { username, password } = data;
 
   validateUsername(username);
+  validatePassword(password);
 
   const user = new User({
     password,
@@ -41,6 +47,9 @@ export const createUser = async data => {
   const { username, password, gender, email, phone } = data;
 
   validateUsername(username);
+  validatePassword(password);
+  validateEmail(email);
+  validatePhone(phone);
 
   const user = new User({
     email,

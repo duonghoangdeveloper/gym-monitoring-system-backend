@@ -13,8 +13,9 @@ import {
 
 export const Mutation = {
   async createUser(_, { data }) {
-    const user = await createUser(data);
-    return generateDocumentPayload(user);
+    console.log(data);
+    const { user, token } = await createUser(data);
+    return generateAuthPayload({ document: user, token });
   },
   async signIn(_, { data }) {
     const { user, token } = await signIn(data);
@@ -40,6 +41,12 @@ export const Query = {
     const user = checkRole(req.user, ['GYM_OWNER', 'TRAINEE']);
     return generateDocumentPayload(user);
   },
+  // async gender(_, __, { req }) {
+  //   const gender = checkGender(req.user, ['GYM_OWNER', 'TRAINEE']);
+  //   return generateDocumentPayload(user);
+  // },
 };
 
-export const User = {};
+export const User = {
+  // async feedbacks() {},
+};
