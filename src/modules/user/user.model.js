@@ -2,13 +2,14 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 
-import { userRoles } from '../../common/enums';
+import { userGenders, userRoles } from '../../common/enums';
 import { url } from '../../common/fields';
 import { generateSchemaEnumField } from '../../common/services';
 import {
   validateDisplayName,
   validateEmail,
   validatePassword,
+  validatePhone,
   validateUsername,
 } from './user.validators';
 
@@ -41,10 +42,22 @@ const userSchema = new mongoose.Schema(
       },
     },
 
+    gender: {
+      ...generateSchemaEnumField(userGenders),
+    },
+
     password: {
       required: true,
       trim: true,
       type: String,
+    },
+
+    phone: {
+      trim: true,
+      type: String,
+      validate(phone) {
+        validatePhone(phone);
+      },
     },
 
     role: {
@@ -78,6 +91,7 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.index({ username: 1 }, { unique: true });
+userSchema.index({ email: 1 }, { sparse: true, unique: true });
 userSchema.index({ role: 1 });
 
 // Sign in

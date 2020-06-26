@@ -3,9 +3,13 @@ import {
   generateAuthPayload,
   generateDocumentPayload,
 } from '../../common/services';
-import { signIn, signUp } from './user.services';
+import { createUser, signIn, signUp } from './user.services';
 
 export const Mutation = {
+  async createUser(_, { data }) {
+    const user = await createUser(data);
+    return generateDocumentPayload(user);
+  },
   async signIn(_, { data }) {
     const { user, token } = await signIn(data);
     return generateAuthPayload({ document: user, token });

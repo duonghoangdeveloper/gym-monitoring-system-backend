@@ -37,6 +37,24 @@ export const signOutAll = async user => {
   return signedOutUser;
 };
 
+export const createUser = async data => {
+  const { username, password, gender, email, phone } = data;
+
+  validateUsername(username);
+
+  const user = new User({
+    email,
+    gender,
+    password,
+    phone,
+    username,
+  });
+
+  const token = await user.generateAuthToken(); // included saving
+
+  return { token, user };
+};
+
 export const getUsers = async () => {
   const users = await User.find({});
   return users;

@@ -7,6 +7,9 @@ type User {
 
   # Personal info
   displayName: String
+  gender: String
+  email: String!
+  phone: String
   avatar: File
   
   # Timestamp
@@ -33,6 +36,7 @@ type Mutation {
   signIn(data: SignInInput!): UserAuthPayload!
   signOut: User!
   signOutAll: User!
+  createUser(data: CreateUserInput!): User! 
 }
 
 input UsersQueryInput {
@@ -67,6 +71,15 @@ input SignInInput {
 input SignUpInput {
   username: String!
   password: String!
+}
+
+input CreateUserInput {
+  username: String!
+  password: String!
+  displayName: String
+  gender: String
+  email: String!
+  phone: String
 }
 
 enum Role {
