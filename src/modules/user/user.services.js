@@ -70,12 +70,27 @@ export const createUser = async data => {
 export const getUsers = async (query, initialQuery) =>
   mongooseQuery('User', query, initialQuery);
 
-export const updateUser = async (user, data) => {
-  const { username } = data;
+export const updateProfile = async (user, data) => {
+  const { username, password, avatar } = data;
 
   validateUsername(username);
+  validatePassword(password);
 
   user.username = username;
+  user.password = password;
+  user.avatar = avatar;
+
+  const updatedProfile = await user.save();
+  return updatedProfile;
+};
+
+export const updateUser = async (user, data) => {
+  const { role, email, phone } = data;
+
+  validateEmail(email);
+  validatePhone(phone);
+
+  user.role = role;
 
   const updatedUser = await user.save();
   return updatedUser;

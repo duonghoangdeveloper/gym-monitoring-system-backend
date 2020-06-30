@@ -19,7 +19,7 @@ type User {
 
 type Query {
   auth: User!
-  gender: Gender
+  users: Users!
 }
 
 type Mutation {
@@ -29,6 +29,7 @@ type Mutation {
   signOutAll: User!
   createUser(data: CreateUserInput!): User! 
   updateProfile(data: UpdateProfileInput): User!
+  updateUser(data: UpdateUserInput): User!
   deleteUser(_id: ID!): User!
 }
 
@@ -72,15 +73,22 @@ input CreateUserInput {
   gender: Gender
   email: String
   phone: String
-
 }
 
 input UpdateProfileInput {
   username: String
+  password: String
 }
+
+input UpdateUserInput {
+  _id: String!
+  role: Role
+  email: String
+  phone: String
+}
+
 input DeleteCustomerByID {
 _id:String!
-  
 }
 
 input SignInInput {
@@ -98,7 +106,7 @@ enum Role {
   TRAINER
   GYM_MANAGER
   GYM_OWNER
-  ADMIN
+  SYSTEM_ADMIN
 }
 
 enum Gender {
