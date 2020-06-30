@@ -1,4 +1,4 @@
-import { getDocumentById } from '../../common/services';
+import { getDocumentById, mongooseQuery } from '../../common/services';
 import { User } from './user.model';
 import {
   validateEmail,
@@ -67,10 +67,8 @@ export const createUser = async data => {
   return createdUser;
 };
 
-export const getUsers = async () => {
-  const users = await User.find({});
-  return users;
-};
+export const getUsers = async (query, initialQuery) =>
+  mongooseQuery('User', query, initialQuery);
 
 export const updateUser = async (user, data) => {
   const { username } = data;

@@ -2,11 +2,13 @@ import {
   checkRole,
   generateAuthPayload,
   generateDocumentPayload,
+  generateDocumentsPayload,
 } from '../../common/services';
 import {
   createUser,
   deleteUser,
   getUserById,
+  getUsers,
   signIn,
   signOut,
   signUp,
@@ -50,10 +52,11 @@ export const Query = {
     const user = checkRole(req.user, ['GYM_OWNER', 'TRAINEE']);
     return generateDocumentPayload(user);
   },
-  // async gender(_, __, { req }) {
-  //   const gender = checkGender(req.user, ['GYM_OWNER', 'TRAINEE']);
-  //   return generateDocumentPayload(user);
-  // },
+  async users(_, { query }, { req }) {
+    checkRole(req.user);
+    const users = await getUsers(query);
+    return generateDocumentsPayload(users);
+  },
 };
 
 export const User = {

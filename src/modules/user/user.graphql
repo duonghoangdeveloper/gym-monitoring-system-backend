@@ -19,7 +19,7 @@ type User {
 
 type Query {
   auth: User!
-  gender: Gender
+  users: Users!
 }
 
 type Mutation {
