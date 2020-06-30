@@ -4,7 +4,8 @@
   ],
   "plugins": [
     "simple-import-sort",
-    "sort-keys-fix"
+    "sort-keys-fix",
+    "sort-destructure-keys"
   ],
   "rules": {
     "no-nested-ternary": "off",
@@ -14,6 +15,7 @@
     "sort-imports": "off",
     "import/order": "off",
     "simple-import-sort/sort": "warn",
-    "sort-keys-fix/sort-keys-fix": "warn"
+    "sort-keys-fix/sort-keys-fix": "warn",
+    "sort-destructure-keys/sort-destructure-keys": 2
   }
 }
