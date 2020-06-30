@@ -12,12 +12,12 @@ import {
   signIn,
   signOut,
   signUp,
+  updateProfile,
   updateUser,
 } from './user.services';
 
 export const Mutation = {
   async createUser(_, { data }, { req }) {
-    console.log(data);
     checkRole(req.user);
     const createdUser = await createUser(data);
     return generateDocumentPayload(createdUser);
@@ -42,8 +42,13 @@ export const Mutation = {
   },
   async updateProfile(_, { data }, { req }) {
     const user = checkRole(req.user);
-    const updatedProfile = await updateUser(user, data);
+    const updatedProfile = await updateProfile(user, data);
     return generateDocumentPayload(updatedProfile);
+  },
+  async updateUser(_, { data }, { req }) {
+    const user = checkRole(req.user);
+    const updatedUser = await updateUser(user, data);
+    return generateDocumentPayload(updatedUser);
   },
 };
 
