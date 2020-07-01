@@ -1,6 +1,13 @@
-import { getDocumentById, mongooseQuery } from '../../common/services';
+import bcrypt from 'bcryptjs';
+
+import {
+  getDocumentById,
+  mongooseQuery,
+  throwError,
+} from '../../common/services';
 import { User } from './user.model';
 import {
+  validateDisplayName,
   validateEmail,
   validatePassword,
   validatePhone,
@@ -11,7 +18,7 @@ export const getUserById = async (_id, projection) =>
   getDocumentById('User', _id, projection);
 
 export const signIn = async data => {
-  const { username, password } = data;
+  const { password, username } = data;
 
   const user = await User.findByCredentials(username, password);
   const token = await user.generateAuthToken();
@@ -20,7 +27,7 @@ export const signIn = async data => {
 };
 
 export const signUp = async data => {
-  const { username, password } = data;
+  const { password, username } = data;
 
   validateUsername(username);
   validatePassword(password);
@@ -48,12 +55,18 @@ export const signOutAll = async user => {
 };
 
 export const createUser = async data => {
-  const { username, password, gender, email, phone } = data;
+  const { email, gender, password, phone, username } = data;
 
   validateUsername(username);
   validatePassword(password);
-  validateEmail(email);
-  validatePhone(phone);
+
+  if (email) {
+    validateEmail(email);
+  }
+
+  if (phone) {
+    validatePhone(phone);
+  }
 
   const user = new User({
     email,
@@ -71,7 +84,7 @@ export const getUsers = async (query, initialQuery) =>
   mongooseQuery('User', query, initialQuery);
 
 export const updateProfile = async (user, data) => {
-  const { username, password, avatar } = data;
+  const { avatar, password, username } = data;
 
   validateUsername(username);
   validatePassword(password);
@@ -85,7 +98,7 @@ export const updateProfile = async (user, data) => {
 };
 
 export const updateUser = async (user, data) => {
-  const { role, email, phone } = data;
+  const { email, phone, role } = data;
 
   validateEmail(email);
   validatePhone(phone);
@@ -99,4 +112,16 @@ export const updateUser = async (user, data) => {
 export const deleteUser = async user => {
   const deletedUser = await user.remove();
   return deletedUser;
+};
+
+export const updateUserPassword = async (user, data) => {
+  const { newPassword, oldPassword } = data;
+  const isMatch = await bcrypt.compare(oldPassword, user.password);
+  if (!isMatch) {
+    throwError('The old password is not correct', 400, null);
+  }
+  validatePassword(newPassword);
+  user.password = newPassword;
+  const returnUser = await user.save();
+  return returnUser;
 };
