@@ -23,15 +23,14 @@ type Query {
 }
 
 type Mutation {
-  signUp(data: SignUpInput!): UserAuthPayload!
   signIn(data: SignInInput!): UserAuthPayload!
   signOut: User!
   signOutAll: User!
   createUser(data: CreateUserInput!): User!
-  updateProfile(data: UpdateProfileInput): User!
   updateUser(_id: ID!, data: UpdateUserInput): User!
-  deleteUser(_id: ID!): User!
+  updateProfile(data: UpdateProfileInput): User!
   updatePassword(data: UpdatePasswordInput): User!
+  deleteUser(_id: ID!): User!
 }
 
 type Users {
@@ -44,9 +43,9 @@ type UserAuthPayload {
   token: String!
 }
 
-input UpdatePasswordInput {
-  oldPassword: String!
-  newPassword: String!
+input SignInInput {
+  username: String!
+  password: String!
 }
 
 input UsersQueryInput {
@@ -81,25 +80,20 @@ input CreateUserInput {
   phone: String
 }
 
-input UpdateProfileInput {
-  username: String
-  displayName: String
-}
-
 input UpdateUserInput {
   role: Role
   email: String
   phone: String
 }
 
-input SignInInput {
-  username: String!
-  password: String!
+input UpdateProfileInput {
+  username: String
+  displayName: String
 }
 
-input SignUpInput {
-  username: String!
-  password: String!
+input UpdatePasswordInput {
+  oldPassword: String!
+  newPassword: String!
 }
 
 enum Role {
