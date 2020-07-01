@@ -11,7 +11,7 @@ type User {
   email: String
   phone: String
   avatar: File
-  
+
   # Timestamp
   createdAt: String!
   updatedAt: String!
@@ -27,9 +27,10 @@ type Mutation {
   signIn(data: SignInInput!): UserAuthPayload!
   signOut: User!
   signOutAll: User!
-  createUser(data: CreateUserInput!): User! 
+  createUser(data: CreateUserInput!): User!
   updateProfile(data: UpdateProfileInput): User!
   deleteUser(_id: ID!): User!
+  updatePassword(data: UpdatePasswordInput): User!
 }
 
 type Users {
@@ -40,6 +41,11 @@ type Users {
 type UserAuthPayload {
   data: User!
   token: String!
+}
+
+input UpdatePasswordInput {
+  oldPassword: String!
+  newPassword: String!
 }
 
 input UsersQueryInput {
@@ -72,15 +78,14 @@ input CreateUserInput {
   gender: Gender
   email: String
   phone: String
-
 }
 
 input UpdateProfileInput {
   username: String
+  displayName: String
 }
 input DeleteCustomerByID {
-_id:String!
-  
+  _id: String!
 }
 
 input SignInInput {

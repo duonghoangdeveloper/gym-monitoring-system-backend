@@ -3,7 +3,7 @@ import {
   generateAuthPayload,
   generateDocumentPayload,
   generateDocumentsPayload,
-} from '../../common/services';
+} from "../../common/services";
 import {
   createUser,
   deleteUser,
@@ -12,8 +12,9 @@ import {
   signIn,
   signOut,
   signUp,
-  updateUser,
-} from './user.services';
+  updateUserPassword,
+  updateUserProfile,
+} from "./user.services";
 
 export const Mutation = {
   async createUser(_, { data }, { req }) {
@@ -40,16 +41,21 @@ export const Mutation = {
     const { user, token } = await signUp(data);
     return generateAuthPayload({ document: user, token });
   },
+  async updatePassword(_, { data }, { req }) {
+    const user = checkRole(req.user);
+    const updatePassword = await updateUserPassword(user, data);
+    return generateDocumentPayload(updatePassword);
+  },
   async updateProfile(_, { data }, { req }) {
     const user = checkRole(req.user);
-    const updatedProfile = await updateUser(user, data);
+    const updatedProfile = await updateUserProfile(user, data);
     return generateDocumentPayload(updatedProfile);
   },
 };
 
 export const Query = {
   async auth(_, __, { req }) {
-    const user = checkRole(req.user, ['GYM_OWNER', 'TRAINEE']);
+    const user = checkRole(req.user, ["GYM_OWNER", "TRAINEE"]);
     return generateDocumentPayload(user);
   },
   async users(_, { query }, { req }) {

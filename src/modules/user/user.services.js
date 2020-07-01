@@ -1,6 +1,13 @@
-import { getDocumentById, mongooseQuery } from '../../common/services';
+import bcrypt from 'bcryptjs';
+
+import {
+  getDocumentById,
+  mongooseQuery,
+  throwError,
+} from '../../common/services';
 import { User } from './user.model';
 import {
+  validateDisplayName,
   validateEmail,
   validatePassword,
   validatePhone,
@@ -70,12 +77,14 @@ export const createUser = async data => {
 export const getUsers = async (query, initialQuery) =>
   mongooseQuery('User', query, initialQuery);
 
-export const updateUser = async (user, data) => {
-  const { username } = data;
+export const updateUserProfile = async (user, data) => {
+  const { username, password, displayName } = data;
 
   validateUsername(username);
+  validateDisplayName(displayName);
 
   user.username = username;
+  user.displayName = displayName;
 
   const updatedUser = await user.save();
   return updatedUser;
@@ -84,4 +93,16 @@ export const updateUser = async (user, data) => {
 export const deleteUser = async user => {
   const deletedUser = await user.remove();
   return deletedUser;
+};
+
+export const updateUserPassword = async (user, data) => {
+  const { oldPassword, newPassword } = data;
+  const isMatch = await bcrypt.compare(oldPassword, user.password);
+  if (!isMatch) {
+    throwError('The old password is not correct', 400, null);
+  }
+  validatePassword(newPassword);
+  user.password = newPassword;
+  const returnUser = await user.save();
+  return returnUser;
 };
