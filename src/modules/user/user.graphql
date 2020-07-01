@@ -20,6 +20,7 @@ type User {
 type Query {
   auth: User!
   users: Users!
+  findUser(_id: ID!): User!
 }
 
 type Mutation {
@@ -30,6 +31,7 @@ type Mutation {
   createUser(data: CreateUserInput!): User! 
   updateProfile(data: UpdateProfileInput): User!
   deleteUser(_id: ID!): User!
+ 
 }
 
 type Users {
@@ -94,11 +96,11 @@ input SignUpInput {
 }
 
 enum Role {
-  TRAINEE
+  CUSTOMER
   TRAINER
-  GYM_MANAGER
+  MANAGER
   GYM_OWNER
-  ADMIN
+  SYSTEM_ADMIN
 }
 
 enum Gender {

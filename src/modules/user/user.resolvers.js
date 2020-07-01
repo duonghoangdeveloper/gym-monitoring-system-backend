@@ -28,6 +28,7 @@ export const Mutation = {
     const deletedUser = await deleteUser(userToDelete);
     return generateDocumentPayload(deletedUser);
   },
+
   async signIn(_, { data }) {
     const { user, token } = await signIn(data);
     return generateAuthPayload({ document: user, token });
@@ -52,6 +53,13 @@ export const Query = {
     const user = checkRole(req.user, ['GYM_OWNER', 'TRAINEE']);
     return generateDocumentPayload(user);
   },
+  async findUser(_, { _id }, { req }) {
+    checkRole(req.user);
+    const userToFind = await getUserById(_id);
+    // const findUser = await getUsers(userToFind);
+    return generateDocumentPayload(userToFind);
+  },
+
   async users(_, { query }, { req }) {
     checkRole(req.user);
     const users = await getUsers(query);
