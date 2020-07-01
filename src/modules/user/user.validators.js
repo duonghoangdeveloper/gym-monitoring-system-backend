@@ -26,6 +26,12 @@ export const validateEmail = email => {
   }
 };
 
+export const validatePhone = phone => {
+  if (!validator.isMobilePhone(phone)) {
+    throwError('Phone number is invalid', 422);
+  }
+};
+
 export const validateDisplayName = displayName => {
   if (displayName.length < 3) {
     throwError('DisplayName length must be 3 at minimum', 422);

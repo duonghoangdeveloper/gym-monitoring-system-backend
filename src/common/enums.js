@@ -5,3 +5,5 @@ export const userRoles = [
   'GYM_OWNER',
   'SYSTEM_ADMIN',
 ];
+
+export const userGenders = ['MALE', 'FEMALE', 'OTHER'];

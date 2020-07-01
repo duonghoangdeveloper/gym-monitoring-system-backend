@@ -2,10 +2,33 @@ import {
   checkRole,
   generateAuthPayload,
   generateDocumentPayload,
-} from '../../common/services';
-import { signIn, signOut, signUp, updateUser } from './user.services';
+  generateDocumentsPayload,
+} from "../../common/services";
+import {
+  createUser,
+  deleteUser,
+  getUserById,
+  getUsers,
+  signIn,
+  signOut,
+  signUp,
+  updateUserPassword,
+  updateUserProfile,
+} from "./user.services";
 
 export const Mutation = {
+  async createUser(_, { data }, { req }) {
+    console.log(data);
+    checkRole(req.user);
+    const createdUser = await createUser(data);
+    return generateDocumentPayload(createdUser);
+  },
+  async deleteUser(_, { _id }, { req }) {
+    checkRole(req.user);
+    const userToDelete = await getUserById(_id);
+    const deletedUser = await deleteUser(userToDelete);
+    return generateDocumentPayload(deletedUser);
+  },
   async signIn(_, { data }) {
     const { user, token } = await signIn(data);
     return generateAuthPayload({ document: user, token });
@@ -18,18 +41,30 @@ export const Mutation = {
     const { user, token } = await signUp(data);
     return generateAuthPayload({ document: user, token });
   },
+  async updatePassword(_, { data }, { req }) {
+    const user = checkRole(req.user);
+    const updatePassword = await updateUserPassword(user, data);
+    return generateDocumentPayload(updatePassword);
+  },
   async updateProfile(_, { data }, { req }) {
     const user = checkRole(req.user);
-    const updatedProfile = await updateUser(user, data);
+    const updatedProfile = await updateUserProfile(user, data);
     return generateDocumentPayload(updatedProfile);
   },
 };
 
 export const Query = {
   async auth(_, __, { req }) {
-    const user = checkRole(req.user, ['GYM_OWNER', 'TRAINEE']);
+    const user = checkRole(req.user, ["GYM_OWNER", "TRAINEE"]);
     return generateDocumentPayload(user);
+  },
+  async users(_, { query }, { req }) {
+    checkRole(req.user);
+    const users = await getUsers(query);
+    return generateDocumentsPayload(users);
   },
 };
 
-export const User = {};
+export const User = {
+  // async feedbacks() {},
+};

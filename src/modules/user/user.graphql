@@ -7,11 +7,30 @@ type User {
 
   # Personal info
   displayName: String
+  gender: Gender
+  email: String
+  phone: String
   avatar: File
-  
+
   # Timestamp
   createdAt: String!
   updatedAt: String!
+}
+
+type Query {
+  auth: User!
+  users: Users!
+}
+
+type Mutation {
+  signUp(data: SignUpInput!): UserAuthPayload!
+  signIn(data: SignInInput!): UserAuthPayload!
+  signOut: User!
+  signOutAll: User!
+  createUser(data: CreateUserInput!): User!
+  updateProfile(data: UpdateProfileInput): User!
+  deleteUser(_id: ID!): User!
+  updatePassword(data: UpdatePasswordInput): User!
 }
 
 type Users {
@@ -24,16 +43,9 @@ type UserAuthPayload {
   token: String!
 }
 
-type Query {
-  auth: User!
-}
-
-type Mutation {
-  signUp(data: SignUpInput!): UserAuthPayload!
-  signIn(data: SignInInput!): UserAuthPayload!
-  signOut: User!
-  signOutAll: User!
-  updateProfile(data: UpdateProfileInput): User!
+input UpdatePasswordInput {
+  oldPassword: String!
+  newPassword: String!
 }
 
 input UsersQueryInput {
@@ -60,6 +72,19 @@ input UsersFilterInput {
   role: [Role!]
 }
 
+input CreateUserInput {
+  username: String!
+  password: String!
+  gender: Gender
+  email: String
+  phone: String
+}
+
+input UpdateProfileInput {
+  username: String
+  displayName: String
+}
+
 input SignInInput {
   username: String!
   password: String!
@@ -70,14 +95,16 @@ input SignUpInput {
   password: String!
 }
 
-input UpdateProfileInput {
-  username: String
-}
-
 enum Role {
   TRAINEE
   TRAINER
   GYM_MANAGER
   GYM_OWNER
   ADMIN
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
 }
