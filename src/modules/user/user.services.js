@@ -86,11 +86,25 @@ export const getUsers = async (query, initialQuery) =>
   mongooseQuery('User', query, initialQuery);
 
 export const updateUser = async (user, data) => {
-  const { email, phone, role } = data;
+  const { displayName, email, gender, phone, role, username } = data;
 
-  if (role) {
-    validateRole(role);
-    user.role = role;
+  if (username) {
+    validateUsername(username);
+    user.username = username;
+  }
+
+  if (displayName) {
+    validateDisplayName(displayName);
+    user.displayName = displayName;
+  }
+
+  if (displayName) {
+    user.displayName = displayName;
+  }
+
+  if (gender) {
+    validateGender(gender);
+    user.gender = gender;
   }
 
   if (email) {
@@ -101,6 +115,11 @@ export const updateUser = async (user, data) => {
   if (phone) {
     validatePhone(phone);
     user.phone = phone;
+  }
+
+  if (role) {
+    validateRole(role);
+    user.role = role;
   }
 
   const updatedUser = await user.save();
