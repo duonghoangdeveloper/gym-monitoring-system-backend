@@ -19,7 +19,7 @@ type User {
 
 type Query {
   auth: User!
-  users: Users!
+  users(query: UsersQueryInput): Users!
 }
 
 type Mutation {
@@ -97,9 +97,9 @@ input UpdatePasswordInput {
 }
 
 enum Role {
-  TRAINEE
+  CUSTOMER
   TRAINER
-  GYM_MANAGER
+  MANAGER
   GYM_OWNER
   SYSTEM_ADMIN
 }
