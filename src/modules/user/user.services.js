@@ -59,8 +59,14 @@ export const createUser = async data => {
 
   validateUsername(username);
   validatePassword(password);
-  validateEmail(email);
-  validatePhone(phone);
+
+  if (email) {
+    validateEmail(email);
+  }
+
+  if (phone) {
+    validatePhone(phone);
+  }
 
   const user = new User({
     email,
@@ -78,7 +84,7 @@ export const getUsers = async (query, initialQuery) =>
   mongooseQuery('User', query, initialQuery);
 
 export const updateUserProfile = async (user, data) => {
-  const { username, password, displayName } = data;
+  const { username, displayName } = data;
 
   validateUsername(username);
   validateDisplayName(displayName);

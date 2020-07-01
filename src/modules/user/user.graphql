@@ -84,9 +84,6 @@ input UpdateProfileInput {
   username: String
   displayName: String
 }
-input DeleteCustomerByID {
-  _id: String!
-}
 
 input SignInInput {
   username: String!
