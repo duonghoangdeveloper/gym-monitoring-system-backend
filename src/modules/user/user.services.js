@@ -9,8 +9,10 @@ import { User } from './user.model';
 import {
   validateDisplayName,
   validateEmail,
+  validateGender,
   validatePassword,
   validatePhone,
+  validateRole,
   validateUsername,
 } from './user.validators';
 
@@ -83,27 +85,23 @@ export const createUser = async data => {
 export const getUsers = async (query, initialQuery) =>
   mongooseQuery('User', query, initialQuery);
 
-export const updateProfile = async (user, data) => {
-  const { avatar, password, username } = data;
-
-  validateUsername(username);
-  validatePassword(password);
-
-  user.username = username;
-  user.password = password;
-  user.avatar = avatar;
-
-  const updatedProfile = await user.save();
-  return updatedProfile;
-};
-
 export const updateUser = async (user, data) => {
   const { email, phone, role } = data;
 
-  validateEmail(email);
-  validatePhone(phone);
+  if (role) {
+    validateRole(role);
+    user.role = role;
+  }
 
-  user.role = role;
+  if (email) {
+    validateEmail(email);
+    user.email = email;
+  }
+
+  if (phone) {
+    validatePhone(phone);
+    user.phone = phone;
+  }
 
   const updatedUser = await user.save();
   return updatedUser;
@@ -114,14 +112,18 @@ export const deleteUser = async user => {
   return deletedUser;
 };
 
-export const updateUserPassword = async (user, data) => {
+export const updatePassword = async (user, data) => {
   const { newPassword, oldPassword } = data;
+
+  validatePassword(newPassword);
+
   const isMatch = await bcrypt.compare(oldPassword, user.password);
   if (!isMatch) {
     throwError('The old password is not correct', 400, null);
   }
-  validatePassword(newPassword);
+
   user.password = newPassword;
-  const returnUser = await user.save();
-  return returnUser;
+
+  const updatedUser = await user.save();
+  return updatedUser;
 };

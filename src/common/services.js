@@ -9,6 +9,10 @@ export const throwError = (message, statusCode = 500, data) => {
 };
 
 export const checkRole = (user, roles = userRoles) => {
+  if (!roles.every(role => userRoles.indexOf(role) >= 0)) {
+    throwError('Role check list is invalid', 500);
+  }
+
   if (!user) {
     throwError('Unauthorized', 401);
   }
@@ -64,14 +68,14 @@ export const mongooseQuery = async (modelName, query, initialQuery) => {
   }
 
   const {
-    skip: initialSkip,
-    limit: initialLimit,
-    search: initialSearch,
-    sort: initialSort,
     filter: initialFilter,
     find: initialFind,
+    limit: initialLimit,
+    search: initialSearch,
+    skip: initialSkip,
+    sort: initialSort,
   } = initialQuery || {};
-  const { skip, limit, search, sort, filter } = query || {};
+  const { filter, limit, search, skip, sort } = query || {};
 
   const sortArgs = { ...initialSort, ...sort, createdAt: -1 } || {
     createdAt: -1,

@@ -29,7 +29,7 @@ type Mutation {
   signOutAll: User!
   createUser(data: CreateUserInput!): User!
   updateProfile(data: UpdateProfileInput): User!
-  updateUser(data: UpdateUserInput): User!
+  updateUser(_id: ID!, data: UpdateUserInput): User!
   deleteUser(_id: ID!): User!
   updatePassword(data: UpdatePasswordInput): User!
 }
@@ -87,7 +87,6 @@ input UpdateProfileInput {
 }
 
 input UpdateUserInput {
-  _id: String!
   role: Role
   email: String
   phone: String
