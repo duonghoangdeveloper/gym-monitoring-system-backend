@@ -75,9 +75,11 @@ input UsersFilterInput {
 input CreateUserInput {
   username: String!
   password: String!
+  displayName: String
   gender: Gender
   email: String
   phone: String
+  role: Role
 }
 
 input UpdateUserInput {
@@ -87,8 +89,12 @@ input UpdateUserInput {
 }
 
 input UpdateProfileInput {
+  _id: ID
   username: String
   displayName: String
+  phone: String
+  email: String
+  gender: String
 }
 
 input UpdatePasswordInput {

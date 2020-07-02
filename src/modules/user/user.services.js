@@ -57,7 +57,7 @@ export const signOutAll = async user => {
 };
 
 export const createUser = async data => {
-  const { email, gender, password, phone, username } = data;
+  const { email, gender, password, phone, username, role, displayName } = data;
 
   validateUsername(username);
   validatePassword(password);
@@ -70,12 +70,22 @@ export const createUser = async data => {
     validatePhone(phone);
   }
 
+  if(role){
+    validateRole(role);
+  }
+
+  if(displayName){
+    validateDisplayName(displayName);
+  }
+
   const user = new User({
     email,
     gender,
     password,
     phone,
     username,
+    role,
+    displayName
   });
 
   const createdUser = await user.save();
@@ -85,7 +95,8 @@ export const createUser = async data => {
 export const getUsers = async (query, initialQuery) =>
   mongooseQuery('User', query, initialQuery);
 
-export const updateUser = async (user, data) => {
+export const updateUser = async (user, _id = user._id, data) => {
+  user._id = _id;
   const { displayName, email, gender, phone, role, username } = data;
 
   if (username) {
