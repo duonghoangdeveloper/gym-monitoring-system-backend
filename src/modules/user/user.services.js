@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import isNil from 'lodash.isnil';
 
 import {
   getDocumentById,
@@ -41,24 +42,34 @@ export const signOutAll = async user => {
 };
 
 export const createUser = async data => {
-  const { email, gender, password, phone, username } = data;
+  const { displayName, email, gender, password, phone, role, username } = data;
 
   validateUsername(username);
   validatePassword(password);
 
-  if (email) {
+  if (!isNil(email)) {
     validateEmail(email);
   }
 
-  if (phone) {
+  if (!isNil(phone)) {
     validatePhone(phone);
   }
 
+  if (!isNil(role)) {
+    validateRole(role);
+  }
+
+  if (!isNil(displayName)) {
+    validateDisplayName(displayName);
+  }
+
   const user = new User({
+    displayName,
     email,
     gender,
     password,
     phone,
+    role,
     username,
   });
 
@@ -72,36 +83,32 @@ export const getUsers = async (query, initialQuery) =>
 export const updateUser = async (user, data) => {
   const { displayName, email, gender, phone, role, username } = data;
 
-  if (username) {
+  if (!isNil(username)) {
     validateUsername(username);
     user.username = username;
   }
 
-  if (displayName) {
+  if (!isNil(displayName)) {
     validateDisplayName(displayName);
     user.displayName = displayName;
   }
 
-  if (displayName) {
-    user.displayName = displayName;
-  }
-
-  if (gender) {
+  if (!isNil(gender)) {
     validateGender(gender);
     user.gender = gender;
   }
 
-  if (email) {
+  if (!isNil(email)) {
     validateEmail(email);
     user.email = email;
   }
 
-  if (phone) {
+  if (!isNil(phone)) {
     validatePhone(phone);
     user.phone = phone;
   }
 
-  if (role) {
+  if (!isNil(role)) {
     validateRole(role);
     user.role = role;
   }

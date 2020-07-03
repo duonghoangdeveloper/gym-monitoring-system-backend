@@ -1,8 +1,10 @@
+import { userRoles } from '../../common/enums';
 import {
   checkRole,
   generateAuthPayload,
   generateDocumentPayload,
   generateDocumentsPayload,
+  throwError,
 } from '../../common/services';
 import {
   createUser,
@@ -11,21 +13,17 @@ import {
   getUsers,
   signIn,
   signOut,
+  signUp,
   updatePassword,
   updateUser,
 } from './user.services';
 
 export const Mutation = {
   async createUser(_, { data }, { req }) {
-    checkRole(req.user, ['GYM_OWNER', 'SYSTEM_ADMIN']);
+    console.log(data);
+    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const createdUser = await createUser(data);
     return generateDocumentPayload(createdUser);
-  },
-  async deleteUser(_, { _id }, { req }) {
-    checkRole(req.user, ['GYM_OWNER', 'SYSTEM_ADMIN']);
-    const userToDelete = await getUserById(_id);
-    const deletedUser = await deleteUser(userToDelete);
-    return generateDocumentPayload(deletedUser);
   },
   async signIn(_, { data }) {
     const { token, user } = await signIn(data);
@@ -46,8 +44,18 @@ export const Mutation = {
     return generateDocumentPayload(updatedProfile);
   },
   async updateUser(_, { _id, data }, { req }) {
-    checkRole(req.user, ['GYM_OWNER', 'SYSTEM_ADMIN']);
+    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const userToUpdate = await getUserById(_id);
+    if (
+      userRoles.indexOf(req.user.role) < userRoles.indexOf(userToUpdate.role)
+    ) {
+      throwError(
+        `${req.user.role.replace(/^./, char =>
+          char.toUpperCase()
+        )} cannot update ${userToUpdate.role}`,
+        401
+      );
+    }
     const updatedUser = await updateUser(userToUpdate, data);
     return generateDocumentPayload(updatedUser);
   },
