@@ -19,12 +19,7 @@ type User {
 
 type Query {
   auth: User!
-<<<<<<< HEAD
-  users: Users!
-  findUser(_id: ID!): User!
-=======
   users(query: UsersQueryInput): Users!
->>>>>>> master
 }
 
 type Mutation {
@@ -34,12 +29,7 @@ type Mutation {
   createUser(data: CreateUserInput!): User!
   updateUser(_id: ID!, data: UpdateUserInput): User!
   updateProfile(data: UpdateProfileInput): User!
-<<<<<<< HEAD
-  deleteUser(_id: ID!): User!
- 
-=======
   updatePassword(data: UpdatePasswordInput): User!
->>>>>>> master
 }
 
 type Users {

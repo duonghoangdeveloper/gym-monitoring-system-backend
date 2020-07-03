@@ -23,16 +23,6 @@ export const Mutation = {
     const createdUser = await createUser(data);
     return generateDocumentPayload(createdUser);
   },
-<<<<<<< HEAD
-  async deleteUser(_, { _id }, { req }) {
-    checkRole(req.user);
-    const userToDelete = await getUserById(_id);
-    const deletedUser = await deleteUser(userToDelete);
-    return generateDocumentPayload(deletedUser);
-  },
-
-=======
->>>>>>> master
   async signIn(_, { data }) {
     const { token, user } = await signIn(data);
     return generateAuthPayload({ document: user, token });
@@ -74,13 +64,6 @@ export const Query = {
     const user = checkRole(req.user);
     return generateDocumentPayload(user);
   },
-  async findUser(_, { _id }, { req }) {
-    checkRole(req.user);
-    const userToFind = await getUserById(_id);
-    // const findUser = await getUsers(userToFind);
-    return generateDocumentPayload(userToFind);
-  },
-
   async users(_, { query }, { req }) {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const users = await getUsers(query);

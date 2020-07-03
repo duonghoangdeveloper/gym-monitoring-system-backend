@@ -1,0 +1,61 @@
+type Feedback {
+  _id: ID!
+  customer: User!
+  staffs(query: UsersQueryInput): Users!
+  title: String!
+  content: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Query {
+  feedback(_id: ID!): Feedback!
+  feedbacks(query: FeedbacksQueryInput): Feedbacks!
+}
+type Mutation {
+  createFeedback(data: CreateFeedbackInput!): Feedback!
+  updateFeedbackByCustomer(_id: ID!, data: UpdateFeedbackInput): Feedback!
+  deleteFeedbackByAdmin(_id: ID!): Feedback!
+  deleteFeedbackByCustomer(_id: ID!): Feedback!
+}
+
+type Feedbacks {
+  data: [Feedback!]!
+  total: Int!
+}
+
+input FeedbacksQueryInput {
+  skip: Int
+  limit: Int
+  sort: FeedbacksSortInput
+  search: FeedbacksSearchInput
+  filter: FeedbacksFilterInput
+}
+
+input FeedbacksSortInput {
+  title: SortOrder
+  content: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+}
+
+input FeedbacksSearchInput {
+  title: String
+  content: String
+}
+
+input FeedbacksFilterInput {
+  customerId: [ID!]
+}
+
+input CreateFeedbackInput {
+  staffIds: [ID!]!
+  title: String!
+  content: String!
+}
+
+input UpdateFeedbackInput {
+  staffIds: [ID!]
+  title: String
+  content: String
+}
