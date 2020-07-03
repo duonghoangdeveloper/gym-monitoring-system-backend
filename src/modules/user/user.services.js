@@ -28,22 +28,6 @@ export const signIn = async data => {
   return { token, user };
 };
 
-export const signUp = async data => {
-  const { password, username } = data;
-
-  validateUsername(username);
-  validatePassword(password);
-
-  const user = new User({
-    password,
-    username,
-  });
-
-  const token = await user.generateAuthToken(); // included saving
-
-  return { token, user };
-};
-
 export const signOut = async (user, token) => {
   user.tokens = user.tokens.filter(t => t !== token);
   const signedOutUser = await user.save();

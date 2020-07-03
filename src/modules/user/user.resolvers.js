@@ -11,7 +11,6 @@ import {
   getUsers,
   signIn,
   signOut,
-  signUp,
   updatePassword,
   updateUser,
 } from './user.services';
@@ -36,10 +35,6 @@ export const Mutation = {
     const user = await signOut(req.user, req.token);
     return generateDocumentPayload(user);
   },
-  async signUp(_, { data }) {
-    const { token, user } = await signUp(data);
-    return generateAuthPayload({ document: user, token });
-  },
   async updatePassword(_, { data }, { req }) {
     const user = checkRole(req.user);
     const updatedUser = await updatePassword(user, data);
@@ -60,11 +55,11 @@ export const Mutation = {
 
 export const Query = {
   async auth(_, __, { req }) {
-    const user = checkRole(req.user, ['GYM_OWNER', 'TRAINEE']);
+    const user = checkRole(req.user);
     return generateDocumentPayload(user);
   },
   async users(_, { query }, { req }) {
-    checkRole(req.user);
+    checkRole(req.user, ['GYM_MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const users = await getUsers(query);
     return generateDocumentsPayload(users);
   },

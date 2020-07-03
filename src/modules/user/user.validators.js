@@ -1,5 +1,6 @@
 import validator from 'validator';
-import { userRoles, userGenders } from '../../common/enums';
+
+import { userGenders, userRoles } from '../../common/enums';
 import { throwError } from '../../common/services';
 
 export const validateUsername = username => {
