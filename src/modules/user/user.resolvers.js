@@ -1,12 +1,13 @@
+import { userRoles } from '../../common/enums';
 import {
   checkRole,
   generateAuthPayload,
   generateDocumentPayload,
   generateDocumentsPayload,
+  throwError,
 } from '../../common/services';
 import {
   createUser,
-  deleteUser,
   getUserById,
   getUsers,
   signIn,
@@ -17,15 +18,10 @@ import {
 
 export const Mutation = {
   async createUser(_, { data }, { req }) {
-    checkRole(req.user, ['GYM_OWNER', 'SYSTEM_ADMIN']);
+    console.log(data);
+    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const createdUser = await createUser(data);
     return generateDocumentPayload(createdUser);
-  },
-  async deleteUser(_, { _id }, { req }) {
-    checkRole(req.user, ['GYM_OWNER', 'SYSTEM_ADMIN']);
-    const userToDelete = await getUserById(_id);
-    const deletedUser = await deleteUser(userToDelete);
-    return generateDocumentPayload(deletedUser);
   },
   async signIn(_, { data }) {
     const { token, user } = await signIn(data);
@@ -46,8 +42,18 @@ export const Mutation = {
     return generateDocumentPayload(updatedProfile);
   },
   async updateUser(_, { _id, data }, { req }) {
-    checkRole(req.user, ['GYM_OWNER', 'SYSTEM_ADMIN']);
+    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const userToUpdate = await getUserById(_id);
+    if (
+      userRoles.indexOf(req.user.role) < userRoles.indexOf(userToUpdate.role)
+    ) {
+      throwError(
+        `${req.user.role.replace(/^./, char =>
+          char.toUpperCase()
+        )} cannot update ${userToUpdate.role}`,
+        401
+      );
+    }
     const updatedUser = await updateUser(userToUpdate, data);
     return generateDocumentPayload(updatedUser);
   },
@@ -55,11 +61,11 @@ export const Mutation = {
 
 export const Query = {
   async auth(_, __, { req }) {
-    const user = checkRole(req.user, ['GYM_OWNER', 'TRAINEE']);
+    const user = checkRole(req.user);
     return generateDocumentPayload(user);
   },
   async users(_, { query }, { req }) {
-    checkRole(req.user);
+    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const users = await getUsers(query);
     return generateDocumentsPayload(users);
   },
