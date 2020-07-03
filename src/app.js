@@ -1,6 +1,12 @@
+/* eslint-disable simple-import-sort/sort */
 import express from 'express';
 
-import { configDatabase, configGraphQL, configMiddlewares } from './configs';
+import {
+  configDatabase,
+  configGraphQL,
+  configMiddlewares,
+  configSocket,
+} from './configs';
 
 const app = express();
 
