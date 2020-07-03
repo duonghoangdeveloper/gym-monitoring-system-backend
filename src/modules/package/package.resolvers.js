@@ -33,15 +33,15 @@ export const Mutation = {
 };
 
 export const Query = {
-  async _packages(_, { query }, { req }) {
-    checkRole(req.user, ['GYM_OWNER', 'SYSTEM_ADMIN']);
-    const _packages = await getPackages(query);
-    return generateDocumentsPayload(_packages);
-  },
   async package(_, { _id }, { req }) {
     checkRole(req.user, ['GYM_OWNER', 'SYSTEM_ADMIN']);
     const _package = await getPackageById(_id);
     return generateDocumentPayload(_package);
+  },
+  async packages(_, { query }, { req }) {
+    checkRole(req.user, ['GYM_OWNER', 'SYSTEM_ADMIN']);
+    const _packages = await getPackages(query);
+    return generateDocumentsPayload(_packages);
   },
 };
 

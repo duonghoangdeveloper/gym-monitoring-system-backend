@@ -8,12 +8,10 @@ import {
 } from '../../common/services';
 import {
   createUser,
-  deleteUser,
   getUserById,
   getUsers,
   signIn,
   signOut,
-  signUp,
   updatePassword,
   updateUser,
 } from './user.services';
@@ -67,7 +65,7 @@ export const Query = {
     return generateDocumentPayload(user);
   },
   async users(_, { query }, { req }) {
-    checkRole(req.user, ['GYM_MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const users = await getUsers(query);
     return generateDocumentsPayload(users);
   },

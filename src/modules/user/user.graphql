@@ -30,7 +30,6 @@ type Mutation {
   updateUser(_id: ID!, data: UpdateUserInput): User!
   updateProfile(data: UpdateProfileInput): User!
   updatePassword(data: UpdatePasswordInput): User!
-  deleteUser(_id: ID!): User!
 }
 
 type Users {
