@@ -1,5 +1,5 @@
 import validator from 'validator';
-
+import { userRoles, userGenders } from '../../common/enums';
 import { throwError } from '../../common/services';
 
 export const validateUsername = username => {
@@ -17,6 +17,18 @@ export const validatePassword = password => {
   }
   if (password.length > 30) {
     throwError('Password length must be 30 at maximum', 422);
+  }
+};
+
+export const validateGender = gender => {
+  if (!userGenders.includes(gender)) {
+    throwError('Gender is invalid', 401);
+  }
+};
+
+export const validateRole = role => {
+  if (!userRoles.includes(role)) {
+    throwError('Role is invalid', 401);
   }
 };
 

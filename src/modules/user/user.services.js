@@ -9,8 +9,10 @@ import { User } from './user.model';
 import {
   validateDisplayName,
   validateEmail,
+  validateGender,
   validatePassword,
   validatePhone,
+  validateRole,
   validateUsername,
 } from './user.validators';
 
@@ -18,7 +20,7 @@ export const getUserById = async (_id, projection) =>
   getDocumentById('User', _id, projection);
 
 export const signIn = async data => {
-  const { username, password } = data;
+  const { password, username } = data;
 
   const user = await User.findByCredentials(username, password);
   const token = await user.generateAuthToken();
@@ -27,7 +29,7 @@ export const signIn = async data => {
 };
 
 export const signUp = async data => {
-  const { username, password } = data;
+  const { password, username } = data;
 
   validateUsername(username);
   validatePassword(password);
@@ -55,7 +57,7 @@ export const signOutAll = async user => {
 };
 
 export const createUser = async data => {
-  const { username, password, gender, email, phone } = data;
+  const { email, gender, password, phone, username } = data;
 
   validateUsername(username);
   validatePassword(password);
@@ -83,14 +85,42 @@ export const createUser = async data => {
 export const getUsers = async (query, initialQuery) =>
   mongooseQuery('User', query, initialQuery);
 
-export const updateUserProfile = async (user, data) => {
-  const { username, displayName } = data;
+export const updateUser = async (user, data) => {
+  const { displayName, email, gender, phone, role, username } = data;
 
-  validateUsername(username);
-  validateDisplayName(displayName);
+  if (username) {
+    validateUsername(username);
+    user.username = username;
+  }
 
-  user.username = username;
-  user.displayName = displayName;
+  if (displayName) {
+    validateDisplayName(displayName);
+    user.displayName = displayName;
+  }
+
+  if (displayName) {
+    user.displayName = displayName;
+  }
+
+  if (gender) {
+    validateGender(gender);
+    user.gender = gender;
+  }
+
+  if (email) {
+    validateEmail(email);
+    user.email = email;
+  }
+
+  if (phone) {
+    validatePhone(phone);
+    user.phone = phone;
+  }
+
+  if (role) {
+    validateRole(role);
+    user.role = role;
+  }
 
   const updatedUser = await user.save();
   return updatedUser;
@@ -101,14 +131,18 @@ export const deleteUser = async user => {
   return deletedUser;
 };
 
-export const updateUserPassword = async (user, data) => {
-  const { oldPassword, newPassword } = data;
+export const updatePassword = async (user, data) => {
+  const { newPassword, oldPassword } = data;
+
+  validatePassword(newPassword);
+
   const isMatch = await bcrypt.compare(oldPassword, user.password);
   if (!isMatch) {
     throwError('The old password is not correct', 400, null);
   }
-  validatePassword(newPassword);
+
   user.password = newPassword;
-  const returnUser = await user.save();
-  return returnUser;
+
+  const updatedUser = await user.save();
+  return updatedUser;
 };

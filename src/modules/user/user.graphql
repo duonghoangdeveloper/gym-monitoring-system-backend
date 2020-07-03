@@ -19,18 +19,18 @@ type User {
 
 type Query {
   auth: User!
-  users: Users!
+  users(query: UsersQueryInput): Users!
 }
 
 type Mutation {
-  signUp(data: SignUpInput!): UserAuthPayload!
   signIn(data: SignInInput!): UserAuthPayload!
   signOut: User!
   signOutAll: User!
   createUser(data: CreateUserInput!): User!
+  updateUser(_id: ID!, data: UpdateUserInput): User!
   updateProfile(data: UpdateProfileInput): User!
-  deleteUser(_id: ID!): User!
   updatePassword(data: UpdatePasswordInput): User!
+  deleteUser(_id: ID!): User!
 }
 
 type Users {
@@ -43,9 +43,9 @@ type UserAuthPayload {
   token: String!
 }
 
-input UpdatePasswordInput {
-  oldPassword: String!
-  newPassword: String!
+input SignInInput {
+  username: String!
+  password: String!
 }
 
 input UsersQueryInput {
@@ -80,27 +80,28 @@ input CreateUserInput {
   phone: String
 }
 
+input UpdateUserInput {
+  role: Role
+  email: String
+  phone: String
+}
+
 input UpdateProfileInput {
   username: String
   displayName: String
 }
 
-input SignInInput {
-  username: String!
-  password: String!
-}
-
-input SignUpInput {
-  username: String!
-  password: String!
+input UpdatePasswordInput {
+  oldPassword: String!
+  newPassword: String!
 }
 
 enum Role {
-  TRAINEE
+  CUSTOMER
   TRAINER
-  GYM_MANAGER
+  MANAGER
   GYM_OWNER
-  ADMIN
+  SYSTEM_ADMIN
 }
 
 enum Gender {
