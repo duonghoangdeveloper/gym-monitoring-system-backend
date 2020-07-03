@@ -1,0 +1,67 @@
+type Package {
+  _id: ID!
+
+  # Authorization
+  name: String!
+
+  # Personal info
+  price: Int
+  period: Int
+
+  # Timestamp
+  createdAt: String!
+}
+
+type Query {
+  package: Package!
+  packages: Packages!
+}
+
+type Mutation {
+  createPackage(data: CreatePackageInput!): Package!
+  updatePackage(_id: ID!, data: UpdatePackageInput): Package!
+  deletePackage(_id: ID!): Package!
+}
+
+type Packages {
+  data: [Package!]!
+  total: Int!
+}
+
+input PackagesQueryInput {
+  skip: Int
+  limit: Int
+  sort: PackagesSortInput
+  search: PackagesSearchInput
+  filter: PackagesFilterInput
+}
+
+input PackagesSortInput {
+  name: SortOrder
+  price: SortOrder
+  period: SortOrder
+  createdAt: SortOrder
+}
+
+input PackagesSearchInput {
+  name: String
+  price: Int
+  period: Int
+  createdAt: String
+}
+
+input PackagesFilterInput {
+  price: [Int!]
+  period: [Int!]
+}
+
+input CreatePackageInput {
+  name: String!
+  price: Int!
+  period: Int!
+}
+
+input UpdatePackageInput {
+  price: Int
+  period: Int
+}

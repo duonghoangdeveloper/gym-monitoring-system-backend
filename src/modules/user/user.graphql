@@ -11,7 +11,7 @@ type User {
   email: String
   phone: String
   avatar: File
-  
+
   # Timestamp
   createdAt: String!
   updatedAt: String!
@@ -19,19 +19,27 @@ type User {
 
 type Query {
   auth: User!
+<<<<<<< HEAD
   users: Users!
   findUser(_id: ID!): User!
+=======
+  users(query: UsersQueryInput): Users!
+>>>>>>> master
 }
 
 type Mutation {
-  signUp(data: SignUpInput!): UserAuthPayload!
   signIn(data: SignInInput!): UserAuthPayload!
   signOut: User!
   signOutAll: User!
-  createUser(data: CreateUserInput!): User! 
+  createUser(data: CreateUserInput!): User!
+  updateUser(_id: ID!, data: UpdateUserInput): User!
   updateProfile(data: UpdateProfileInput): User!
+<<<<<<< HEAD
   deleteUser(_id: ID!): User!
  
+=======
+  updatePassword(data: UpdatePasswordInput): User!
+>>>>>>> master
 }
 
 type Users {
@@ -42,6 +50,11 @@ type Users {
 type UserAuthPayload {
   data: User!
   token: String!
+}
+
+input SignInInput {
+  username: String!
+  password: String!
 }
 
 input UsersQueryInput {
@@ -71,28 +84,33 @@ input UsersFilterInput {
 input CreateUserInput {
   username: String!
   password: String!
+  displayName: String
   gender: Gender
   email: String
   phone: String
+  role: Role
+}
 
+input UpdateUserInput {
+  username: String!
+  displayName: String
+  gender: Gender!
+  role: Role
+  email: String
+  phone: String
 }
 
 input UpdateProfileInput {
   username: String
-}
-input DeleteCustomerByID {
-_id:String!
-  
-}
-
-input SignInInput {
-  username: String!
-  password: String!
+  displayName: String
+  phone: String
+  email: String
+  gender: String
 }
 
-input SignUpInput {
-  username: String!
-  password: String!
+input UpdatePasswordInput {
+  oldPassword: String!
+  newPassword: String!
 }
 
 enum Role {
