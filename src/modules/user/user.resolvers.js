@@ -25,12 +25,6 @@ export const Mutation = {
     const createdUser = await createUser(data);
     return generateDocumentPayload(createdUser);
   },
-  async deleteUser(_, { _id }, { req }) {
-    checkRole(req.user);
-    const userToDelete = await getUserById(_id);
-    const deletedUser = await deleteUser(userToDelete);
-    return generateDocumentPayload(deletedUser);
-  },
   async signIn(_, { data }) {
     const { token, user } = await signIn(data);
     return generateAuthPayload({ document: user, token });
@@ -39,10 +33,6 @@ export const Mutation = {
     const user = await signOut(req.user, req.token);
     return generateDocumentPayload(user);
   },
-  // async signUp(_, { data }) {
-  //   const { user, token } = await signUp(data);
-  //   return generateAuthPayload({ document: user, token });
-  // },
   async updatePassword(_, { data }, { req }) {
     const user = checkRole(req.user);
     const updatedUser = await updatePassword(user, data);
@@ -55,20 +45,19 @@ export const Mutation = {
   },
   async updateUser(_, { _id, data }, { req }) {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
-
-    console.log(req.user.role);
     const userToUpdate = await getUserById(_id);
-    console.log(userToUpdate.role);
     if (
-      userRoles.indexOf(req.user.role) >= userRoles.indexOf(userToUpdate.role)
+      userRoles.indexOf(req.user.role) < userRoles.indexOf(userToUpdate.role)
     ) {
-      const updatedUser = await updateUser(userToUpdate, data);
-      return generateDocumentPayload(updatedUser);
+      throwError(
+        `${req.user.role.replace(/^./, char =>
+          char.toUpperCase()
+        )} cannot update ${userToUpdate.role}`,
+        401
+      );
     }
-    throwError(
-      `${req.user.role} cannot update profile of ${userToUpdate.role}`,
-      400
-    );
+    const updatedUser = await updateUser(userToUpdate, data);
+    return generateDocumentPayload(updatedUser);
   },
 };
 
