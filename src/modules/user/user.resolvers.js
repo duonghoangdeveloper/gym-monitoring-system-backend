@@ -1,8 +1,10 @@
+import { userRoles } from '../../common/enums';
 import {
   checkRole,
   generateAuthPayload,
   generateDocumentPayload,
   generateDocumentsPayload,
+  throwError,
 } from '../../common/services';
 import {
   createUser,
@@ -19,7 +21,7 @@ import {
 export const Mutation = {
   async createUser(_, { data }, { req }) {
     console.log(data);
-    checkRole(req.user);
+    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const createdUser = await createUser(data);
     return generateDocumentPayload(createdUser);
   },
@@ -30,7 +32,7 @@ export const Mutation = {
     return generateDocumentPayload(deletedUser);
   },
   async signIn(_, { data }) {
-    const { user, token } = await signIn(data);
+    const { token, user } = await signIn(data);
     return generateAuthPayload({ document: user, token });
   },
   async signOut(_, __, { req }) {
@@ -43,18 +45,30 @@ export const Mutation = {
   // },
   async updatePassword(_, { data }, { req }) {
     const user = checkRole(req.user);
-    const updatePassword = await updatePassword(user, data);
-    return generateDocumentPayload(updatePassword);
+    const updatedUser = await updatePassword(user, data);
+    return generateDocumentPayload(updatedUser);
   },
   async updateProfile(_, { data }, { req }) {
     const user = checkRole(req.user);
-    if(!data._id){
-      const updatedProfile = await updateUser(user, data);
-      return generateDocumentPayload(updatedProfile);
-    }else{
-      const updatedProfile = await updateUser(user, data._id, data);
-      return generateDocumentPayload(updatedProfile);
+    const updatedProfile = await updateUser(user, data);
+    return generateDocumentPayload(updatedProfile);
+  },
+  async updateUser(_, { _id, data }, { req }) {
+    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+
+    console.log(req.user.role);
+    const userToUpdate = await getUserById(_id);
+    console.log(userToUpdate.role);
+    if (
+      userRoles.indexOf(req.user.role) >= userRoles.indexOf(userToUpdate.role)
+    ) {
+      const updatedUser = await updateUser(userToUpdate, data);
+      return generateDocumentPayload(updatedUser);
     }
+    throwError(
+      `${req.user.role} cannot update profile of ${userToUpdate.role}`,
+      400
+    );
   },
 };
 

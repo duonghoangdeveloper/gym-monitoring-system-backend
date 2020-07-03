@@ -83,13 +83,15 @@ input CreateUserInput {
 }
 
 input UpdateUserInput {
+  username: String!
+  displayName: String
+  gender: Gender!
   role: Role
   email: String
   phone: String
 }
 
 input UpdateProfileInput {
-  _id: ID
   username: String
   displayName: String
   phone: String
