@@ -1,7 +1,7 @@
 export const userRoles = [
   'CUSTOMER',
   'TRAINER',
-  'GYM_MANAGER',
+  'MANAGER',
   'GYM_OWNER',
   'SYSTEM_ADMIN',
 ];
