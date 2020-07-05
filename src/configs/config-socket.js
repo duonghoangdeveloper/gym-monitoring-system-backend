@@ -27,6 +27,10 @@ export const configSocket = app => {
       });
       clearInterval(viewScreenInterval);
       clearInterval(updateScreensInterval);
+      // socket.off('desktop-stream-screen')
+      // socket.off('desktop-pause-screen')
+      // socket.off('client-start-view-screens')
+      // socket.off('client-stop-view-screens')
       console.log('Someone disconnected');
     });
 
@@ -35,7 +39,7 @@ export const configSocket = app => {
       const screen = store.getState().screens.find(s => s.key === key);
 
       if (screen) {
-        // Will destroy if the next 10000ms not receive any stream
+        // Will destroy if the next 5000ms not receive any stream
         screen.selfDestroy();
 
         store.dispatch({
@@ -49,7 +53,7 @@ export const configSocket = app => {
           type: TYPES.ADD_SNAPSHOT_TO_STACK,
         });
       } else {
-        const selfDestroy = debounce(10000, false, () => {
+        const selfDestroy = debounce(5000, false, () => {
           store.dispatch({
             payload: {
               key,
@@ -64,7 +68,10 @@ export const configSocket = app => {
             screen: {
               key,
               selfDestroy,
-              snapshot: data,
+              snapshot: {
+                data,
+                timestamp,
+              },
               snapshotStack: [],
             },
           },
@@ -83,7 +90,7 @@ export const configSocket = app => {
     });
     // Each 200ms poll latest snapshot in snapshotStack and update to current snapshot
     // then empty snapshotStack OF EACH SCREEN in redux store
-    const updateScreensInterval = setInterval(() => {
+    const updateScreensHandler = throttle(DELAY, true, () => {
       const { screens } = store.getState();
       store.dispatch({
         payload: {
@@ -94,13 +101,14 @@ export const configSocket = app => {
                 (prev, current) =>
                   prev?.timestamp > current?.timestamp ? prev : current,
                 null
-              )?.data ?? screen.snapshot,
+              ) ?? screen.snapshot,
             snapshotStack: [],
           })),
         },
         type: TYPES.UPDATE_SCREENS,
       });
-    }, DELAY);
+    })
+    const updateScreensInterval = setInterval(updateScreensHandler, DELAY);
 
     // Client
     const sendScreen = throttle(DELAY, true, () => {
@@ -109,7 +117,7 @@ export const configSocket = app => {
         'server-send-screens',
         screens.map(({ key, snapshot }) => ({
           key,
-          snapshot: snapshot.toString('base64'),
+          snapshot,
         }))
       );
     });
