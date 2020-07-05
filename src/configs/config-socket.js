@@ -26,11 +26,6 @@ export const configSocket = app => {
         type: TYPES.REMOVE_SOCKET,
       });
       clearInterval(viewScreenInterval);
-      clearInterval(updateScreensInterval);
-      // socket.off('desktop-stream-screen')
-      // socket.off('desktop-pause-screen')
-      // socket.off('client-start-view-screens')
-      // socket.off('client-stop-view-screens')
       console.log('Someone disconnected');
     });
 
@@ -50,10 +45,10 @@ export const configSocket = app => {
               timestamp,
             },
           },
-          type: TYPES.ADD_SNAPSHOT_TO_STACK,
+          type: TYPES.UPDATE_SNAPSHOT,
         });
       } else {
-        const selfDestroy = debounce(5000, false, () => {
+        const selfDestroy = debounce(10000, false, () => {
           store.dispatch({
             payload: {
               key,
@@ -72,7 +67,6 @@ export const configSocket = app => {
                 data,
                 timestamp,
               },
-              snapshotStack: [],
             },
           },
           type: TYPES.ADD_SCREEN,
@@ -88,27 +82,6 @@ export const configSocket = app => {
         type: TYPES.REMOVE_SCREEN,
       });
     });
-    // Each 200ms poll latest snapshot in snapshotStack and update to current snapshot
-    // then empty snapshotStack OF EACH SCREEN in redux store
-    const updateScreensHandler = throttle(DELAY, true, () => {
-      const { screens } = store.getState();
-      store.dispatch({
-        payload: {
-          screens: screens.map(screen => ({
-            ...screen,
-            snapshot:
-              screen.snapshotStack.reduce(
-                (prev, current) =>
-                  prev?.timestamp > current?.timestamp ? prev : current,
-                null
-              ) ?? screen.snapshot,
-            snapshotStack: [],
-          })),
-        },
-        type: TYPES.UPDATE_SCREENS,
-      });
-    })
-    const updateScreensInterval = setInterval(updateScreensHandler, DELAY);
 
     // Client
     const sendScreen = throttle(DELAY, true, () => {
