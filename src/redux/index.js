@@ -10,7 +10,7 @@ export const TYPES = {
   ADD_SOCKET: 'ADD_SOCKET',
   REMOVE_SCREEN: 'REMOVE_SCREEN',
   REMOVE_SOCKET: 'REMOVE_SOCKET',
-  UPDATE_SCREEN: 'UPDATE_SCREEN',
+  UPDATE_SNAPSHOT: 'UPDATE_SNAPSHOT',
 };
 
 const reducer = (state = INITIAL_STATE, action) => {
@@ -19,18 +19,6 @@ const reducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         screens: [...state.screens, action.payload.screen],
-      };
-    case TYPES.UPDATE_SCREEN:
-      return {
-        ...state,
-        screens: state.screens.map(screen =>
-          screen.key === action.payload.key
-            ? {
-                ...screen,
-                snapshot: action.payload.snapshot,
-              }
-            : screen
-        ),
       };
     case TYPES.REMOVE_SCREEN:
       return {
@@ -51,11 +39,25 @@ const reducer = (state = INITIAL_STATE, action) => {
           socket => socket !== action.payload.socket
         ),
       };
+    case TYPES.UPDATE_SNAPSHOT:
+      return {
+        ...state,
+        screens: state.screens.map(screen =>
+          screen.key === action.payload.key
+            ? {
+                ...screen,
+                snapshot:
+                  !screen.snapshot ||
+                  action.payload.snapshot.timestamp > screen.snapshot.timestamp
+                    ? action.payload.snapshot
+                    : screen.snapshot,
+              }
+            : screen
+        ),
+      };
     default:
       return state;
   }
 };
 
 export const store = createStore(reducer);
-
-// setInterval(() => console.log('Store', store.getState()), 10000);
