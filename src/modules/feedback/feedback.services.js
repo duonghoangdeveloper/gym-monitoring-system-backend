@@ -31,8 +31,8 @@ export const createFeedback = async (customer, data) => {
   return createdFeedback;
 };
 
-export const getFeedbacks = async (query, initialQuery) =>
-  mongooseQuery('Feedback', query, initialQuery);
+export const getFeedbacks = async (query, initialFind) =>
+  mongooseQuery('Feedback', query, initialFind);
 
 export const updateFeedback = async (feedback, data) => {
   const { content, customerId, isActive, staffIds, title } = data;

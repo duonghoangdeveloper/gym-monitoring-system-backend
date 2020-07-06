@@ -62,31 +62,19 @@ const generateMongooseSearch = search => {
 
   return {};
 };
-export const mongooseQuery = async (modelName, query, initialQuery) => {
+export const mongooseQuery = async (modelName, query, initialFind) => {
   if (!models[modelName]) {
     throwError('Invalid model name', 500);
   }
 
-  const {
-    filter: initialFilter,
-    find: initialFind,
-    limit: initialLimit,
-    search: initialSearch,
-    skip: initialSkip,
-    sort: initialSort,
-  } = initialQuery || {};
   const { filter, limit, search, skip, sort } = query || {};
 
-  const sortArgs = { ...initialSort, ...sort, createdAt: -1 } || {
-    createdAt: -1,
-  };
-  const skipNumber = parseInt(skip, 10) || parseInt(initialSkip, 10) || 0;
-  const limitNumber = parseInt(limit, 10) || parseInt(initialLimit, 10) || 100;
+  const sortArgs = sort || '-createdAt';
+  const skipNumber = parseInt(skip, 10) || 0;
+  const limitNumber = parseInt(limit, 10) || 100;
 
   const findFilter = {
     ...initialFind,
-    ...generateMongooseFilter(initialFilter),
-    ...generateMongooseSearch(initialSearch),
     ...generateMongooseFilter(filter),
     ...generateMongooseSearch(search),
   };

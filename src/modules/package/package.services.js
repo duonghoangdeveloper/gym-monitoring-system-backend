@@ -23,8 +23,8 @@ export const createPackage = async data => {
   return createdPackage;
 };
 
-export const getPackages = async (query, initialQuery) =>
-  mongooseQuery('Package', query, initialQuery);
+export const getPackages = async (query, initialFind) =>
+  mongooseQuery('Package', query, initialFind);
 
 export const updatePackage = async (_package, data) => {
   const { name, period, price } = data;

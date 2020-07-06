@@ -25,6 +25,7 @@ export const configSocket = app => {
         },
         type: TYPES.REMOVE_SOCKET,
       });
+      socket.removeAllListeners();
       clearInterval(viewScreenInterval);
       console.log('Someone disconnected');
     });
