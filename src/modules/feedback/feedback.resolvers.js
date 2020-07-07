@@ -4,6 +4,7 @@ import {
   generateDocumentPayload,
   generateDocumentsPayload,
 } from '../../common/services';
+// import { getUserById } from '../user/user.services';
 import {
   createFeedback,
   deleteFeedback,
@@ -51,4 +52,11 @@ export const Query = {
     const { documents, total } = await getFeedbacks(query);
     return generateDocumentsPayload({ documents, total });
   },
+};
+
+export const Feedback = {
+  // async customer({ customer }) {
+  //   const _customer = await getUserById(customer);
+  //   return generateDocumentPayload(_customer);
+  // },
 };
