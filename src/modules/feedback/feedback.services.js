@@ -35,26 +35,19 @@ export const getFeedbacks = async (query, initialFind) =>
   mongooseQuery('Feedback', query, initialFind);
 
 export const updateFeedback = async (feedback, data) => {
-  const { content, customerId, isActive, staffIds, title } = data;
+  const { content, customer, staffIds, title } = data;
 
   if (content) {
     validateContent(content);
     feedback.content = content;
   }
-  if (ratingValue) {
-    validateRating(ratingValue);
-    feedback.ratingValue = ratingValue;
-  }
-  if (staffIds) {
-    feedback.staffID = staffID;
-  }
-  if (customerID) {
-    feedback.customerID = customerID;
-  }
-  if (isActive) {
-    validateStatus(isActive);
-    feedback.isActive = isActive;
-  }
+  // if (staffIds) {
+  //   feedback.staffID = staffIds;
+  // }
+  // if (customer) {
+  //   feedback.customerID = customer;
+  // }
+
   if (title) {
     validateTitle(title);
     feedback.title = title;

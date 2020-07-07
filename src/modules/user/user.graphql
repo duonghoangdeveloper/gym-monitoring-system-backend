@@ -12,6 +12,7 @@ type User {
   phone: String
   avatar: File
   isActive: Boolean
+  feedbacks(query: FeedbacksQueryInput): Feedbacks!
 
   # Timestamp
   createdAt: String!
