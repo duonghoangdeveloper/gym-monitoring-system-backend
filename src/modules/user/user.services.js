@@ -77,8 +77,8 @@ export const createUser = async data => {
   return createdUser;
 };
 
-export const getUsers = async (query, initialQuery) =>
-  mongooseQuery('User', query, initialQuery);
+export const getUsers = async (query, initialFind) =>
+  mongooseQuery('User', query, initialFind);
 
 export const updateUser = async (user, data) => {
   const { displayName, email, gender, phone, role, username } = data;

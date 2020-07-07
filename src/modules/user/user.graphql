@@ -50,16 +50,9 @@ input SignInInput {
 input UsersQueryInput {
   skip: Int
   limit: Int
-  sort: UsersSortInput
+  sort: String
   search: UsersSearchInput
   filter: UsersFilterInput
-}
-
-input UsersSortInput {
-  username: SortOrder
-  displayName: SortOrder
-  createdAt: SortOrder
-  updatedAt: SortOrder
 }
 
 input UsersSearchInput {
@@ -82,9 +75,9 @@ input CreateUserInput {
 }
 
 input UpdateUserInput {
-  username: String!
+  username: String
   displayName: String
-  gender: Gender!
+  gender: Gender
   role: Role
   email: String
   phone: String

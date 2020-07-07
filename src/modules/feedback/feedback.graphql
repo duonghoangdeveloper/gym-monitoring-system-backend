@@ -27,16 +27,9 @@ type Feedbacks {
 input FeedbacksQueryInput {
   skip: Int
   limit: Int
-  sort: FeedbacksSortInput
+  sort: String
   search: FeedbacksSearchInput
   filter: FeedbacksFilterInput
-}
-
-input FeedbacksSortInput {
-  title: SortOrder
-  content: SortOrder
-  createdAt: SortOrder
-  updatedAt: SortOrder
 }
 
 input FeedbacksSearchInput {
