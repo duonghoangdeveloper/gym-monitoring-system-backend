@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import isNil from 'lodash.isnil';
 
+import { userRoles } from '../../common/enums';
 import {
   getDocumentById,
   mongooseQuery,
@@ -115,6 +116,21 @@ export const updateUser = async (user, data) => {
 
   const updatedUser = await user.save();
   return updatedUser;
+};
+
+export const checkAuthorized = (userToUpdate, userUpdate) => {
+  if (
+    userRoles.indexOf(userUpdate.role) < userRoles.indexOf(userToUpdate.role) &&
+    userRoles.indexOf(userUpdate.role) > 1
+  ) {
+    throwError('Unauthorized', 401);
+  }
+};
+
+export const changeUserStatus = async (user, status) => {
+  user.isActive = status;
+  const changedStatusUser = await user.save();
+  return changedStatusUser;
 };
 
 export const deleteUser = async user => {

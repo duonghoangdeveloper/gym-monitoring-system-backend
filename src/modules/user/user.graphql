@@ -11,6 +11,7 @@ type User {
   email: String
   phone: String
   avatar: File
+  isActive: Boolean
 
   # Timestamp
   createdAt: String!
@@ -30,6 +31,7 @@ type Mutation {
   updateUser(_id: ID!, data: UpdateUserInput): User!
   updateProfile(data: UpdateProfileInput): User!
   updatePassword(data: UpdatePasswordInput): User!
+  changeUserStatus(_id: ID!, status: Boolean): User!
 }
 
 type Users {
@@ -58,6 +60,7 @@ input UsersQueryInput {
 input UsersSortInput {
   username: SortOrder
   displayName: SortOrder
+  role: SortOrder
   createdAt: SortOrder
   updatedAt: SortOrder
 }

@@ -46,12 +46,16 @@ const userSchema = new mongoose.Schema(
       ...generateSchemaEnumField(userGenders),
     },
 
+    isActive: {
+      default: true,
+      type: Boolean,
+    },
+
     password: {
       required: true,
       trim: true,
       type: String,
     },
-
     phone: {
       trim: true,
       type: String,

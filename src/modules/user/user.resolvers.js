@@ -7,6 +7,8 @@ import {
   throwError,
 } from '../../common/services';
 import {
+  changeUserStatus,
+  checkAuthorized,
   createUser,
   getUserById,
   getUsers,
@@ -17,9 +19,16 @@ import {
 } from './user.services';
 
 export const Mutation = {
-  async createUser(_, { data }, { req }) {
-    console.log(data);
+  async changeUserStatus(_, { _id, status }, { req }) {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    const changedStatusUser = await getUserById(_id);
+    checkAuthorized(changedStatusUser, req.user);
+    const changedUser = await changeUserStatus(changedStatusUser, status);
+    return changedUser;
+  },
+  async createUser(_, { data }, { req }) {
+    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    checkAuthorized(data, req.user);
     const createdUser = await createUser(data);
     return generateDocumentPayload(createdUser);
   },
@@ -44,16 +53,17 @@ export const Mutation = {
   async updateUser(_, { _id, data }, { req }) {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const userToUpdate = await getUserById(_id);
-    if (
-      userRoles.indexOf(req.user.role) < userRoles.indexOf(userToUpdate.role)
-    ) {
-      throwError(
-        `${req.user.role.replace(/^./, char =>
-          char.toUpperCase()
-        )} cannot update ${userToUpdate.role}`,
-        401
-      );
-    }
+    checkAuthorized(userToUpdate, req.user);
+    // if (
+    //   userRoles.indexOf(req.user.role) < userRoles.indexOf(userToUpdate.role)
+    // ) {
+    //   throwError(
+    //     `${req.user.role.replace(/^./, char =>
+    //       char.toUpperCase()
+    //     )} cannot update ${userToUpdate.role}`,
+    //     401
+    //   );
+    // }
     const updatedUser = await updateUser(userToUpdate, data);
     return generateDocumentPayload(updatedUser);
   },
