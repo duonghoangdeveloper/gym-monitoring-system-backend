@@ -11,6 +11,7 @@ type User {
   email: String
   phone: String
   avatar: File
+  feedbacks(query: FeedbacksQueryInput): Feedbacks!
 
   # Timestamp
   createdAt: String!
