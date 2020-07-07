@@ -14,6 +14,8 @@ export const getPackageById = async (_id, projection) =>
 export const createPackage = async data => {
   const { name, period, price } = data;
 
+  // Check name unique
+
   validateName(name);
   validatePrice(price);
   validatePeriod(period);
@@ -28,6 +30,8 @@ export const getPackages = async (query, initialFind) =>
 
 export const updatePackage = async (_package, data) => {
   const { name, period, price } = data;
+
+  // Check name unique
 
   if (!isNil(name)) {
     validateName(name);

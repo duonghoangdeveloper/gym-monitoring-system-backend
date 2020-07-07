@@ -15,7 +15,6 @@ export const Mutation = {
   async createPackage(_, { data }, { req }) {
     checkRole(req.user, ['GYM_OWNER', 'SYSTEM_ADMIN']);
     const createdPackage = await createPackage(data);
-    console.log(123, createdPackage);
     return generateDocumentPayload(createdPackage);
   },
   async deletePackage(_, { _id }, { req }) {

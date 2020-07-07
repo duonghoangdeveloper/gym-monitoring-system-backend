@@ -46,6 +46,7 @@ input CreatePackageInput {
 }
 
 input UpdatePackageInput {
+  name: String
   price: Int
   period: Int
 }

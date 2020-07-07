@@ -172,3 +172,5 @@ export const generateSchemaEnumField = _enum => ({
   required: true,
   type: String,
 });
+
+// export const checkUnique = (modelName, fieldNames) => {}
