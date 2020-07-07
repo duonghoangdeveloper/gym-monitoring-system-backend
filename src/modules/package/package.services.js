@@ -1,3 +1,5 @@
+import isNil from 'lodash.isnil';
+
 import { getDocumentById, mongooseQuery } from '../../common/services';
 import { Package } from './package.model';
 import {
@@ -12,6 +14,8 @@ export const getPackageById = async (_id, projection) =>
 export const createPackage = async data => {
   const { name, period, price } = data;
 
+  // Check name unique
+
   validateName(name);
   validatePrice(price);
   validatePeriod(period);
@@ -21,27 +25,32 @@ export const createPackage = async data => {
   return createdPackage;
 };
 
-export const getPackages = async (query, initialQuery) =>
-  mongooseQuery('Package', query, initialQuery);
+export const getPackages = async (query, initialFind) =>
+  mongooseQuery('Package', query, initialFind);
 
-export const updatePackage = async (p, data) => {
+export const updatePackage = async (_package, data) => {
   const { name, period, price } = data;
 
-  if (name) {
+  // Check name unique
+
+  if (!isNil(name)) {
     validateName(name);
+    _package.name = name;
   }
-  if (price) {
+  if (!isNil(price)) {
     validatePrice(price);
+    _package.price = price;
   }
-  if (period) {
+  if (!isNil(period)) {
     validatePeriod(period);
+    _package.period = period;
   }
 
-  const updatedPackage = await p.save();
+  const updatedPackage = await _package.save();
   return updatedPackage;
 };
 
-export const deletePackage = async p => {
-  const deletedPackage = await p.remove();
+export const deletePackage = async _package => {
+  const deletedPackage = await _package.remove();
   return deletedPackage;
 };

@@ -2,6 +2,7 @@ import http from 'http';
 import socketio from 'socket.io';
 import { debounce, throttle } from 'throttle-debounce';
 
+import { DELAY } from '../common/constants';
 import { store, TYPES } from '../redux';
 
 export const configSocket = app => {
@@ -24,42 +25,56 @@ export const configSocket = app => {
         },
         type: TYPES.REMOVE_SOCKET,
       });
-      clearInterval(intervalId);
+      socket.removeAllListeners();
+      clearInterval(viewScreenInterval);
       console.log('Someone disconnected');
     });
 
     // Desktop
-    socket.on('desktop-stream-screen', ([key, snapshot]) => {
+    const receiveStream = throttle(DELAY, true, ([key, data, timestamp]) => {
       const screen = store.getState().screens.find(s => s.key === key);
+
       if (screen) {
-        screen.destroy();
+        // Will destroy if the next 5000ms not receive any stream
+        screen.selfDestroy();
+
         store.dispatch({
           payload: {
             key,
-            snapshot,
+            snapshot: {
+              data,
+              timestamp,
+            },
           },
-          type: TYPES.UPDATE_SCREEN,
+          type: TYPES.UPDATE_SNAPSHOT,
         });
       } else {
+        const selfDestroy = debounce(10000, false, () => {
+          store.dispatch({
+            payload: {
+              key,
+            },
+            type: TYPES.REMOVE_SCREEN,
+          });
+        });
+
+        // Create new screen
         store.dispatch({
           payload: {
             screen: {
-              destroy: debounce(3000, false, () => {
-                store.dispatch({
-                  payload: {
-                    key,
-                  },
-                  type: TYPES.REMOVE_SCREEN,
-                });
-              }),
               key,
-              snapshot,
+              selfDestroy,
+              snapshot: {
+                data,
+                timestamp,
+              },
             },
           },
           type: TYPES.ADD_SCREEN,
         });
       }
     });
+    socket.on('desktop-stream-screen', receiveStream);
     socket.on('desktop-pause-screen', key => {
       store.dispatch({
         payload: {
@@ -70,17 +85,23 @@ export const configSocket = app => {
     });
 
     // Client
-    const sendScreen = throttle(250, true, () => {
+    const sendScreen = throttle(DELAY, true, () => {
       const { screens } = store.getState();
-      socket.emit('server-send-screens', screens);
+      socket.emit(
+        'server-send-screens',
+        screens.map(({ key, snapshot }) => ({
+          key,
+          snapshot,
+        }))
+      );
     });
-    let intervalId = null;
+    let viewScreenInterval = null;
     socket.on('client-start-view-screens', () => {
-      clearInterval(intervalId);
-      intervalId = setInterval(sendScreen, 200);
+      clearInterval(viewScreenInterval);
+      viewScreenInterval = setInterval(sendScreen, DELAY);
     });
     socket.on('client-stop-view-screens', () => {
-      clearInterval(intervalId);
+      clearInterval(viewScreenInterval);
     });
   });
 

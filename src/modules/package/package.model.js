@@ -37,7 +37,7 @@ const packageSchema = new mongoose.Schema(
   }
 );
 
-packageSchema.index({ name: 1 });
+packageSchema.index({ name: 1 }, { unique: true });
 packageSchema.index({ price: 1 });
 packageSchema.index({ period: 1 });
 

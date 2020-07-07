@@ -3,6 +3,8 @@ import validator from 'validator';
 import { throwError } from '../../common/services';
 
 export const validateName = name => {
+  // Check duoi db xem co document name tuong ung, neu co quang loi 422
+
   if (name.length < 6) {
     throwError('Name length must be 6 at minimum', 422);
   }

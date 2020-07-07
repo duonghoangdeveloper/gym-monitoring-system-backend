@@ -9,13 +9,6 @@ enum MutationType {
   DELETED
 }
 
-enum SortOrder {
-  asc
-  desc
-  ascending
-  descending
-}
-
 type File {
   url: String
 }
