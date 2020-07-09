@@ -19,7 +19,6 @@ import {
 
 export const Mutation = {
   async createUser(_, { data }, { req }) {
-    console.log(data);
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const createdUser = await createUser(data);
     return generateDocumentPayload(createdUser);
@@ -84,7 +83,6 @@ export const User = {
 
     try {
       checkRole(req.user, ['CUSTOMER']);
-      console.log(req.user._id, userId, req.user._id === userId);
       if (req.user._id.toString() === userId) {
         const { documents, total } = await getFeedbacks(feedbacksQuery);
         return generateDocumentsPayload({ documents, total });
