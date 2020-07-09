@@ -94,7 +94,6 @@ export const User = {
 
     try {
       checkRole(req.user, ['CUSTOMER']);
-      console.log(req.user._id, userId, req.user._id === userId);
       if (req.user._id.toString() === userId) {
         const { documents, total } = await getFeedbacks(feedbacksQuery);
         return generateDocumentsPayload({ documents, total });

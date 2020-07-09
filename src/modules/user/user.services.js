@@ -45,23 +45,23 @@ export const signOutAll = async user => {
 export const createUser = async data => {
   const { displayName, email, gender, password, phone, role, username } = data;
 
-  validateUsername(username);
-  validatePassword(password);
+  await validateUsername(username);
+  await validatePassword(password);
 
   if (!isNil(email)) {
-    validateEmail(email);
+    await validateEmail(email);
   }
 
   if (!isNil(phone)) {
-    validatePhone(phone);
+    await validatePhone(phone);
   }
 
   if (!isNil(role)) {
-    validateRole(role);
+    await validateRole(role);
   }
 
   if (!isNil(displayName)) {
-    validateDisplayName(displayName);
+    await validateDisplayName(displayName);
   }
 
   const user = new User({
@@ -85,32 +85,32 @@ export const updateUser = async (user, data) => {
   const { displayName, email, gender, phone, role, username } = data;
 
   if (!isNil(username)) {
-    validateUsername(username);
+    await validateUsername(username);
     user.username = username;
   }
 
   if (!isNil(displayName)) {
-    validateDisplayName(displayName);
+    await validateDisplayName(displayName);
     user.displayName = displayName;
   }
 
   if (!isNil(gender)) {
-    validateGender(gender);
+    await validateGender(gender);
     user.gender = gender;
   }
 
   if (!isNil(email)) {
-    validateEmail(email);
+    await validateEmail(email);
     user.email = email;
   }
 
   if (!isNil(phone)) {
-    validatePhone(phone);
+    await validatePhone(phone);
     user.phone = phone;
   }
 
   if (!isNil(role)) {
-    validateRole(role);
+    await validateRole(role);
     user.role = role;
   }
 
@@ -141,7 +141,7 @@ export const deleteUser = async user => {
 export const updatePassword = async (user, data) => {
   const { newPassword, oldPassword } = data;
 
-  validatePassword(newPassword);
+  await validatePassword(newPassword);
 
   const isMatch = await bcrypt.compare(oldPassword, user.password);
   if (!isMatch) {

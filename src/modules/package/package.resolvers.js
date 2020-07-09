@@ -38,7 +38,6 @@ export const Query = {
     return generateDocumentPayload(_package);
   },
   async packages(_, { query }, { req }) {
-    // console.log(query);
     checkRole(req.user, ['GYM_OWNER', 'SYSTEM_ADMIN']);
     const _packages = await getPackages(query);
     return generateDocumentsPayload(_packages);
