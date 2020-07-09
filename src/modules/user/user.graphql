@@ -61,6 +61,7 @@ input UsersQueryInput {
 input UsersSearchInput {
   username: String
   displayName: String
+  email: String
 }
 
 input UsersFilterInput {
