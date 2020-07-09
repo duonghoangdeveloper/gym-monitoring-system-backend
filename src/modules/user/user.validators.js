@@ -2,8 +2,13 @@ import validator from 'validator';
 
 import { userGenders, userRoles } from '../../common/enums';
 import { throwError } from '../../common/services';
+import { User } from './user.model';
 
-export const validateUsername = username => {
+export const validateUsername = async username => {
+  const usernameExists = await User.exists({ username });
+  if (usernameExists) {
+    throwError('Username is already existed', 422);
+  }
   if (username.length < 6) {
     throwError('Username length must be 6 at minimum', 422);
   }
@@ -33,7 +38,11 @@ export const validateRole = role => {
   }
 };
 
-export const validateEmail = email => {
+export const validateEmail = async email => {
+  const emailExists = await User.exists({ email });
+  if (emailExists) {
+    throwError('Email is already existed', 422);
+  }
   if (!validator.isEmail(email)) {
     throwError('Email is invalid', 422);
   }

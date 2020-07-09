@@ -1,10 +1,13 @@
 import validator from 'validator';
 
 import { throwError } from '../../common/services';
+import { Package } from './package.model';
 
-export const validateName = name => {
-  // Check duoi db xem co document name tuong ung, neu co quang loi 422
-
+export const validateName = async name => {
+  const nameExists = await Package.exists({ name });
+  if (nameExists) {
+    throwError('Name is already existed', 422);
+  }
   if (name.length < 6) {
     throwError('Name length must be 6 at minimum', 422);
   }
@@ -13,13 +16,13 @@ export const validateName = name => {
   }
 };
 
-export const validatePrice = price => {
+export const validatePrice = async price => {
   if (!(typeof price === 'number')) {
     throwError('Price must be number', 422);
   }
 };
 
-export const validatePeriod = period => {
+export const validatePeriod = async period => {
   if (!(typeof period === 'number')) {
     throwError('Period must be number', 422);
   }

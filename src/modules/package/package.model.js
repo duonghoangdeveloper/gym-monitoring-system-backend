@@ -11,9 +11,7 @@ const packageSchema = new mongoose.Schema(
     name: {
       trim: true,
       type: String,
-      validate(name) {
-        validateName(name);
-      },
+      validate: validateName,
     },
 
     period: {
