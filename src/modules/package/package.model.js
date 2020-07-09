@@ -17,16 +17,12 @@ const packageSchema = new mongoose.Schema(
     period: {
       trim: true,
       type: Number,
-      validate(period) {
-        validatePeriod(period);
-      },
+      validate: validatePeriod,
     },
     price: {
       trim: true,
       type: Number,
-      validate(price) {
-        validatePrice(price);
-      },
+      validate: validatePrice,
     },
   },
   {

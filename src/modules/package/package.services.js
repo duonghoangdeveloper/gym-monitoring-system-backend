@@ -30,15 +30,15 @@ export const updatePackage = async (_package, data) => {
   const { name, period, price } = data;
 
   if (!isNil(name)) {
-    validateName(name);
+    await validateName(name);
     _package.name = name;
   }
   if (!isNil(price)) {
-    validatePrice(price);
+    await validatePrice(price);
     _package.price = price;
   }
   if (!isNil(period)) {
-    validatePeriod(period);
+    await validatePeriod(period);
     _package.period = period;
   }
 

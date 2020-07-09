@@ -7,7 +7,7 @@ import { User } from './user.model';
 export const validateUsername = async username => {
   const usernameExists = await User.exists({ username });
   if (usernameExists) {
-    throwError('Username is already existed', 422);
+    throwError('Username is already existed', 409);
   }
   if (username.length < 6) {
     throwError('Username length must be 6 at minimum', 422);
@@ -17,7 +17,7 @@ export const validateUsername = async username => {
   }
 };
 
-export const validatePassword = password => {
+export const validatePassword = async password => {
   if (password.length < 6) {
     throwError('Password length must be 6 at minimum', 422);
   }
@@ -26,35 +26,39 @@ export const validatePassword = password => {
   }
 };
 
-export const validateGender = gender => {
+export const validateGender = async gender => {
   if (!userGenders.includes(gender)) {
-    throwError('Gender is invalid', 401);
+    throwError('Gender is invalid', 422);
   }
 };
 
-export const validateRole = role => {
+export const validateRole = async role => {
   if (!userRoles.includes(role)) {
-    throwError('Role is invalid', 401);
+    throwError('Role is invalid', 422);
   }
 };
 
 export const validateEmail = async email => {
   const emailExists = await User.exists({ email });
   if (emailExists) {
-    throwError('Email is already existed', 422);
+    throwError('Email is already existed', 409);
   }
   if (!validator.isEmail(email)) {
     throwError('Email is invalid', 422);
   }
 };
 
-export const validatePhone = phone => {
+export const validatePhone = async phone => {
+  const phoneExists = await User.exists({ phone });
+  if (phoneExists) {
+    throwError('Phone is already existed', 409);
+  }
   if (!validator.isMobilePhone(phone)) {
     throwError('Phone number is invalid', 422);
   }
 };
 
-export const validateDisplayName = displayName => {
+export const validateDisplayName = async displayName => {
   if (displayName.length < 3) {
     throwError('DisplayName length must be 3 at minimum', 422);
   }
