@@ -8,12 +8,11 @@ import { generateSchemaEnumField } from '../../common/services';
 import {
   validateDisplayName,
   validateEmail,
-  validatePassword,
   validatePhone,
   validateUsername,
 } from './user.validators';
 
-const userSchema = new mongoose.Schema(
+export const userSchema = new mongoose.Schema(
   {
     avatar: {
       _id: false,

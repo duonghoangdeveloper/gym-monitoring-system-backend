@@ -2,7 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 
 import { validateContent } from './feedback.validators';
 
-const feedbackSchema = new mongoose.Schema(
+export const feedbackSchema = new mongoose.Schema(
   {
     content: {
       trim: true,

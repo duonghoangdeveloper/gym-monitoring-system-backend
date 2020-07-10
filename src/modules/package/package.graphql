@@ -1,19 +1,16 @@
 type Package {
   _id: ID!
-
-  # Authorization
   name: String!
-
-  # Personal info
   price: Int
   period: Int
-
+  
   # Timestamp
   createdAt: String!
+  updatedAt: String!
 }
 
 type Query {
-  package: Package!
+  package(_id: ID!): Package!
   packages(query: PackagesQueryInput): Packages!
 }
 

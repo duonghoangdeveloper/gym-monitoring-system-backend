@@ -6,14 +6,13 @@ import {
   validatePrice,
 } from './package.validators';
 
-const packageSchema = new mongoose.Schema(
+export const packageSchema = new mongoose.Schema(
   {
     name: {
       trim: true,
       type: String,
       validate: validateName,
     },
-
     period: {
       trim: true,
       type: Number,
