@@ -61,3 +61,5 @@ const reducer = (state = INITIAL_STATE, action) => {
 };
 
 export const store = createStore(reducer);
+
+// setInterval(() => console.log(store.getState()), 1000);

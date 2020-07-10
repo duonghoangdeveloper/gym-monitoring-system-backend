@@ -1,4 +1,6 @@
 import http from 'http';
+import { fromEvent } from 'rxjs';
+import { throttleTime } from 'rxjs/operators';
 import socketio from 'socket.io';
 import { debounce, throttle } from 'throttle-debounce';
 
@@ -25,6 +27,7 @@ export const configSocket = app => {
         },
         type: TYPES.REMOVE_SOCKET,
       });
+      subscriber.unsubscribe();
       socket.removeAllListeners();
       clearInterval(viewScreenInterval);
       console.log('Someone disconnected');
@@ -74,7 +77,14 @@ export const configSocket = app => {
         });
       }
     });
-    socket.on('desktop-stream-screen', receiveStream);
+    const observable = fromEvent(socket, 'desktop-stream-screen').pipe(
+      throttleTime(DELAY)
+    );
+    const subscriber = observable.subscribe({
+      next(data) {
+        receiveStream(data);
+      },
+    });
     socket.on('desktop-pause-screen', key => {
       store.dispatch({
         payload: {

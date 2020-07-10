@@ -29,17 +29,13 @@ const userSchema = new mongoose.Schema(
     displayName: {
       trim: true,
       type: String,
-      validate(displayName) {
-        validateDisplayName(displayName);
-      },
+      validate: validateDisplayName,
     },
 
     email: {
       trim: true,
       type: String,
-      validate(email) {
-        validateEmail(email);
-      },
+      validate: validateEmail,
     },
 
     gender: {
@@ -55,9 +51,7 @@ const userSchema = new mongoose.Schema(
     phone: {
       trim: true,
       type: String,
-      validate(phone) {
-        validatePhone(phone);
-      },
+      validate: validatePhone,
     },
 
     role: {
@@ -79,9 +73,7 @@ const userSchema = new mongoose.Schema(
       required: true,
       trim: true,
       type: String,
-      validate(username) {
-        validateUsername(username);
-      },
+      validate: validateUsername,
     },
   },
   {
