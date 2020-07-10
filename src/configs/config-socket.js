@@ -28,6 +28,7 @@ export const configSocket = app => {
         type: TYPES.REMOVE_SOCKET,
       });
       subscriber.unsubscribe();
+      socket.removeAllListeners();
       clearInterval(viewScreenInterval);
       console.log('Someone disconnected');
     });

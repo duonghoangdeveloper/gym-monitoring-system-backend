@@ -14,7 +14,7 @@ type Package {
 
 type Query {
   package: Package!
-  packages: Packages!
+  packages(query: PackagesQueryInput): Packages!
 }
 
 type Mutation {
@@ -31,28 +31,12 @@ type Packages {
 input PackagesQueryInput {
   skip: Int
   limit: Int
-  sort: PackagesSortInput
+  sort: String
   search: PackagesSearchInput
-  filter: PackagesFilterInput
-}
-
-input PackagesSortInput {
-  name: SortOrder
-  price: SortOrder
-  period: SortOrder
-  createdAt: SortOrder
 }
 
 input PackagesSearchInput {
   name: String
-  price: Int
-  period: Int
-  createdAt: String
-}
-
-input PackagesFilterInput {
-  price: [Int!]
-  period: [Int!]
 }
 
 input CreatePackageInput {
@@ -62,6 +46,7 @@ input CreatePackageInput {
 }
 
 input UpdatePackageInput {
+  name: String
   price: Int
   period: Int
 }

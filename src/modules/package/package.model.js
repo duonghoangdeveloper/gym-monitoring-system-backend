@@ -11,24 +11,18 @@ const packageSchema = new mongoose.Schema(
     name: {
       trim: true,
       type: String,
-      validate(name) {
-        validateName(name);
-      },
+      validate: validateName,
     },
 
     period: {
       trim: true,
       type: Number,
-      validate(period) {
-        validatePeriod(period);
-      },
+      validate: validatePeriod,
     },
     price: {
       trim: true,
       type: Number,
-      validate(price) {
-        validatePrice(price);
-      },
+      validate: validatePrice,
     },
   },
   {
@@ -37,7 +31,7 @@ const packageSchema = new mongoose.Schema(
   }
 );
 
-packageSchema.index({ name: 1 });
+packageSchema.index({ name: 1 }, { unique: true });
 packageSchema.index({ price: 1 });
 packageSchema.index({ period: 1 });
 

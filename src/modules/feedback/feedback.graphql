@@ -1,7 +1,7 @@
 type Feedback {
   _id: ID!
-  customer: User!
-  staffs(query: UsersQueryInput): Users!
+  # customer: User!
+  # staffs(query: UsersQueryInput): Users!
   title: String!
   content: String!
   createdAt: String!
@@ -27,16 +27,9 @@ type Feedbacks {
 input FeedbacksQueryInput {
   skip: Int
   limit: Int
-  sort: FeedbacksSortInput
+  sort: String
   search: FeedbacksSearchInput
   filter: FeedbacksFilterInput
-}
-
-input FeedbacksSortInput {
-  title: SortOrder
-  content: SortOrder
-  createdAt: SortOrder
-  updatedAt: SortOrder
 }
 
 input FeedbacksSearchInput {
@@ -45,7 +38,7 @@ input FeedbacksSearchInput {
 }
 
 input FeedbacksFilterInput {
-  customerId: [ID!]
+  customer: [ID!]
 }
 
 input CreateFeedbackInput {

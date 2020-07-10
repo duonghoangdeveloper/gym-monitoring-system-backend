@@ -6,6 +6,7 @@ import {
   generateDocumentsPayload,
   throwError,
 } from '../../common/services';
+import { getFeedbacks } from '../feedback/feedback.services';
 import {
   createUser,
   getUserById,
@@ -71,5 +72,25 @@ export const Query = {
 };
 
 export const User = {
-  // async feedbacks() {},
+  async feedbacks({ _id: userId }, { query }, { req }) {
+    const feedbacksQuery = {
+      ...query,
+      filter: {
+        ...query?.filter,
+        customer: [userId],
+      },
+    };
+
+    try {
+      checkRole(req.user, ['CUSTOMER']);
+      if (req.user._id.toString() === userId) {
+        const { documents, total } = await getFeedbacks(feedbacksQuery);
+        return generateDocumentsPayload({ documents, total });
+      }
+    } catch (e) {
+      // Do nothing
+    }
+
+    return generateDocumentsPayload({ documents: [], total: 0 });
+  },
 };
