@@ -1,6 +1,6 @@
 type Feedback {
   _id: ID!
-  # customer: User!
+  customer: User!
   # staffs(query: UsersQueryInput): Users!
   title: String!
   content: String!
@@ -39,6 +39,7 @@ input FeedbacksSearchInput {
 
 input FeedbacksFilterInput {
   customer: [ID!]
+  # staffIds: [ID!]
 }
 
 input CreateFeedbackInput {

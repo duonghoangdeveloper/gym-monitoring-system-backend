@@ -16,9 +16,9 @@ export const createFeedback = async (customer, data) => {
   validateContent(content);
   validateTitle(title);
 
-  staffIds.forEach(_id => {
-    getUserById(_id);
-  });
+  // staffIds.forEach(_id => {
+  //   getUserById(_id);
+  // });
 
   const feedback = new Feedback({
     content,
