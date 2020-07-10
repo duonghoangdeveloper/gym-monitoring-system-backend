@@ -1,4 +1,4 @@
-import app from './app';
+import { app } from './app';
 import { configSocket } from './configs/config-socket';
 
 app.on('ready', () => {

@@ -22,4 +22,4 @@ app.use((error, req, res, next) => {
   res.status(status).json({ data, message });
 });
 
-export default app;
+export { app };

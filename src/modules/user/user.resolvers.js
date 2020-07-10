@@ -18,7 +18,6 @@ import {
 
 export const Mutation = {
   async createUser(_, { data }, { req }) {
-    console.log(data);
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const createdUser = await createUser(data);
     return generateDocumentPayload(createdUser);
