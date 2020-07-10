@@ -15,6 +15,41 @@ beforeAll(connectDatabase);
 beforeEach(seedDatabase);
 afterAll(disconnectDatabase);
 
+test('Should create new user', async () => {
+  const client = getClient(users[0].token);
+
+  const data = {
+    displayName: 'Hoang Dai Duong',
+    email: 'duonghoangdeveloper2@gmail.com',
+    gender: 'MALE',
+    password: '123456',
+    phone: '0342773627',
+    username: 'duonghoangdeveloper2',
+  };
+
+  const response = await client.mutate({
+    mutation: gql`
+      mutation($data: CreateUserInput!) {
+        createUser(data: $data) {
+          _id
+          displayName
+          email
+          gender
+          phone
+          username
+        }
+      }
+    `,
+    variables: {
+      data,
+    },
+  });
+
+  expect(
+    isPartial({ ...data, password: undefined }, response?.data?.createUser)
+  ).toBe(true);
+});
+
 test('Should not create new user', async () => {
   const client = getClient();
 
@@ -46,39 +81,4 @@ test('Should not create new user', async () => {
       },
     })
   ).rejects.toThrow();
-});
-
-test('Should create new user', async () => {
-  const client = getClient(users[0].token);
-
-  const data = {
-    displayName: 'Hoang Dai Duong',
-    email: 'duonghoangdeveloper@gmail.com',
-    gender: 'MALE',
-    password: '123456',
-    phone: '0342773627',
-    username: 'duonghoangdeveloper',
-  };
-
-  const response = await client.mutate({
-    mutation: gql`
-      mutation($data: CreateUserInput!) {
-        createUser(data: $data) {
-          _id
-          displayName
-          email
-          gender
-          phone
-          username
-        }
-      }
-    `,
-    variables: {
-      data,
-    },
-  });
-
-  expect(
-    isPartial({ ...data, password: undefined }, response?.data?.createUser)
-  ).toBe(true);
 });

@@ -12,7 +12,7 @@ import {
   validateUsername,
 } from './user.validators';
 
-export const userSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     avatar: {
       _id: false,

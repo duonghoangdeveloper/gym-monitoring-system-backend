@@ -5,9 +5,9 @@ import { getPackageById } from '../package/package.services';
 import { getUserById } from '../user/user.services';
 import { Payment } from './payment.model';
 import {
-  validateExistCreator,
-  validateExistCustomer,
-  validateExistPackage,
+  validateCreatorExists,
+  validateCustomerExists,
+  validatePackageExists,
 } from './payment.validators';
 
 export const getPaymentById = async (_id, projection) =>
@@ -19,8 +19,8 @@ export const getPayments = async (query, initialFind) =>
 export const createPayment = async data => {
   const { creatorId, customerId, packageId } = data;
 
-  validateExistCustomer(customerId);
-  validateExistPackage(packageId);
+  validateCustomerExists(customerId);
+  validatePackageExists(packageId);
 
   const _package = await getPackageById(packageId);
 
@@ -42,15 +42,15 @@ export const updatePayment = async (payment, data) => {
   // console.log('updateAt: ', updateAt);
 
   if (!isNil(creatorId)) {
-    await validateExistCreator(creatorId);
+    await validateCreatorExists(creatorId);
     payment.creator = await getUserById(creatorId);
   }
   if (!isNil(customerId)) {
-    await validateExistCustomer(customerId);
+    await validateCustomerExists(customerId);
     payment.customer = await getUserById(customerId);
   }
   if (!isNil(packageId)) {
-    await validateExistPackage(packageId);
+    await validatePackageExists(packageId);
     payment.package = await getPackageById(packageId);
   }
   const updatedPayment = await payment.save();

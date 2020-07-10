@@ -6,7 +6,7 @@ import {
   validatePrice,
 } from './package.validators';
 
-export const packageSchema = new mongoose.Schema(
+const packageSchema = new mongoose.Schema(
   {
     name: {
       trim: true,

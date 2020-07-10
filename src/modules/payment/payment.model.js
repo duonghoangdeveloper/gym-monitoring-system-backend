@@ -1,25 +1,24 @@
 import mongoose, { Schema } from 'mongoose';
 
-import { packageSchema } from '../package/package.model';
 import {
-  validateExistCreator,
-  validateExistCustomer,
-  validateExistPackage,
+  validateCreatorExists,
+  validateCustomerExists,
+  validatePackageExists,
 } from './payment.validators';
 
-export const paymentSchema = new mongoose.Schema(
+const paymentSchema = new mongoose.Schema(
   {
     creator: {
       ref: 'User',
       required: true,
       type: Schema.Types.ObjectId,
-      validate: validateExistCreator,
+      validate: validateCreatorExists,
     },
     customer: {
       ref: 'User',
       required: true,
       type: Schema.Types.ObjectId,
-      validate: validateExistCustomer,
+      validate: validateCustomerExists,
     },
     isActive: {
       type: Boolean,
@@ -41,7 +40,7 @@ export const paymentSchema = new mongoose.Schema(
           type: Number,
         },
       },
-      validate: validateExistPackage,
+      validate: validatePackageExists,
     },
   },
   {
