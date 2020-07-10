@@ -33,7 +33,7 @@ export const users = [
     input: {
       password: '123456',
       role: 'TRAINER',
-      username: 'traier',
+      username: 'trainer',
     },
     token: null,
   },
