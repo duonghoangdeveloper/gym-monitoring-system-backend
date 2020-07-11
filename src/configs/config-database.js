@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 mongoose.Promise = global.Promise;
 
-const connectOptions = {
+export const connectOptions = {
   user: process.env.MONGODB_USERNAME,
   pass: process.env.MONGODB_PASSWORD,
 
