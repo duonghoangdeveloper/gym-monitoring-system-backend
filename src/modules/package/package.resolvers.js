@@ -43,7 +43,3 @@ export const Query = {
     return generateDocumentsPayload(_packages);
   },
 };
-
-export const Package = {
-  // async feedbacks() {},
-};

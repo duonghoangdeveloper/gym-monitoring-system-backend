@@ -13,7 +13,6 @@ const packageSchema = new mongoose.Schema(
       type: String,
       validate: validateName,
     },
-
     period: {
       trim: true,
       type: Number,
