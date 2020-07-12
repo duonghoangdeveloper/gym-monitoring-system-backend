@@ -1,6 +1,11 @@
 import isNil from 'lodash.isnil';
+import moment from 'moment';
 
-import { getDocumentById, mongooseQuery } from '../../common/services';
+import {
+  getDocumentById,
+  mongooseQuery,
+  throwError,
+} from '../../common/services';
 import { getPackageById } from '../package/package.services';
 import { getUserById } from '../user/user.services';
 import { Payment } from './payment.model';
@@ -35,11 +40,16 @@ export const createPayment = async data => {
 };
 
 export const updatePayment = async (payment, data) => {
-  const { creatorId, customerId, packageId, updateAt } = data;
+  const { creatorId, customerId, packageId } = data;
 
-  // Calculate updateAt
-  // console.log('updateAt: ', updateAt);
-  // console.log('updateAt: ', updateAt);
+  const startDate = moment(payment.createdAt);
+  const timeEnd = moment();
+  const diff = timeEnd.diff(startDate);
+  const diffDuration = moment.duration(diff);
+
+  if (diffDuration.days() > 1) {
+    throwError('Out of date to update', 404);
+  }
 
   if (!isNil(creatorId)) {
     await validateCreatorExists(creatorId);
@@ -53,6 +63,7 @@ export const updatePayment = async (payment, data) => {
     await validatePackageExists(packageId);
     payment.package = await getPackageById(packageId);
   }
+
   const updatedPayment = await payment.save();
   return updatedPayment;
 };

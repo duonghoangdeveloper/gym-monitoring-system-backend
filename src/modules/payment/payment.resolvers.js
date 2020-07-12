@@ -17,7 +17,7 @@ export const Mutation = {
     ]);
     const createdPayment = await createPayment({
       ...data,
-      creatorId: creator._id.toString(),
+      creatorId: creator._id,
     });
     return generateDocumentPayload(createdPayment);
   },
@@ -36,13 +36,10 @@ export const Mutation = {
       'SYSTEM_ADMIN',
     ]);
     const paymentToUpdate = await getPaymentById(_id);
-    const updatedPayment = await updatePayment(
-      {
-        ...paymentToUpdate,
-        creatorId: creator._id.toString(),
-      },
-      data
-    );
+    const updatedPayment = await updatePayment(paymentToUpdate, {
+      ...data,
+      creatorId: creator._id,
+    });
     return generateDocumentPayload(updatedPayment);
   },
 };

@@ -16,7 +16,6 @@ export const getPackages = async (query, initialFind) =>
 
 export const createPackage = async data => {
   const { name, period, price } = data;
-  console.log(price);
   await validateName(name);
   await validatePrice(price);
   await validatePeriod(period);

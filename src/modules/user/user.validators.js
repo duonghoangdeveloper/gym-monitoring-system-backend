@@ -55,10 +55,10 @@ export const validateEmailExists = async email => {
 };
 
 export const validatePhone = async phone => {
-  const phoneExists = await User.exists({ phone });
-  if (phoneExists) {
-    throwError('Phone is already existed', 409);
-  }
+  // const phoneExists = await User.exists({ phone });
+  // if (phoneExists) {
+  //   throwError('Phone is already existed', 409);
+  // }
   if (!validator.isMobilePhone(phone)) {
     throwError('Phone number is invalid', 422);
   }

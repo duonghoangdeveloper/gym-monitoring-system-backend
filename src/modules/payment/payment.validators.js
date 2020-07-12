@@ -1,5 +1,6 @@
 import validator from 'validator';
 
+import { Package } from '../../common/models';
 import { throwError } from '../../common/services';
 import { User } from '../user/user.model';
 
@@ -16,7 +17,7 @@ export const validateCustomerExists = async customerId => {
   }
 };
 export const validatePackageExists = async packageId => {
-  const packageExists = await User.exists({ _id: packageId });
+  const packageExists = await Package.exists({ _id: packageId });
   if (!packageExists) {
     throwError('Package not found', 404);
   }
