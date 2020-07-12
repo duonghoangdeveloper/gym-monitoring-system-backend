@@ -1,0 +1,48 @@
+type Payment {
+  _id: ID!
+  creator: User!
+  customer: User!
+  package: Package!
+
+  # Timestamp
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Query {
+  payment(_id: ID!): Payment!
+  payments(query: PaymentsQueryInput): Payments!
+}
+
+type Mutation {
+  createPayment(data: CreatePaymentInput!): Payment!
+  updatePayment(_id: ID!, data: UpdatePaymentInput): Payment!
+  deletePayment(_id: ID!): Payment!
+}
+
+type Payments {
+  data: [Payment!]!
+  total: Int!
+}
+
+input PaymentsQueryInput {
+  skip: Int
+  limit: Int
+  sort: String
+  filter: PaymentsFilterInput
+}
+
+input PaymentsFilterInput {
+  creator: [ID!]
+  customer: [ID!]
+}
+
+input CreatePaymentInput {
+  customerId: ID!
+  packageId: ID!
+}
+
+input UpdatePaymentInput {
+  customerId: ID
+  packageId: ID
+}

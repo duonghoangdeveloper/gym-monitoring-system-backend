@@ -9,17 +9,19 @@ import {
 const packageSchema = new mongoose.Schema(
   {
     name: {
+      required: true,
       trim: true,
       type: String,
       validate: validateName,
     },
-
     period: {
+      required: true,
       trim: true,
       type: Number,
       validate: validatePeriod,
     },
     price: {
+      required: true,
       trim: true,
       type: Number,
       validate: validatePrice,

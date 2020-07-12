@@ -10,11 +10,13 @@ import { User } from './user.model';
 import {
   validateDisplayName,
   validateEmail,
+  validateEmailExists,
   validateGender,
   validatePassword,
   validatePhone,
   validateRole,
   validateUsername,
+  validateUsernameExists,
 } from './user.validators';
 
 export const getUserById = async (_id, projection) =>
@@ -45,10 +47,12 @@ export const createUser = async data => {
   const { displayName, email, gender, password, phone, role, username } = data;
 
   await validateUsername(username);
+  await validateUsernameExists(username);
   await validatePassword(password);
 
   if (!isNil(email)) {
     await validateEmail(email);
+    await validateEmailExists(email);
   }
 
   if (!isNil(phone)) {
@@ -85,6 +89,7 @@ export const updateUser = async (user, data) => {
 
   if (!isNil(username)) {
     await validateUsername(username);
+    await validateUsernameExists(username);
     user.username = username;
   }
 
@@ -100,6 +105,7 @@ export const updateUser = async (user, data) => {
 
   if (!isNil(email)) {
     await validateEmail(email);
+    await validateEmailExists(email);
     user.email = email;
   }
 

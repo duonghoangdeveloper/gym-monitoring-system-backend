@@ -11,9 +11,11 @@ import {
 export const getPackageById = async (_id, projection) =>
   getDocumentById('Package', _id, projection);
 
+export const getPackages = async (query, initialFind) =>
+  mongooseQuery('Package', query, initialFind);
+
 export const createPackage = async data => {
   const { name, period, price } = data;
-
   await validateName(name);
   await validatePrice(price);
   await validatePeriod(period);
@@ -22,9 +24,6 @@ export const createPackage = async data => {
   const createdPackage = await _package.save();
   return createdPackage;
 };
-
-export const getPackages = async (query, initialFind) =>
-  mongooseQuery('Package', query, initialFind);
 
 export const updatePackage = async (_package, data) => {
   const { name, period, price } = data;
