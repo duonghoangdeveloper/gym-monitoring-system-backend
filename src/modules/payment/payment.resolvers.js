@@ -1,4 +1,8 @@
-import { checkRole, generateDocumentPayload } from '../../common/services';
+import {
+  checkBelongingness,
+  checkRole,
+  generateDocumentPayload,
+} from '../../common/services';
 import { getUserById } from '../user/user.services';
 import {
   createPayment,
@@ -17,7 +21,7 @@ export const Mutation = {
     ]);
     const createdPayment = await createPayment({
       ...data,
-      creatorId: creator._id,
+      creatorId: creator._id.toString(),
     });
     return generateDocumentPayload(createdPayment);
   },
@@ -38,7 +42,7 @@ export const Mutation = {
     const paymentToUpdate = await getPaymentById(_id);
     const updatedPayment = await updatePayment(paymentToUpdate, {
       ...data,
-      creatorId: creator._id,
+      creatorId: creator._id.toString(),
     });
     return generateDocumentPayload(updatedPayment);
   },
@@ -46,14 +50,38 @@ export const Mutation = {
 
 export const Query = {
   async payment(_, { _id }, { req }) {
-    checkRole(req.user, ['CUSTOMER', 'MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    const user = checkRole(req.user, [
+      'CUSTOMER',
+      'MANAGER',
+      'GYM_OWNER',
+      'SYSTEM_ADMIN',
+    ]);
     const payment = await getPaymentById(_id);
+
+    if (user.role === 'CUSTOMER') {
+      checkBelongingness(payment, user._id.toString(), 'customer');
+    }
+
     return generateDocumentPayload(payment);
   },
   async payments(_, { query }, { req }) {
-    checkRole(req.user, ['CUSTOMER', 'MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
-    const payment = await getPayments(query);
-    return generateDocumentPayload(payment);
+    const user = checkRole(req.user, [
+      'CUSTOMER',
+      'MANAGER',
+      'GYM_OWNER',
+      'SYSTEM_ADMIN',
+    ]);
+
+    if (user.role === 'CUSTOMER') {
+      const customerPayments = await getPayments({
+        ...query,
+        filter: { customer: [user._id.toString()] },
+      });
+      return generateDocumentPayload(customerPayments);
+    }
+
+    const payments = await getPayments(query);
+    return generateDocumentPayload(payments);
   },
 };
 
@@ -67,7 +95,6 @@ export const Payment = {
   async customer({ customer }, _, { req }) {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const foundCustomer = await getUserById(customer);
-    checkRole(foundCustomer, ['CUSTOMER']);
     return generateDocumentPayload(foundCustomer);
   },
 };

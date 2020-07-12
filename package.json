@@ -13,10 +13,7 @@
   "jest": {
     "globalSetup": "./tests/jest/global-setup.js",
     "globalTeardown": "./tests/jest/global-teardown.js",
-    "testEnvironment": "node",
-    "setupFilesAfterEnv": [
-      "./tests/jest/setup.js"
-    ]
+    "testEnvironment": "node"
   },
   "license": "ISC",
   "dependencies": {
