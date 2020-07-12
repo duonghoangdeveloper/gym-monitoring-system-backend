@@ -26,7 +26,6 @@ export const signIn = async data => {
 
   const user = await User.findByCredentials(username, password);
   const token = await user.generateAuthToken();
-
   return { token, user };
 };
 

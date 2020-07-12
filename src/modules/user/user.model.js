@@ -77,7 +77,7 @@ const userSchema = new mongoose.Schema(
       required: true,
       trim: true,
       type: String,
-      validate: validateUsername,
+      // validate: validateUsername,
     },
   },
   {
