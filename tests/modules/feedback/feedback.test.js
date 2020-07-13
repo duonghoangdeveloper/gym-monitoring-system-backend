@@ -50,7 +50,7 @@ test('Should not create feedback without role customer', async () => {
     title: 'New feedback',
   };
 
-  expect(
+  await expect(
     client.mutate({
       mutation: gql`
         mutation CreateFeedback($data: CreateFeedbackInput!) {
@@ -65,7 +65,5 @@ test('Should not create feedback without role customer', async () => {
         data,
       },
     })
-  ).rejects.toEqual({
-    error: 'Unauthorized',
-  });
+  ).rejects.toThrow('Unauthorized');
 });

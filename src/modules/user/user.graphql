@@ -11,7 +11,10 @@ type User {
   email: String
   phone: String
   avatar: File
+
   feedbacks(query: FeedbacksQueryInput): Feedbacks!
+  payments(query: PaymentsQueryInput): Payments!
+  createdPayments(query: PaymentsQueryInput): Payments!
 
   # Timestamp
   createdAt: String!

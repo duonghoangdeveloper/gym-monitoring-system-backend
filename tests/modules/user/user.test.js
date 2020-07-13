@@ -63,7 +63,7 @@ test('Should not create new user without token', async () => {
     username: 'duonghoangdeveloper',
   };
 
-  expect(
+  await expect(
     client.mutate({
       mutation: gql`
         mutation($data: CreateUserInput!) {
@@ -81,7 +81,5 @@ test('Should not create new user without token', async () => {
         data,
       },
     })
-  ).rejects.toEqual({
-    error: 'Unauthorized',
-  });
+  ).rejects.toThrow('Unauthorized');
 });
