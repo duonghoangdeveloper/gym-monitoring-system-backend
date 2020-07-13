@@ -55,8 +55,16 @@ export const Query = {
 };
 
 export const Feedback = {
-  // async customer({ customer }) {
-  //   const _customer = await getUserById(customer);
-  //   return generateDocumentPayload(_customer);
-  // },
+  async customer({ customer }) {
+    const _customer = await getUserById(customer);
+    return generateDocumentPayload(_customer);
+  },
+  // async staffs({staffs}){
+  //   const result = [];
+  //   this.staffs.map(async (staff)  =>  {
+  //     result: ...generateDocumentPayload(await getUserById(staff));
+  //   }
+
+  //   return result;
+  // }
 };
