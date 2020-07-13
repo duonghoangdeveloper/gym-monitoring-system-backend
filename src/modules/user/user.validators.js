@@ -16,7 +16,7 @@ export const validateUsername = async username => {
 export const validateUsernameExists = async username => {
   const usernameExists = await User.exists({ username });
   if (usernameExists) {
-    throwError('Username is already existed', 409);
+    throwError('Username already exists', 409);
   }
 };
 
@@ -50,17 +50,20 @@ export const validateEmail = async email => {
 export const validateEmailExists = async email => {
   const emailExists = await User.exists({ email });
   if (emailExists) {
-    throwError('Email is already existed', 409);
+    throwError('Email already exists', 409);
   }
 };
 
 export const validatePhone = async phone => {
-  const phoneExists = await User.exists({ phone });
-  if (phoneExists) {
-    throwError('Phone is already existed', 409);
-  }
   if (!validator.isMobilePhone(phone)) {
     throwError('Phone number is invalid', 422);
+  }
+};
+
+export const validatePhoneExists = async phone => {
+  const phoneExists = await User.exists({ phone });
+  if (phoneExists) {
+    throwError('Phone already exists', 409);
   }
 };
 

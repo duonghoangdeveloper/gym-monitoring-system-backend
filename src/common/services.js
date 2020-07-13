@@ -147,8 +147,8 @@ export const generateAuthPayload = ({ document, token }) => ({
   token,
 });
 
-export const checkBelongingness = async (document, userId) => {
-  if (document.user.toString() !== userId) {
+export const checkBelongingness = async (document, userId, field = 'user') => {
+  if (document[field].toString() !== userId) {
     throwError('Not belong to this user', 403);
   }
 };

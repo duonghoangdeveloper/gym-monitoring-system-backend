@@ -8,9 +8,12 @@ export const validateName = async name => {
   if (name.length > 30) {
     throwError('Name length must be 30 at maximum', 422);
   }
+};
+
+export const validateNameExists = async name => {
   const nameExists = await Package.exists({ name });
   if (nameExists) {
-    throwError('Name is already existed', 409);
+    throwError('Name already exists', 409);
   }
 };
 
