@@ -9,7 +9,8 @@ import {
   getClient,
   isPartial,
 } from '../../common/services';
-import { users } from './package.seed';
+import { users } from '../user/user.seed';
+import { packages } from './package.seed';
 
 beforeAll(connectDatabase);
 beforeEach(seedDatabase);
@@ -19,21 +20,18 @@ test('Should create new package', async () => {
   const client = getClient(users[0].token);
 
   const data = {
-    name: 'winter3',
-    period: 3,
-    price: 300,
+    name: 'winter6',
+    period: 6,
+    price: 600,
   };
 
-  const response = await client.mutate({
+  const response = client.mutate({
     mutation: gql`
-      mutation($data: CreatePackageInput!) {
+      mutation CreatePackage($data: CreatePackageInput!) {
         createPackage(data: $data) {
-          _id
           name
-          period
           price
-          createAt
-          updateAt
+          period
         }
       }
     `,
@@ -42,30 +40,27 @@ test('Should create new package', async () => {
     },
   });
 
-  expect(
-    isPartial({ ...data, password: undefined }, response?.data?.createUser)
-  ).toBe(true);
+  expect(isPartial({ ...data }, (await response)?.data?.createPackage)).toBe(
+    true
+  );
 });
 
 test('Should not create new package without token', async () => {
   const client = getClient();
 
   const data = {
-    name: 'winter3',
-    period: 3,
-    price: 300,
+    name: 'winter6',
+    period: 6,
+    price: 600,
   };
 
-  const response = await client.mutate({
+  const response = client.mutate({
     mutation: gql`
-      mutation($data: CreatePackageInput!) {
+      mutation CreatePackage($data: CreatePackageInput!) {
         createPackage(data: $data) {
-          _id
           name
-          period
           price
-          createAt
-          updateAt
+          period
         }
       }
     `,
@@ -74,5 +69,115 @@ test('Should not create new package without token', async () => {
     },
   });
 
-  expect(response).rejects.toThrow();
+  (await expect(response)).rejects.toThrow('Unauthorized');
+});
+
+test('Should update package', async () => {
+  const client = getClient(users[0].token);
+  const packageRoot = packages[0];
+
+  const data = {
+    name: 'winter1',
+    period: 11,
+    price: 1100,
+  };
+
+  const response = client.mutate({
+    mutation: gql`
+      mutation UpdatePackage($_id: ID!, $data: UpdatePackageInput) {
+        updatePackage(_id: $_id, data: $data) {
+          _id
+          name
+          price
+          period
+        }
+      }
+    `,
+    variables: {
+      _id: packageRoot.document._id,
+      data,
+    },
+  });
+
+  expect(isPartial({ ...data }, (await response)?.data?.updatePackage)).toBe(
+    true
+  );
+});
+
+test('Should not update package without token', async () => {
+  const client = getClient();
+  const packageRoot = packages[0];
+
+  const data = {
+    name: 'winter1',
+    period: 11,
+    price: 1100,
+  };
+
+  const response = client.mutate({
+    mutation: gql`
+      mutation UpdatePackage($_id: ID!, $data: UpdatePackageInput) {
+        updatePackage(_id: $_id, data: $data) {
+          _id
+          name
+          price
+          period
+        }
+      }
+    `,
+    variables: {
+      _id: packageRoot.document._id,
+      data,
+    },
+  });
+
+  await expect(response).rejects.toThrow('Unauthorized');
+});
+
+test('Should delete package', async () => {
+  const client = getClient(users[0].token);
+  const packageRoot = packages[4].document._id;
+
+  const response = await client.mutate({
+    mutation: gql`
+      mutation DeletePackage($_id: ID!) {
+        deletePackage(_id: $_id) {
+          _id
+          name
+          price
+          period
+        }
+      }
+    `,
+    variables: {
+      _id: packageRoot,
+    },
+  });
+  expect(
+    isPartial(
+      packageRoot.toString(),
+      response?.data?.deletePackage._id.toString()
+    )
+  ).toBe(true);
+  // expect(response?.data?.deletePackage?._id).toEqual(packageRoot);
+});
+
+test('Should not delete package without token', async () => {
+  const client = getClient();
+  const packageRoot = packages[4];
+
+  const response = client.mutate({
+    mutation: gql`
+      mutation DeletePackage($_id: ID!) {
+        deletePackage(_id: $_id) {
+          _id
+        }
+      }
+    `,
+    variables: {
+      _id: packageRoot.document._id,
+    },
+  });
+
+  await expect(response).rejects.toThrow('Unauthorized');
 });
