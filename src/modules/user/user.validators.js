@@ -14,9 +14,30 @@ export const validateUsername = async username => {
 };
 
 export const validateUsernameExists = async username => {
-  const usernameExists = await User.exists({ username });
+  const usernameExists = await User.exists({ activationToken: null, username });
   if (usernameExists) {
     throwError('Username is already existed', 409);
+  }
+};
+
+export const validateUsernameUpdate = async (_id, username) => {
+  const userUpdate = await User.findOne({ _id });
+  if (userUpdate.username !== username) {
+    validateUsernameExists(username);
+  }
+};
+
+export const validateEmailUpdate = async (_id, email) => {
+  const userUpdate = await User.findOne({ _id });
+  if (userUpdate.email !== email) {
+    validateEmailExists(email);
+  }
+};
+
+export const validatePhoneUpdate = async (_id, phone) => {
+  const userUpdate = await User.findOne({ _id });
+  if (userUpdate.phone !== phone) {
+    validatePhoneExists(phone);
   }
 };
 
@@ -48,19 +69,22 @@ export const validateEmail = async email => {
 };
 
 export const validateEmailExists = async email => {
-  const emailExists = await User.exists({ email });
+  const emailExists = await User.exists({ activationToken: null, email });
   if (emailExists) {
     throwError('Email is already existed', 409);
   }
 };
 
 export const validatePhone = async phone => {
-  const phoneExists = await User.exists({ phone });
-  if (phoneExists) {
-    throwError('Phone is already existed', 409);
-  }
   if (!validator.isMobilePhone(phone)) {
     throwError('Phone number is invalid', 422);
+  }
+};
+
+export const validatePhoneExists = async phone => {
+  const phoneExists = await User.exists({ activationToken: null, phone });
+  if (phoneExists) {
+    throwError('Phone is already existed', 409);
   }
 };
 
@@ -71,4 +95,14 @@ export const validateDisplayName = async displayName => {
   if (displayName.length > 60) {
     throwError('DisplayName length must be 60 at maximum', 422);
   }
+};
+
+export const userValidatorMapping = {
+  displayName: [validateDisplayName],
+  email: [validateEmail, validateEmailExists],
+  gender: [validateGender],
+  password: [validatePassword],
+  phone: [validatePhone, validatePhoneExists],
+  role: [validateRole],
+  username: [validateUsername, validateUsernameExists],
 };

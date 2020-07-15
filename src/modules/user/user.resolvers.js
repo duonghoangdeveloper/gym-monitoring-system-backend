@@ -5,6 +5,7 @@ import {
   generateDocumentPayload,
   generateDocumentsPayload,
   throwError,
+  validateField,
 } from '../../common/services';
 import { getFeedbacks } from '../feedback/feedback.services';
 import {
@@ -20,6 +21,13 @@ import {
 } from './user.services';
 
 export const Mutation = {
+  async changeOnlineStatus(_, { _id, status }, { req }) {
+    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    const changedStatusUser = await getUserById(_id);
+    checkAuthorized(changedStatusUser, req.user);
+    const changedUser = await changeUserStatus(changedStatusUser, status);
+    return changedUser;
+  },
   async changeUserStatus(_, { _id, status }, { req }) {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const changedStatusUser = await getUserById(_id);
@@ -55,17 +63,7 @@ export const Mutation = {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const userToUpdate = await getUserById(_id);
     checkAuthorized(userToUpdate, req.user);
-    // if (
-    //   userRoles.indexOf(req.user.role) < userRoles.indexOf(userToUpdate.role)
-    // ) {
-    //   throwError(
-    //     `${req.user.role.replace(/^./, char =>
-    //       char.toUpperCase()
-    //     )} cannot update ${userToUpdate.role}`,
-    //     401
-    //   );
-    // }
-    const updatedUser = await updateUser(userToUpdate, data);
+    const updatedUser = await updateUser(_id, userToUpdate, data);
     return generateDocumentPayload(updatedUser);
   },
 };
@@ -79,6 +77,20 @@ export const Query = {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const users = await getUsers(query);
     return generateDocumentsPayload(users);
+  },
+  async validateUser(_, { data }) {
+    const errorMapping = {};
+
+    (
+      await Promise.all(
+        Object.keys(data).map(async key => ({
+          errors: await validateField('User', key, data[key]),
+          key,
+        }))
+      )
+    ).forEach(({ errors, key }) => (errorMapping[key] = errors));
+
+    return errorMapping;
   },
 };
 

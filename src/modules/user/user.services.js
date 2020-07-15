@@ -12,12 +12,16 @@ import {
   validateDisplayName,
   validateEmail,
   validateEmailExists,
+  validateEmailUpdate,
   validateGender,
   validatePassword,
   validatePhone,
+  validatePhoneExists,
+  validatePhoneUpdate,
   validateRole,
   validateUsername,
   validateUsernameExists,
+  validateUsernameUpdate,
 } from './user.validators';
 
 export const getUserById = async (_id, projection) =>
@@ -57,6 +61,7 @@ export const createUser = async data => {
 
   if (!isNil(phone)) {
     await validatePhone(phone);
+    await validatePhoneExists(phone);
   }
 
   if (!isNil(role)) {
@@ -84,12 +89,11 @@ export const createUser = async data => {
 export const getUsers = async (query, initialFind) =>
   mongooseQuery('User', query, initialFind);
 
-export const updateUser = async (user, data) => {
+export const updateUser = async (_id, user, data) => {
   const { displayName, email, gender, phone, role, username } = data;
-
   if (!isNil(username)) {
     await validateUsername(username);
-    await validateUsernameExists(username);
+    await validateUsernameUpdate(_id, username);
     user.username = username;
   }
 
@@ -105,12 +109,13 @@ export const updateUser = async (user, data) => {
 
   if (!isNil(email)) {
     await validateEmail(email);
-    await validateEmailExists(email);
+    await validateEmailUpdate(_id, email);
     user.email = email;
   }
 
   if (!isNil(phone)) {
     await validatePhone(phone);
+    await validatePhoneUpdate(_id, phone);
     user.phone = phone;
   }
 
@@ -136,6 +141,12 @@ export const changeUserStatus = async (user, status) => {
   user.isActive = status;
   const changedStatusUser = await user.save();
   return changedStatusUser;
+};
+
+export const changeOnlineStatus = async (user, status) => {
+  user.isOnline = status;
+  const changeOnlineStatusUser = await user.save();
+  return changeOnlineStatusUser;
 };
 
 export const deleteUser = async user => {
