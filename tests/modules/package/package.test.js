@@ -138,7 +138,7 @@ test('Should delete package', async () => {
   const client = getClient(users[0].token);
   const packageRoot = packages[4].document._id;
 
-  const response = await client.mutate({
+  const response = client.mutate({
     mutation: gql`
       mutation DeletePackage($_id: ID!) {
         deletePackage(_id: $_id) {
@@ -156,10 +156,9 @@ test('Should delete package', async () => {
   expect(
     isPartial(
       packageRoot.toString(),
-      response?.data?.deletePackage._id.toString()
+      (await response)?.data?.deletePackage._id.toString()
     )
   ).toBe(true);
-  // expect(response?.data?.deletePackage?._id).toEqual(packageRoot);
 });
 
 test('Should not delete package without token', async () => {
