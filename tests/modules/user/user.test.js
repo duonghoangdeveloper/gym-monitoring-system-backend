@@ -13,7 +13,6 @@ import { users } from './user.seed';
 
 beforeAll(connectDatabase);
 afterAll(disconnectDatabase);
-
 beforeEach(seedDatabase);
 
 test('Should create new user', async () => {
@@ -47,7 +46,10 @@ test('Should create new user', async () => {
   });
 
   expect(
-    isPartial({ ...data, password: undefined }, response?.data?.createUser)
+    isPartial(
+      { ...data, password: undefined },
+      (await response)?.data?.createUser
+    )
   ).toBe(true);
 });
 

@@ -4,6 +4,7 @@ import { getDocumentById, mongooseQuery } from '../../common/services';
 import { Package } from './package.model';
 import {
   validateName,
+  validateNameExists,
   validatePeriod,
   validatePrice,
 } from './package.validators';
@@ -18,6 +19,7 @@ export const createPackage = async data => {
   const { name, period, price } = data;
 
   await validateName(name);
+  await validateNameExists(name);
   await validatePrice(price);
   await validatePeriod(period);
 
@@ -29,7 +31,8 @@ export const createPackage = async data => {
 export const updatePackage = async (_package, data) => {
   const { name, period, price } = data;
 
-  if (!isNil(name)) {
+  if (!isNil(name) && _package.name !== name) {
+    await validateNameExists(name);
     await validateName(name);
     _package.name = name;
   }
