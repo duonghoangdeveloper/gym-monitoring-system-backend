@@ -2,6 +2,7 @@ import {
   checkBelongingness,
   checkRole,
   generateDocumentPayload,
+  generateDocumentsPayload,
 } from '../../common/services';
 import { getUserById } from '../user/user.services';
 import {
@@ -77,23 +78,23 @@ export const Query = {
         ...query,
         filter: { customer: [user._id.toString()] },
       });
-      return generateDocumentPayload(customerPayments);
+      return generateDocumentsPayload(customerPayments);
     }
 
     const payments = await getPayments(query);
-    return generateDocumentPayload(payments);
+    return generateDocumentsPayload(payments);
   },
 };
 
 export const Payment = {
   async creator({ creator }, _, { req }) {
-    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    // checkRole(req.user, ['CUSTOMER', 'MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const foundCreator = await getUserById(creator);
     return generateDocumentPayload(foundCreator);
   },
 
   async customer({ customer }, _, { req }) {
-    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    // checkRole(req.user, ['CUSTOMER', 'MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const foundCustomer = await getUserById(customer);
     return generateDocumentPayload(foundCustomer);
   },
