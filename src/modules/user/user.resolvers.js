@@ -95,6 +95,10 @@ export const Query = {
 };
 
 export const User = {
+  async createdPayments({ _id: creatorId }, { query }, { req }) {
+    // Role >= Manager moi duoc xem
+  },
+
   async feedbacks({ _id: userId }, { query }, { req }) {
     const feedbacksQuery = {
       ...query,
@@ -115,5 +119,10 @@ export const User = {
     }
 
     return generateDocumentsPayload({ documents: [], total: 0 });
+  },
+
+  async payments({ _id: customerId }, { query }, { req }) {
+    // Role >= Manager: xem duoc
+    // Role == Customer: chi xem duoc cua minh, nghia la customerId === user.id (user tu checkRole)
   },
 };

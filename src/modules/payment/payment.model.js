@@ -1,9 +1,8 @@
 import mongoose, { Schema } from 'mongoose';
 
 import {
-  validateCreatorExists,
-  validateCustomerExists,
-  validatePackageExists,
+  validateCreatorRequired,
+  validateCustomerRequired,
 } from './payment.validators';
 
 const paymentSchema = new mongoose.Schema(
@@ -12,35 +11,34 @@ const paymentSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
       type: Schema.Types.ObjectId,
-      validate: validateCreatorExists,
+      validate: validateCreatorRequired,
     },
     customer: {
       ref: 'User',
       required: true,
       type: Schema.Types.ObjectId,
-      validate: validateCustomerExists,
-    },
-    isActive: {
-      type: Boolean,
+      validate: validateCustomerRequired,
     },
     package: {
       ref: 'Package',
       required: true,
       type: {
         name: {
+          required: true,
           trim: true,
           type: String,
         },
         period: {
+          required: true,
           trim: true,
           type: Number,
         },
         price: {
+          required: true,
           trim: true,
           type: Number,
         },
       },
-      validate: validatePackageExists,
     },
   },
   {
@@ -50,6 +48,6 @@ const paymentSchema = new mongoose.Schema(
 );
 
 paymentSchema.index({ customer: 1 }, { unique: true });
-paymentSchema.index({ manager: 1 }, { unique: true });
+paymentSchema.index({ creator: 1 }, { unique: true });
 
 export const Payment = mongoose.model('Payment', paymentSchema);

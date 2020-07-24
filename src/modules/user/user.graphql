@@ -13,7 +13,10 @@ type User {
   phone: String
   avatar: File
   isOnline: Boolean
+
   feedbacks(query: FeedbacksQueryInput): Feedbacks!
+  payments(query: PaymentsQueryInput): Payments!
+  createdPayments(query: PaymentsQueryInput): Payments!
 
   # Timestamp
   createdAt: String!
@@ -23,7 +26,7 @@ type User {
 type Query {
   auth: User!
   users(query: UsersQueryInput): Users!
-  validateUser(data: ValidateUserInput): UserErrors!
+  validateUser(data: ValidateUserInput): UserErrors
 }
 
 type Mutation {
@@ -49,13 +52,13 @@ type UserAuthPayload {
 }
 
 type UserErrors {
-  username: [String!]!
-  displayName: [String!]!
-  password: [String!]!
-  gender: [String!]!
-  role: [String!]!
-  email: [String!]!
-  phone: [String!]!
+  username: [String!]
+  displayName: [String!]
+  password: [String!]
+  gender: [String!]
+  role: [String!]
+  email: [String!]
+  phone: [String!]
 }
 
 input SignInInput {

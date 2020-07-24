@@ -12,8 +12,9 @@ import {
 import { users } from './user.seed';
 
 beforeAll(connectDatabase);
-beforeEach(seedDatabase);
 afterAll(disconnectDatabase);
+
+beforeEach(seedDatabase);
 
 test('Should create new user', async () => {
   const client = getClient(users[0].token);
@@ -50,7 +51,7 @@ test('Should create new user', async () => {
   ).toBe(true);
 });
 
-test('Should not create new user', async () => {
+test('Should not create new user without token', async () => {
   const client = getClient();
 
   const data = {
@@ -62,7 +63,7 @@ test('Should not create new user', async () => {
     username: 'duonghoangdeveloper',
   };
 
-  expect(
+  await expect(
     client.mutate({
       mutation: gql`
         mutation($data: CreateUserInput!) {
@@ -80,5 +81,5 @@ test('Should not create new user', async () => {
         data,
       },
     })
-  ).rejects.toThrow();
+  ).rejects.toThrow('Unauthorized');
 });

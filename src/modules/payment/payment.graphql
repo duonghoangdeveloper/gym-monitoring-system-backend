@@ -45,5 +45,4 @@ input CreatePaymentInput {
 input UpdatePaymentInput {
   customerId: ID
   packageId: ID
-  isActive: Boolean
 }

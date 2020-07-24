@@ -16,7 +16,7 @@ export const validateUsername = async username => {
 export const validateUsernameExists = async username => {
   const usernameExists = await User.exists({ activationToken: null, username });
   if (usernameExists) {
-    throwError('Username is already existed', 409);
+    throwError('Username already exists', 409);
   }
 };
 
@@ -51,8 +51,10 @@ export const validatePassword = async password => {
 };
 
 export const validateGender = async gender => {
-  if (!userGenders.includes(gender)) {
-    throwError('Gender is invalid', 422);
+  if (gender) {
+    if (!userGenders.includes(gender)) {
+      throwError('Gender is invalid', 422);
+    }
   }
 };
 
@@ -63,37 +65,47 @@ export const validateRole = async role => {
 };
 
 export const validateEmail = async email => {
-  if (!validator.isEmail(email)) {
-    throwError('Email is invalid', 422);
+  if (email) {
+    if (!validator.isEmail(email)) {
+      throwError('Email is invalid', 422);
+    }
   }
 };
 
 export const validateEmailExists = async email => {
   const emailExists = await User.exists({ activationToken: null, email });
-  if (emailExists) {
-    throwError('Email is already existed', 409);
+  if (email) {
+    if (emailExists) {
+      throwError('Email already exists', 409);
+    }
   }
 };
 
 export const validatePhone = async phone => {
-  if (!validator.isMobilePhone(phone)) {
-    throwError('Phone number is invalid', 422);
+  if (phone) {
+    if (!validator.isMobilePhone(phone)) {
+      throwError('Phone number is invalid', 422);
+    }
   }
 };
 
 export const validatePhoneExists = async phone => {
   const phoneExists = await User.exists({ activationToken: null, phone });
-  if (phoneExists) {
-    throwError('Phone is already existed', 409);
+  if (phone) {
+    if (phoneExists) {
+      throwError('Phone already existed', 409);
+    }
   }
 };
 
 export const validateDisplayName = async displayName => {
-  if (displayName.length < 3) {
-    throwError('DisplayName length must be 3 at minimum', 422);
-  }
-  if (displayName.length > 60) {
-    throwError('DisplayName length must be 60 at maximum', 422);
+  if (displayName) {
+    if (displayName.length < 3) {
+      throwError('DisplayName length must be 3 at minimum', 422);
+    }
+    if (displayName.length > 60) {
+      throwError('DisplayName length must be 60 at maximum', 422);
+    }
   }
 };
 
