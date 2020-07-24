@@ -89,11 +89,11 @@ export const createUser = async data => {
 export const getUsers = async (query, initialFind) =>
   mongooseQuery('User', query, initialFind);
 
-export const updateUser = async (_id, user, data) => {
+export const updateUser = async (user, data) => {
   const { displayName, email, gender, phone, role, username } = data;
   if (!isNil(username)) {
     await validateUsername(username);
-    await validateUsernameUpdate(_id, username);
+    await validateUsernameUpdate(user._id.toString(), username);
     user.username = username;
   }
 
@@ -109,13 +109,13 @@ export const updateUser = async (_id, user, data) => {
 
   if (!isNil(email)) {
     await validateEmail(email);
-    await validateEmailUpdate(_id, email);
+    await validateEmailUpdate(user._id.toString(), email);
     user.email = email;
   }
 
   if (!isNil(phone)) {
     await validatePhone(phone);
-    await validatePhoneUpdate(_id, phone);
+    await validatePhoneUpdate(user._id.toString(), phone);
     user.phone = phone;
   }
 
@@ -128,25 +128,25 @@ export const updateUser = async (_id, user, data) => {
   return updatedUser;
 };
 
-export const checkAuthorized = (userToUpdate, userUpdate) => {
+export const checkUpdaterRoleAuthorization = (updaterRole, updatedRole) => {
   if (
-    userRoles.indexOf(userUpdate.role) < userRoles.indexOf(userToUpdate.role) &&
-    userRoles.indexOf(userUpdate.role) > 1
+    userRoles.indexOf(updaterRole) < userRoles.indexOf(updatedRole) ||
+    userRoles.indexOf(updatedRole) === -1
   ) {
-    throwError('Unauthorized', 401);
+    throwError('Unauthorized', 403);
   }
 };
 
-export const changeUserStatus = async (user, status) => {
-  user.isActive = status;
-  const changedStatusUser = await user.save();
-  return changedStatusUser;
-};
+// export const changeUserStatus = async (user, status) => {
+//   user.isActive = status;
+//   const changedStatusUser = await user.save();
+//   return changedStatusUser;
+// };
 
-export const changeOnlineStatus = async (user, status) => {
-  user.isOnline = status;
-  const changeOnlineStatusUser = await user.save();
-  return changeOnlineStatusUser;
+export const changeOnlineStatus = async (trainer, status) => {
+  trainer.isOnline = status;
+  const updatedTrainer = await trainer.save();
+  return updatedTrainer;
 };
 
 export const deleteUser = async user => {

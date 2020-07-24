@@ -9,8 +9,8 @@ import {
 } from '../../common/services';
 import { getFeedbacks } from '../feedback/feedback.services';
 import {
-  changeUserStatus,
-  checkAuthorized,
+  changeOnlineStatus,
+  checkUpdaterRoleAuthorization,
   createUser,
   getUserById,
   getUsers,
@@ -23,21 +23,23 @@ import {
 export const Mutation = {
   async changeOnlineStatus(_, { _id, status }, { req }) {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
-    const changedStatusUser = await getUserById(_id);
-    checkAuthorized(changedStatusUser, req.user);
-    const changedUser = await changeUserStatus(changedStatusUser, status);
-    return changedUser;
+    const trainerToUpdate = await getUserById(_id);
+    if (trainerToUpdate.role === 'TRAINER') {
+      const updatedTrainer = await changeOnlineStatus(trainerToUpdate, status);
+      return updatedTrainer;
+    }
+    throwError('Only trainer online status can be updated', 400);
   },
-  async changeUserStatus(_, { _id, status }, { req }) {
-    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
-    const changedStatusUser = await getUserById(_id);
-    checkAuthorized(changedStatusUser, req.user);
-    const changedUser = await changeUserStatus(changedStatusUser, status);
-    return changedUser;
-  },
+  // async changeUserStatus(_, { _id, status }, { req }) {
+  //   checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+  //   const changedStatusUser = await getUserById(_id);
+  //   checkUpdaterRoleAuthorization(req.user.role, data.role);
+  //   const changedUser = await changeUserStatus(changedStatusUser, status);
+  //   return changedUser;
+  // },
   async createUser(_, { data }, { req }) {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
-    checkAuthorized(data, req.user);
+    checkUpdaterRoleAuthorization(req.user.role, data.role);
     const createdUser = await createUser(data);
     return generateDocumentPayload(createdUser);
   },
@@ -62,8 +64,8 @@ export const Mutation = {
   async updateUser(_, { _id, data }, { req }) {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const userToUpdate = await getUserById(_id);
-    checkAuthorized(userToUpdate, req.user);
-    const updatedUser = await updateUser(_id, userToUpdate, data);
+    checkUpdaterRoleAuthorization(req.user.role, data.role);
+    const updatedUser = await updateUser(userToUpdate, data);
     return generateDocumentPayload(updatedUser);
   },
 };

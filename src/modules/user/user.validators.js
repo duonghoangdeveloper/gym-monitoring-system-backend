@@ -65,36 +65,28 @@ export const validateRole = async role => {
 };
 
 export const validateEmail = async email => {
-  if (email) {
-    if (!validator.isEmail(email)) {
-      throwError('Email is invalid', 422);
-    }
+  if (email && !validator.isEmail(email)) {
+    throwError('Email is invalid', 422);
   }
 };
 
 export const validateEmailExists = async email => {
   const emailExists = await User.exists({ activationToken: null, email });
-  if (email) {
-    if (emailExists) {
-      throwError('Email already exists', 409);
-    }
+  if (email && emailExists) {
+    throwError('Email already exists', 409);
   }
 };
 
 export const validatePhone = async phone => {
-  if (phone) {
-    if (!validator.isMobilePhone(phone)) {
-      throwError('Phone number is invalid', 422);
-    }
+  if (phone && !validator.isMobilePhone(phone)) {
+    throwError('Phone number is invalid', 422);
   }
 };
 
 export const validatePhoneExists = async phone => {
   const phoneExists = await User.exists({ activationToken: null, phone });
-  if (phone) {
-    if (phoneExists) {
-      throwError('Phone already existed', 409);
-    }
+  if (phone && phoneExists) {
+    throwError('Phone already existed', 409);
   }
 };
 
