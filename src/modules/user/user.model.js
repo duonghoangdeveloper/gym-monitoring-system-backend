@@ -14,6 +14,10 @@ import {
 
 const userSchema = new mongoose.Schema(
   {
+    activationToken: {
+      type: String,
+    },
+
     avatar: {
       _id: false,
       key: {
@@ -40,13 +44,15 @@ const userSchema = new mongoose.Schema(
     gender: {
       ...generateSchemaEnumField(userGenders),
     },
-
+    isOnline: {
+      default: false,
+      type: Boolean,
+    },
     password: {
       required: true,
       trim: true,
       type: String,
     },
-
     phone: {
       trim: true,
       type: String,
@@ -81,9 +87,18 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-userSchema.index({ username: 1 }, { unique: true });
-userSchema.index({ email: 1 }, { sparse: true, unique: true });
+userSchema.index({ activationToken: 1, username: 1 }, { unique: true });
+userSchema.index(
+  { activationToken: 1, email: 1 },
+  { sparse: true, unique: true }
+);
+userSchema.index(
+  { activationToken: 1, phone: 1 },
+  { sparse: true, unique: true }
+);
 userSchema.index({ role: 1 });
+
+// Gene
 
 // Sign in
 userSchema.statics.findByCredentials = async (username, password) => {
