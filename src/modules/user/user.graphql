@@ -11,6 +11,7 @@ type User {
   email: String
   phone: String
   avatar: File
+  isOnline: Boolean
 
   feedbacks(query: FeedbacksQueryInput): Feedbacks!
   payments(query: PaymentsQueryInput): Payments!
@@ -24,6 +25,7 @@ type User {
 type Query {
   auth: User!
   users(query: UsersQueryInput): Users!
+  validateUser(data: ValidateUserInput): UserErrors!
 }
 
 type Mutation {
@@ -34,6 +36,8 @@ type Mutation {
   updateUser(_id: ID!, data: UpdateUserInput): User!
   updateProfile(data: UpdateProfileInput): User!
   updatePassword(data: UpdatePasswordInput): User!
+  # changeUserStatus(_id: ID!, status: Boolean): User!
+  changeOnlineStatus(_id: ID!, status: Boolean): User!
 }
 
 type Users {
@@ -44,6 +48,16 @@ type Users {
 type UserAuthPayload {
   data: User!
   token: String!
+}
+
+type UserErrors {
+  username: [String!]
+  displayName: [String!]
+  password: [String!]
+  gender: [String!]
+  role: [String!]
+  email: [String!]
+  phone: [String!]
 }
 
 input SignInInput {
@@ -82,6 +96,16 @@ input CreateUserInput {
 
 input UpdateUserInput {
   username: String
+  displayName: String
+  gender: Gender
+  role: Role
+  email: String
+  phone: String
+}
+
+input ValidateUserInput {
+  username: String
+  password: String
   displayName: String
   gender: Gender
   role: Role

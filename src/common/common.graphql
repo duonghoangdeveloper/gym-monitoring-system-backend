@@ -1,5 +1,9 @@
 type Query {
   isConnected: Boolean!
+  validateStringField(model: String!, field: String!, value: String!): [String!]!
+  validateIntField(model: String!, field: String!, value: Int!): [String!]!
+  validateFloatField(model: String!, field: String!, value: Float!): [String!]!
+  validateBooleanField(model: String!, field: String!, value: Boolean!): [String!]!
 }
 
 enum MutationType {

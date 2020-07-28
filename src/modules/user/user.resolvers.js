@@ -5,9 +5,12 @@ import {
   generateDocumentPayload,
   generateDocumentsPayload,
   throwError,
+  validateField,
 } from '../../common/services';
 import { getFeedbacks } from '../feedback/feedback.services';
 import {
+  changeOnlineStatus,
+  checkUpdaterRoleAuthorization,
   createUser,
   getUserById,
   getUsers,
@@ -18,8 +21,25 @@ import {
 } from './user.services';
 
 export const Mutation = {
+  async changeOnlineStatus(_, { _id, status }, { req }) {
+    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    const trainerToUpdate = await getUserById(_id);
+    if (trainerToUpdate.role === 'TRAINER') {
+      const updatedTrainer = await changeOnlineStatus(trainerToUpdate, status);
+      return updatedTrainer;
+    }
+    throwError('Only trainer online status can be updated', 400);
+  },
+  // async changeUserStatus(_, { _id, status }, { req }) {
+  //   checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+  //   const changedStatusUser = await getUserById(_id);
+  //   checkUpdaterRoleAuthorization(req.user.role, data.role);
+  //   const changedUser = await changeUserStatus(changedStatusUser, status);
+  //   return changedUser;
+  // },
   async createUser(_, { data }, { req }) {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    checkUpdaterRoleAuthorization(req.user.role, data.role);
     const createdUser = await createUser(data);
     return generateDocumentPayload(createdUser);
   },
@@ -44,16 +64,7 @@ export const Mutation = {
   async updateUser(_, { _id, data }, { req }) {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const userToUpdate = await getUserById(_id);
-    if (
-      userRoles.indexOf(req.user.role) < userRoles.indexOf(userToUpdate.role)
-    ) {
-      throwError(
-        `${req.user.role.replace(/^./, char =>
-          char.toUpperCase()
-        )} cannot update ${userToUpdate.role}`,
-        401
-      );
-    }
+    checkUpdaterRoleAuthorization(req.user.role, data.role);
     const updatedUser = await updateUser(userToUpdate, data);
     return generateDocumentPayload(updatedUser);
   },
@@ -68,6 +79,20 @@ export const Query = {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const users = await getUsers(query);
     return generateDocumentsPayload(users);
+  },
+  async validateUser(_, { data }) {
+    const errorMapping = {};
+
+    (
+      await Promise.all(
+        Object.keys(data).map(async key => ({
+          errors: await validateField('User', key, data[key]),
+          key,
+        }))
+      )
+    ).forEach(({ errors, key }) => (errorMapping[key] = errors));
+
+    return errorMapping;
   },
 };
 

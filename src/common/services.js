@@ -2,6 +2,7 @@ import moment from 'moment';
 
 import { userRoles } from './enums';
 import * as models from './models';
+import { validatorMapping } from './validators';
 
 export const throwError = (message, statusCode = 500, data) => {
   const error = new Error(message);
@@ -187,4 +188,24 @@ export const generateSchemaEnumField = _enum => ({
   type: String,
 });
 
-// export const checkUnique = (modelName, fieldNames) => {}
+export const validateField = async (model, field, value) => {
+  if (!models[model]) {
+    throwError('Invalid model name', 500);
+  }
+
+  const validators = validatorMapping[model]?.[field] ?? [];
+  const errors = (
+    await Promise.all(
+      validators.map(async validator => {
+        try {
+          await validator(value);
+        } catch (e) {
+          return e.message;
+        }
+        return null;
+      })
+    )
+  ).filter(message => message !== null);
+
+  return errors;
+};

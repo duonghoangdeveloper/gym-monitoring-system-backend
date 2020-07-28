@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import isNil from 'lodash.isnil';
 
+import { userRoles } from '../../common/enums';
 import {
   getDocumentById,
   mongooseQuery,
@@ -11,12 +12,16 @@ import {
   validateDisplayName,
   validateEmail,
   validateEmailExists,
+  validateEmailUpdate,
   validateGender,
   validatePassword,
   validatePhone,
+  validatePhoneExists,
+  validatePhoneUpdate,
   validateRole,
   validateUsername,
   validateUsernameExists,
+  validateUsernameUpdate,
 } from './user.validators';
 
 export const getUserById = async (_id, projection) =>
@@ -27,7 +32,6 @@ export const signIn = async data => {
 
   const user = await User.findByCredentials(username, password);
   const token = await user.generateAuthToken();
-
   return { token, user };
 };
 
@@ -57,6 +61,7 @@ export const createUser = async data => {
 
   if (!isNil(phone)) {
     await validatePhone(phone);
+    await validatePhoneExists(phone);
   }
 
   if (!isNil(role)) {
@@ -86,10 +91,9 @@ export const getUsers = async (query, initialFind) =>
 
 export const updateUser = async (user, data) => {
   const { displayName, email, gender, phone, role, username } = data;
-
   if (!isNil(username)) {
     await validateUsername(username);
-    await validateUsernameExists(username);
+    await validateUsernameUpdate(user._id.toString(), username);
     user.username = username;
   }
 
@@ -105,12 +109,13 @@ export const updateUser = async (user, data) => {
 
   if (!isNil(email)) {
     await validateEmail(email);
-    await validateEmailExists(email);
+    await validateEmailUpdate(user._id.toString(), email);
     user.email = email;
   }
 
   if (!isNil(phone)) {
     await validatePhone(phone);
+    await validatePhoneUpdate(user._id.toString(), phone);
     user.phone = phone;
   }
 
@@ -121,6 +126,27 @@ export const updateUser = async (user, data) => {
 
   const updatedUser = await user.save();
   return updatedUser;
+};
+
+export const checkUpdaterRoleAuthorization = (updaterRole, updatedRole) => {
+  if (
+    userRoles.indexOf(updaterRole) < userRoles.indexOf(updatedRole) ||
+    userRoles.indexOf(updatedRole) === -1
+  ) {
+    throwError('Unauthorized', 403);
+  }
+};
+
+// export const changeUserStatus = async (user, status) => {
+//   user.isActive = status;
+//   const changedStatusUser = await user.save();
+//   return changedStatusUser;
+// };
+
+export const changeOnlineStatus = async (trainer, status) => {
+  trainer.isOnline = status;
+  const updatedTrainer = await trainer.save();
+  return updatedTrainer;
 };
 
 export const deleteUser = async user => {
