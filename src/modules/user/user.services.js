@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import isNil from 'lodash.isnil';
+import { v4 as uuidv4 } from 'uuid';
 
 import { userRoles } from '../../common/enums';
 import {
@@ -88,6 +89,25 @@ export const createUser = async data => {
 
 export const getUsers = async (query, initialFind) =>
   mongooseQuery('User', query, initialFind);
+
+export const deactivateUser = async user => {
+  if (user.activationToken) {
+    throwError('Cannot remove a removed user!', 400, null);
+  }
+  const activationToken = uuidv4();
+  user.activationToken = activationToken;
+  await user.save();
+  return user;
+};
+
+export const activateUser = async user => {
+  if (!user.activationToken) {
+    throwError('Cannot back up a active user!', 400, null);
+  }
+  user.activationToken = null;
+  await user.save();
+  return user;
+};
 
 export const updateUser = async (user, data) => {
   const { displayName, email, gender, phone, role, username } = data;

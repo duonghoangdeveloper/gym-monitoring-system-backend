@@ -38,6 +38,8 @@ type Mutation {
   updatePassword(data: UpdatePasswordInput): User!
   # changeUserStatus(_id: ID!, status: Boolean): User!
   changeOnlineStatus(_id: ID!, status: Boolean): User!
+  deactivateUser(_id: ID!): User!
+  activateUser(_id: ID!): User!
 }
 
 type Users {
@@ -71,6 +73,7 @@ input UsersQueryInput {
   sort: String
   search: UsersSearchInput
   filter: UsersFilterInput
+  isActive: Boolean
 }
 
 input UsersSearchInput {
