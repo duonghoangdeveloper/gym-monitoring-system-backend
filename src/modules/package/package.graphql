@@ -30,6 +30,7 @@ input PackagesQueryInput {
   limit: Int
   sort: String
   search: PackagesSearchInput
+  createdBetween: CreatedBetweenInput
 }
 
 input PackagesSearchInput {

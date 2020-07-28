@@ -57,11 +57,13 @@ input UsersQueryInput {
   sort: String
   search: UsersSearchInput
   filter: UsersFilterInput
+  createdBetween: CreatedBetweenInput
 }
 
 input UsersSearchInput {
   username: String
   displayName: String
+  email: String
 }
 
 input UsersFilterInput {

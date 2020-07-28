@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 import { userRoles } from './enums';
 import * as models from './models';
 
@@ -25,7 +27,7 @@ export const checkRole = (user, roles = userRoles) => {
 };
 
 // 3 functions below for quering many documents
-const generateMongooseFilter = filter => {
+const generateMongooseFind = (filter, createdBetween) => {
   const mongooseFilter = {};
 
   if (typeof filter === 'object' && filter !== null) {
@@ -39,6 +41,18 @@ const generateMongooseFilter = filter => {
       }
     });
   }
+
+  if (
+    moment(createdBetween?.from, moment.ISO_8601, true).isValid() &&
+    moment(createdBetween?.to, moment.ISO_8601, true).isValid()
+  ) {
+    mongooseFilter.createdAt = {
+      $gt: createdBetween.from,
+      $lt: createdBetween.to,
+    };
+  }
+
+  console.log('Hello', mongooseFilter);
 
   return mongooseFilter;
 };
@@ -67,7 +81,7 @@ export const mongooseQuery = async (modelName, query, initialFind) => {
     throwError('Invalid model name', 500);
   }
 
-  const { filter, limit, search, skip, sort } = query || {};
+  const { createdBetween, filter, limit, search, skip, sort } = query || {};
 
   const sortArgs = sort || '-createdAt';
   const skipNumber = parseInt(skip, 10) || 0;
@@ -75,7 +89,7 @@ export const mongooseQuery = async (modelName, query, initialFind) => {
 
   const findFilter = {
     ...initialFind,
-    ...generateMongooseFilter(filter),
+    ...generateMongooseFind(filter, createdBetween),
     ...generateMongooseSearch(search),
   };
 

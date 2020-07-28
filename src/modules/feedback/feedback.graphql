@@ -30,6 +30,7 @@ input FeedbacksQueryInput {
   sort: String
   search: FeedbacksSearchInput
   filter: FeedbacksFilterInput
+  createdBetween: CreatedBetweenInput
 }
 
 input FeedbacksSearchInput {

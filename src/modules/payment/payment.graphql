@@ -30,6 +30,7 @@ input PaymentsQueryInput {
   limit: Int
   sort: String
   filter: PaymentsFilterInput
+  createdBetween: CreatedBetweenInput
 }
 
 input PaymentsFilterInput {
