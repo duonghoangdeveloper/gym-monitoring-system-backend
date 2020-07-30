@@ -13,7 +13,7 @@ export const configSocket = app => {
 
   io.on('connection', socket => {
     // Connected
-    console.log('Someone connect');
+    console.log('Someone connected');
     store.dispatch({
       payload: {
         socket,

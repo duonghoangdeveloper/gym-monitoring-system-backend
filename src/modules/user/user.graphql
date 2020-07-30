@@ -36,6 +36,7 @@ type Mutation {
   updateUser(_id: ID!, data: UpdateUserInput): User!
   updateProfile(data: UpdateProfileInput): User!
   updatePassword(data: UpdatePasswordInput): User!
+  updateAvatar(data: UpdateAvatarInput!): User!
   # changeUserStatus(_id: ID!, status: Boolean): User!
   changeOnlineStatus(_id: ID!, status: Boolean): User!
 }
@@ -102,16 +103,6 @@ input UpdateUserInput {
   phone: String
 }
 
-input ValidateUserInput {
-  username: String
-  password: String
-  displayName: String
-  gender: Gender
-  role: Role
-  email: String
-  phone: String
-}
-
 input UpdateProfileInput {
   username: String
   displayName: String
@@ -123,6 +114,20 @@ input UpdateProfileInput {
 input UpdatePasswordInput {
   oldPassword: String!
   newPassword: String!
+}
+
+input UpdateAvatarInput {
+  file: Upload!
+}
+
+input ValidateUserInput {
+  username: String
+  password: String
+  displayName: String
+  gender: Gender
+  role: Role
+  email: String
+  phone: String
 }
 
 enum Role {
