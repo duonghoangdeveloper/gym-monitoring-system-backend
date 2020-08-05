@@ -74,3 +74,27 @@ export const getFileS3 = key => {
     });
   });
 };
+
+export const deleteDirectoryS3 = async dir => {
+  const listParams = {
+    Bucket: S3_BUCKET,
+    Prefix: dir,
+  };
+
+  const listedObjects = await s3.listObjectsV2(listParams).promise();
+
+  if (listedObjects.Contents.length === 0) return;
+
+  const deleteParams = {
+    Bucket: S3_BUCKET,
+    Delete: { Objects: [] },
+  };
+
+  listedObjects.Contents.forEach(({ Key }) => {
+    deleteParams.Delete.Objects.push({ Key });
+  });
+
+  await s3.deleteObjects(deleteParams).promise();
+
+  if (listedObjects.IsTruncated) await deleteDirectoryS3(S3_BUCKET, dir);
+};

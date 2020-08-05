@@ -92,6 +92,7 @@ input CreateUserInput {
   email: String
   phone: String
   role: Role
+  faces: [Upload!]!
 }
 
 input UpdateUserInput {
@@ -117,7 +118,7 @@ input UpdatePasswordInput {
 }
 
 input UpdateAvatarInput {
-  file: Upload!
+  avatar: Upload!
 }
 
 input ValidateUserInput {

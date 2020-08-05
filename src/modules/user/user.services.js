@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import isNil from 'lodash.isnil';
-import request from 'request';
+// import request from 'request';
 import sharp from 'sharp';
 
 import { userRoles } from '../../common/enums';
@@ -140,20 +140,29 @@ export const checkUpdaterRoleAuthorization = (updaterRole, updatedRole) => {
   }
 };
 
-export const updateAvatarWithURL = async (user, url) => {
-  // Validate file (not empty & is image)
-  if (!url) {
-    throwError('URL is empty', 422);
+export const checkFacesEnough = (role, faces) => {
+  if (role === 'SYSTEM_ADMIN' && faces.length !== 0) {
+    throwError(`Admin don't need to register face`, 400);
   }
-
-  // Create stream from file & compress
-  const transform = sharp()
-    .resize(300, 300)
-    .toFormat('png');
-  const stream = await request.get(url).pipe(transform);
-
-  return uploadAvatar(user, stream);
+  if (faces.length !== 9) {
+    throwError(`Not enough 9 registered face images`, 400);
+  }
 };
+
+// export const updateAvatarWithURL = async (user, url) => {
+//   // Validate file (not empty & is image)
+//   if (!url) {
+//     throwError('URL is empty', 422);
+//   }
+
+//   // Create stream from file & compress
+//   const transform = sharp()
+//     .resize(300, 300)
+//     .toFormat('png');
+//   const stream = await request.get(url).pipe(transform);
+
+//   return uploadAvatar(user, stream);
+// };
 
 export const updateAvatarWithFileUpload = async (user, file) => {
   const { createReadStream, mimetype } = await file;
@@ -228,11 +237,10 @@ const uploadAvatar = async (user, stream) => {
 
   // Update parent
   user.avatar = {
-    key: data.Key || data.key,
+    key: data.Key,
     url: data.Location,
   };
   await user.save();
 
-  // Return new avatar object
   return user;
 };

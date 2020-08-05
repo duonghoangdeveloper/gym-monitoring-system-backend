@@ -6,9 +6,11 @@ import {
   throwError,
   validateField,
 } from '../../common/services';
+import { uploadFaces } from '../face/face.services';
 import { getFeedbacks } from '../feedback/feedback.services';
 import {
   changeOnlineStatus,
+  checkFacesEnough,
   checkUpdaterRoleAuthorization,
   createUser,
   getUserById,
@@ -33,7 +35,9 @@ export const Mutation = {
   async createUser(_, { data }, { req }) {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     checkUpdaterRoleAuthorization(req.user.role, data.role);
+    checkFacesEnough(req.user.role, data.faces);
     const createdUser = await createUser(data);
+    await uploadFaces(createdUser, data.faces);
     return generateDocumentPayload(createdUser);
   },
   async signIn(_, { data }) {
@@ -46,7 +50,7 @@ export const Mutation = {
   },
   async updateAvatar(_, { data }, { req }) {
     const user = checkRole(req.user);
-    const updatedUser = await updateAvatarWithFileUpload(user, data.file);
+    const updatedUser = await updateAvatarWithFileUpload(user, data.avatar);
     return generateDocumentPayload(updatedUser);
   },
   async updatePassword(_, { data }, { req }) {

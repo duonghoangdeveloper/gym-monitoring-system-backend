@@ -195,3 +195,5 @@ export const validateField = async (model, field, value) => {
 
   return errors;
 };
+
+export const validateObjectId = id => id.match(/^[0-9a-fA-F]{24}$/);
