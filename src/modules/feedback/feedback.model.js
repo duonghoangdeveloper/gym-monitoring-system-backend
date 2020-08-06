@@ -41,6 +41,7 @@ const feedbackSchema = new mongoose.Schema(
   { timestamps: true, versionKey: false }
 );
 
+feedbackSchema.index({ createdAt: 1 });
 feedbackSchema.index({ title: 1 });
 feedbackSchema.index({ content: 1 });
 feedbackSchema.index({ customer: 1 });
