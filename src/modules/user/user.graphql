@@ -14,6 +14,7 @@ type User {
 
   feedbacks(query: FeedbacksQueryInput): Feedbacks!
   payments(query: PaymentsQueryInput): Payments!
+  warnings(query: WarningsQueryInput): Warnings!
   createdPayments(query: PaymentsQueryInput): Payments!
 
   # Timestamp
@@ -92,7 +93,7 @@ input UpdateProfileInput {
   displayName: String
   phone: String
   email: String
-  gender: String
+  gender: Gender
 }
 
 input UpdatePasswordInput {

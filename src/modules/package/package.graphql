@@ -1,5 +1,7 @@
 type Package {
   _id: ID!
+  
+  # Package info
   name: String!
   price: Int
   period: Int

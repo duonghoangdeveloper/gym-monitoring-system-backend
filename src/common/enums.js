@@ -7,3 +7,4 @@ export const userRoles = [
 ];
 
 export const userGenders = ['MALE', 'FEMALE', 'OTHER'];
+export const warningStatus = ['PENDING', 'FAILED', 'SUCCEEDED'];

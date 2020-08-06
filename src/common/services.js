@@ -18,7 +18,7 @@ export const checkRole = (user, roles = userRoles) => {
   }
 
   if (!roles.includes(user.role)) {
-    throwError('Unauthorized', 401);
+    throwError('Unauthenticated', 401);
   }
 
   return user;

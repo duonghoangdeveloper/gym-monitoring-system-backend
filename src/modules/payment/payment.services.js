@@ -7,7 +7,6 @@ import {
   throwError,
 } from '../../common/services';
 import { getPackageById } from '../package/package.services';
-import { getUserById } from '../user/user.services';
 import { Payment } from './payment.model';
 import {
   validateCreatorRequired,
@@ -42,11 +41,6 @@ export const updatePayment = async (payment, data) => {
 
   const createdMoment = moment(payment.createdAt);
   const nowMoment = moment();
-
-  // const diffDays = nowMoment.diff(createdMoment, 'days');
-  // if (diffDays > 1) {
-  //   throwError('Out of date to update', 404);
-  // }
 
   const diff = nowMoment.diff(createdMoment);
   const diffDuration = moment.duration(diff);

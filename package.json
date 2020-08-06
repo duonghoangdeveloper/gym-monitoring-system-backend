@@ -14,7 +14,9 @@
     "globalSetup": "./tests/jest/global-setup.js",
     "globalTeardown": "./tests/jest/global-teardown.js",
     "testEnvironment": "node",
-    "setupFilesAfterEnv": ["./tests/jest/setup.js"]
+    "setupFilesAfterEnv": [
+      "./tests/jest/setup.js"
+    ]
   },
   "license": "ISC",
   "dependencies": {
@@ -27,7 +29,7 @@
     "express": "^4.17.1",
     "express-validation": "^3.0.2",
     "express-validator": "^6.4.1",
-    "graphql-tools": "^6.0.7",
+    "graphql-tools": "^6.0.15",
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.19",

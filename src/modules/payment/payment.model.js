@@ -47,7 +47,7 @@ const paymentSchema = new mongoose.Schema(
   }
 );
 
-paymentSchema.index({ customer: 1 }, { unique: true });
-paymentSchema.index({ creator: 1 }, { unique: true });
+paymentSchema.index({ customer: 1 });
+paymentSchema.index({ creator: 1 });
 
 export const Payment = mongoose.model('Payment', paymentSchema);
