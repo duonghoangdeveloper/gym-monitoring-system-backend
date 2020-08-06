@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 import {
   validateName,
@@ -6,7 +6,7 @@ import {
   validatePrice,
 } from './package.validators';
 
-const packageSchema = new mongoose.Schema(
+const packageSchema = new Schema(
   {
     name: {
       required: true,
@@ -33,6 +33,7 @@ const packageSchema = new mongoose.Schema(
   }
 );
 
+packageSchema.index({ createdAt: 1 });
 packageSchema.index({ name: 1 }, { unique: true });
 packageSchema.index({ price: 1 });
 packageSchema.index({ period: 1 });

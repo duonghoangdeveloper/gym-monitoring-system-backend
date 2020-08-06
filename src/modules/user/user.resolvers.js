@@ -1,26 +1,43 @@
-import { userRoles } from '../../common/enums';
 import {
   checkRole,
   generateAuthPayload,
   generateDocumentPayload,
   generateDocumentsPayload,
   throwError,
+  validateField,
 } from '../../common/services';
+import { uploadFaces } from '../face/face.services';
 import { getFeedbacks } from '../feedback/feedback.services';
 import {
+  changeOnlineStatus,
+  checkFacesEnough,
+  checkUpdaterRoleAuthorization,
   createUser,
   getUserById,
   getUsers,
   signIn,
   signOut,
+  updateAvatarWithFileUpload,
   updatePassword,
   updateUser,
 } from './user.services';
 
 export const Mutation = {
+  async changeOnlineStatus(_, { _id, status }, { req }) {
+    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    const trainerToUpdate = await getUserById(_id);
+    if (trainerToUpdate.role === 'TRAINER') {
+      const updatedTrainer = await changeOnlineStatus(trainerToUpdate, status);
+      return updatedTrainer;
+    }
+    throwError('Only trainer online status can be updated', 400);
+  },
   async createUser(_, { data }, { req }) {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    checkUpdaterRoleAuthorization(req.user.role, data.role);
+    checkFacesEnough(req.user.role, data.faces);
     const createdUser = await createUser(data);
+    await uploadFaces(createdUser, data.faces);
     return generateDocumentPayload(createdUser);
   },
   async signIn(_, { data }) {
@@ -30,6 +47,11 @@ export const Mutation = {
   async signOut(_, __, { req }) {
     const user = await signOut(req.user, req.token);
     return generateDocumentPayload(user);
+  },
+  async updateAvatar(_, { data }, { req }) {
+    const user = checkRole(req.user);
+    const updatedUser = await updateAvatarWithFileUpload(user, data.avatar);
+    return generateDocumentPayload(updatedUser);
   },
   async updatePassword(_, { data }, { req }) {
     const user = checkRole(req.user);
@@ -44,16 +66,7 @@ export const Mutation = {
   async updateUser(_, { _id, data }, { req }) {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const userToUpdate = await getUserById(_id);
-    if (
-      userRoles.indexOf(req.user.role) < userRoles.indexOf(userToUpdate.role)
-    ) {
-      throwError(
-        `${req.user.role.replace(/^./, char =>
-          char.toUpperCase()
-        )} cannot update ${userToUpdate.role}`,
-        401
-      );
-    }
+    checkUpdaterRoleAuthorization(req.user.role, data.role);
     const updatedUser = await updateUser(userToUpdate, data);
     return generateDocumentPayload(updatedUser);
   },
@@ -68,6 +81,20 @@ export const Query = {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const users = await getUsers(query);
     return generateDocumentsPayload(users);
+  },
+  async validateUser(_, { data }) {
+    const errorMapping = {};
+
+    (
+      await Promise.all(
+        Object.keys(data).map(async key => ({
+          errors: await validateField('User', key, data[key]),
+          key,
+        }))
+      )
+    ).forEach(({ errors, key }) => (errorMapping[key] = errors));
+
+    return errorMapping;
   },
 };
 

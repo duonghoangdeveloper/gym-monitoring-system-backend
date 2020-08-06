@@ -5,7 +5,7 @@ import {
   validateCustomerRequired,
 } from './payment.validators';
 
-const paymentSchema = new mongoose.Schema(
+const paymentSchema = new Schema(
   {
     creator: {
       ref: 'User',
@@ -47,7 +47,8 @@ const paymentSchema = new mongoose.Schema(
   }
 );
 
-paymentSchema.index({ customer: 1 });
-paymentSchema.index({ creator: 1 });
+paymentSchema.index({ createdAt: 1 }, { unique: true });
+paymentSchema.index({ customer: 1 }, { unique: true });
+paymentSchema.index({ creator: 1 }, { unique: true });
 
 export const Payment = mongoose.model('Payment', paymentSchema);

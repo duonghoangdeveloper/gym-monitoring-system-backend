@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 import { userGenders, userRoles } from '../../common/enums';
 import { url } from '../../common/fields';
@@ -12,8 +12,12 @@ import {
   validateUsername,
 } from './user.validators';
 
-const userSchema = new mongoose.Schema(
+const userSchema = new Schema(
   {
+    activationToken: {
+      type: String,
+    },
+
     avatar: {
       _id: false,
       key: {
@@ -26,6 +30,7 @@ const userSchema = new mongoose.Schema(
     },
 
     displayName: {
+      default: 'New user',
       trim: true,
       type: String,
       validate: validateDisplayName,
@@ -39,6 +44,11 @@ const userSchema = new mongoose.Schema(
 
     gender: {
       ...generateSchemaEnumField(userGenders),
+    },
+
+    isOnline: {
+      default: false,
+      type: Boolean,
     },
 
     password: {
@@ -81,9 +91,19 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-userSchema.index({ username: 1 }, { unique: true });
-userSchema.index({ email: 1 }, { sparse: true, unique: true });
-userSchema.index({ role: 1 });
+userSchema.index({ activationToken: 1, createdAt: 1 }, { unique: true });
+userSchema.index({ activationToken: 1, username: 1 }, { unique: true });
+userSchema.index(
+  { activationToken: 1, email: 1 },
+  { sparse: true, unique: true }
+);
+userSchema.index(
+  { activationToken: 1, phone: 1 },
+  { sparse: true, unique: true }
+);
+userSchema.index({ activationToken: 1, role: 1 });
+
+// Gene
 
 // Sign in
 userSchema.statics.findByCredentials = async (username, password) => {
@@ -111,7 +131,7 @@ userSchema.methods.generateAuthToken = async function() {
     {
       expiresIn:
         process.env.NODE_ENV === 'dev' || process.env.NODE_ENV === 'test'
-          ? '30 minutes'
+          ? '1 day'
           : '7 days',
     }
   );
