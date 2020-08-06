@@ -30,13 +30,13 @@ const feedbackSchema = new mongoose.Schema(
       ],
     },
 
-    title: {
-      trim: true,
-      type: String,
-      validate(title) {
-        validateContent(title);
-      },
-    },
+    //   title: {
+    //     trim: true,
+    //     type: String,
+    //     validate(title) {
+    //       validateContent(title);
+    //     },
+    //   },
   },
   { timestamps: true, versionKey: false }
 );

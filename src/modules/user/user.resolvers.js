@@ -93,7 +93,7 @@ export const Query = {
     return generateDocumentPayload(user);
   },
   async users(_, { query }, { req }) {
-    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    checkRole(req.user, ['CUSTOMER', 'MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const users = await getUsers(query);
     return generateDocumentsPayload(users);
   },

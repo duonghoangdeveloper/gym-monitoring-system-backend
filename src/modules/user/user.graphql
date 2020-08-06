@@ -10,7 +10,7 @@ type User {
   gender: Gender
   email: String
   phone: String
-  avatar: File
+  avatar: String
   isOnline: Boolean
 
   feedbacks(query: FeedbacksQueryInput): Feedbacks!
