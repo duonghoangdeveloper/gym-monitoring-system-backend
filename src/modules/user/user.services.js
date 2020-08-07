@@ -244,3 +244,6 @@ const uploadAvatar = async (user, stream) => {
 
   return user;
 };
+// export const refreshExpiredDate = async user => {
+//   const userPayments = await Payment.find({ customer: user._id.toString() });
+// };

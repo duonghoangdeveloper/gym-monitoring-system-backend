@@ -53,8 +53,6 @@ const generateMongooseFind = (filter, createdBetween) => {
     };
   }
 
-  console.log('Hello', mongooseFilter);
-
   return mongooseFilter;
 };
 const generateMongooseSearch = search => {
@@ -124,6 +122,7 @@ export const getDocumentById = async (modelName, _id, projection) => {
   const document = await models[modelName].findById(_id, projection);
 
   if (!document) {
+    console.log(_id);
     throwError(`${modelName} not found`, 404);
   }
 

@@ -4,6 +4,7 @@ type User {
   # Authorization
   username: String!
   role: Role!
+  # expiredDate: String
 
   # Personal info
   displayName: String

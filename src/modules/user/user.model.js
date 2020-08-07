@@ -17,7 +17,6 @@ const userSchema = new Schema(
     activationToken: {
       type: String,
     },
-
     avatar: {
       _id: false,
       key: {
@@ -41,6 +40,10 @@ const userSchema = new Schema(
       type: String,
       validate: validateEmail,
     },
+
+    // expiredDate: {
+    //   type: String,
+    // },
 
     gender: {
       ...generateSchemaEnumField(userGenders),
