@@ -1,4 +1,3 @@
-import { userRoles } from '../../common/enums';
 import {
   checkRole,
   generateAuthPayload,
@@ -7,10 +6,12 @@ import {
   throwError,
   validateField,
 } from '../../common/services';
+import { uploadFaces } from '../face/face.services';
 import { getFeedbacks } from '../feedback/feedback.services';
 import {
   activateUser,
   changeOnlineStatus,
+  checkFacesEnough,
   checkUpdaterRoleAuthorization,
   createUser,
   deactivateUser,
@@ -18,6 +19,7 @@ import {
   getUsers,
   signIn,
   signOut,
+  updateAvatarWithFileUpload,
   updatePassword,
   updateUser,
 } from './user.services';
@@ -40,17 +42,12 @@ export const Mutation = {
     }
     throwError('Only trainer online status can be updated', 400);
   },
-  // async changeUserStatus(_, { _id, status }, { req }) {
-  //   checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
-  //   const changedStatusUser = await getUserById(_id);
-  //   checkUpdaterRoleAuthorization(req.user.role, data.role);
-  //   const changedUser = await changeUserStatus(changedStatusUser, status);
-  //   return changedUser;
-  // },
   async createUser(_, { data }, { req }) {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     checkUpdaterRoleAuthorization(req.user.role, data.role);
+    checkFacesEnough(req.user.role, data.faces);
     const createdUser = await createUser(data);
+    await uploadFaces(createdUser, data.faces);
     return generateDocumentPayload(createdUser);
   },
   async deactivateUser(_, { _id }, { req }) {
@@ -67,6 +64,11 @@ export const Mutation = {
   async signOut(_, __, { req }) {
     const user = await signOut(req.user, req.token);
     return generateDocumentPayload(user);
+  },
+  async updateAvatar(_, { data }, { req }) {
+    const user = checkRole(req.user);
+    const updatedUser = await updateAvatarWithFileUpload(user, data.avatar);
+    return generateDocumentPayload(updatedUser);
   },
   async updatePassword(_, { data }, { req }) {
     const user = checkRole(req.user);

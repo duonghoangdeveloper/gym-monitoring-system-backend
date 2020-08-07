@@ -1,5 +1,3 @@
-import validator from 'validator';
-
 import { Package } from '../../common/models';
 import { throwError } from '../../common/services';
 import { User } from '../user/user.model';
