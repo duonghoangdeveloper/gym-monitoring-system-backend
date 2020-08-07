@@ -37,12 +37,12 @@ export const Mutation = {
 export const Query = {
   async paymentPlan(_, { _id }, { req }) {
     checkRole(req.user, ['GYM_OWNER', 'SYSTEM_ADMIN']);
-    const _paymentPlan = await getPaymentPlanById(_id);
-    return generateDocumentPayload(_paymentPlan);
+    const paymentPlan = await getPaymentPlanById(_id);
+    return generateDocumentPayload(paymentPlan);
   },
   async paymentPlans(_, { query }, { req }) {
     checkRole(req.user, ['GYM_OWNER', 'SYSTEM_ADMIN']);
-    const _paymentPlans = await getPaymentPlans(query);
-    return generateDocumentsPayload(_paymentPlans);
+    const paymentPlans = await getPaymentPlans(query);
+    return generateDocumentsPayload(paymentPlans);
   },
 };

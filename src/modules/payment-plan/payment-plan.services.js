@@ -23,33 +23,33 @@ export const createPaymentPlan = async data => {
   await validatePrice(price);
   await validatePeriod(period);
 
-  const _paymentPlan = new PaymentPlan({ name, period, price });
-  const createdPaymentPlan = await _paymentPlan.save();
+  const paymentPlan = new PaymentPlan({ name, period, price });
+  const createdPaymentPlan = await paymentPlan.save();
   return createdPaymentPlan;
 };
 
-export const updatePaymentPlan = async (_paymentPlan, data) => {
+export const updatePaymentPlan = async (paymentPlan, data) => {
   const { name, period, price } = data;
 
-  if (!isNil(name) && _paymentPlan.name !== name) {
+  if (!isNil(name) && paymentPlan.name !== name) {
     await validateNameExists(name);
     await validateName(name);
-    _paymentPlan.name = name;
+    paymentPlan.name = name;
   }
   if (!isNil(price)) {
     await validatePrice(price);
-    _paymentPlan.price = price;
+    paymentPlan.price = price;
   }
   if (!isNil(period)) {
     await validatePeriod(period);
-    _paymentPlan.period = period;
+    paymentPlan.period = period;
   }
 
-  const updatedPaymentPlan = await _paymentPlan.save();
+  const updatedPaymentPlan = await paymentPlan.save();
   return updatedPaymentPlan;
 };
 
-export const deletePaymentPlan = async _paymentPlan => {
-  const deletedPaymentPlan = await _paymentPlan.remove();
+export const deletePaymentPlan = async paymentPlan => {
+  const deletedPaymentPlan = await paymentPlan.remove();
   return deletedPaymentPlan;
 };

@@ -45,9 +45,9 @@ export const paymentPlans = [
 
 export const seedPaymentPlans = async () => {
   await Promise.all(
-    paymentPlans.map(async _paymentPlan => {
-      const document = await createPaymentPlan({ ..._paymentPlan.input });
-      _paymentPlan.document = document;
+    paymentPlans.map(async paymentPlan => {
+      const document = await createPaymentPlan({ ...paymentPlan.input });
+      paymentPlan.document = document;
     })
   );
 };
