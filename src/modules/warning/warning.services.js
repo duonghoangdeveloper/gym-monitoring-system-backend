@@ -11,18 +11,19 @@ import {
 } from './warning.validators';
 // refreshWarningStatus
 const updateStatusByTime = async warning => {
-  console.log('warning: ', warning);
-  console.log('warning.createdAt: ', warning.createdAt);
   const createdAt = moment(warning.createdAt);
-  console.log('createdAt: ', createdAt);
   const now = moment();
-  console.log('now: ', now);
 
   const diff = now.diff(createdAt);
-  console.log('diff: ', diff);
 
   const diffDuration = moment.duration(diff);
-  console.log('diffDuration: ', diffDuration.seconds);
+
+  // console.log('warning: ', warning);
+  // console.log('warning.createdAt: ', warning.createdAt);
+  // console.log('createdAt: ', createdAt);
+  // console.log('now: ', now);
+  // console.log('diff: ', diff);
+  // console.log('diffDuration: ', diffDuration.seconds);
 
   if (diffDuration.minutes() > 5) {
     warning.status = 'FAILED';
@@ -41,17 +42,12 @@ export const getWarningById = async (_id, projection) => {
 
 export const getWarnings = async (query, initialFind) => {
   const warnings = mongooseQuery('Warning', query, initialFind);
-  console.log(warnings);
   return warnings;
   // update status of warnings to FAILED / SUCCESSED using map
 };
 
 export const createWarning = async data => {
   const { content, customerId, image } = data;
-
-  console.log('content: ', content);
-  console.log('customerId: ', customerId);
-  console.log('image: ', image);
 
   if (!isNil(customerId)) {
     validateCustomerRequired(customerId);
