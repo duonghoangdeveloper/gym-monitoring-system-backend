@@ -10,13 +10,13 @@ import {
   isPartial,
 } from '../../common/services';
 import { users } from '../user/user.seed';
-import { packages } from './package.seed';
+import { paymentPlans } from './payment-plan.seed';
 
 beforeAll(connectDatabase);
 beforeEach(seedDatabase);
 afterAll(disconnectDatabase);
 
-test('Should create new package', async () => {
+test('Should create new paymentPlan', async () => {
   const client = getClient(users[0].token);
 
   const data = {
@@ -27,8 +27,8 @@ test('Should create new package', async () => {
 
   const response = client.mutate({
     mutation: gql`
-      mutation CreatePackage($data: CreatePackageInput!) {
-        createPackage(data: $data) {
+      mutation CreatePaymentPlan($data: CreatePaymentPlanInput!) {
+        createPaymentPlan(data: $data) {
           name
           price
           period
@@ -40,10 +40,10 @@ test('Should create new package', async () => {
     },
   });
 
-  expect(isPartial(data, (await response)?.data?.createPackage)).toBe(true);
+  expect(isPartial(data, (await response)?.data?.createPaymentPlan)).toBe(true);
 });
 
-test('Should create new package by owner', async () => {
+test('Should create new paymentPlan by owner', async () => {
   const client = getClient(users[1].token);
 
   const data = {
@@ -54,8 +54,8 @@ test('Should create new package by owner', async () => {
 
   const response = client.mutate({
     mutation: gql`
-      mutation CreatePackage($data: CreatePackageInput!) {
-        createPackage(data: $data) {
+      mutation CreatePaymentPlan($data: CreatePaymentPlanInput!) {
+        createPaymentPlan(data: $data) {
           name
           price
           period
@@ -67,10 +67,10 @@ test('Should create new package by owner', async () => {
     },
   });
 
-  expect(isPartial(data, (await response)?.data?.createPackage)).toBe(true);
+  expect(isPartial(data, (await response)?.data?.createPaymentPlan)).toBe(true);
 });
 
-test('Should create new package by manager', async () => {
+test('Should create new paymentPlan by manager', async () => {
   const client = getClient(users[2].token);
 
   const data = {
@@ -81,8 +81,8 @@ test('Should create new package by manager', async () => {
 
   const response = client.mutate({
     mutation: gql`
-      mutation CreatePackage($data: CreatePackageInput!) {
-        createPackage(data: $data) {
+      mutation CreatePaymentPlan($data: CreatePaymentPlanInput!) {
+        createPaymentPlan(data: $data) {
           name
           price
           period
@@ -97,7 +97,7 @@ test('Should create new package by manager', async () => {
   await expect(response).rejects.toThrow('Unauthorized');
 });
 
-test('Should not create new package by trainer', async () => {
+test('Should not create new paymentPlan by trainer', async () => {
   const client = getClient(users[3].token);
 
   const data = {
@@ -108,8 +108,8 @@ test('Should not create new package by trainer', async () => {
 
   const response = client.mutate({
     mutation: gql`
-      mutation CreatePackage($data: CreatePackageInput!) {
-        createPackage(data: $data) {
+      mutation CreatePaymentPlan($data: CreatePaymentPlanInput!) {
+        createPaymentPlan(data: $data) {
           name
           price
           period
@@ -124,7 +124,7 @@ test('Should not create new package by trainer', async () => {
   await expect(response).rejects.toThrow('Unauthorized');
 });
 
-test('Should not create new package by customer', async () => {
+test('Should not create new paymentPlan by customer', async () => {
   const client = getClient(users[4].token);
 
   const data = {
@@ -135,8 +135,8 @@ test('Should not create new package by customer', async () => {
 
   const response = client.mutate({
     mutation: gql`
-      mutation CreatePackage($data: CreatePackageInput!) {
-        createPackage(data: $data) {
+      mutation CreatePaymentPlan($data: CreatePaymentPlanInput!) {
+        createPaymentPlan(data: $data) {
           name
           price
           period
@@ -151,7 +151,7 @@ test('Should not create new package by customer', async () => {
   await expect(response).rejects.toThrow('Unauthorized');
 });
 
-test('Should not create new package with exist name', async () => {
+test('Should not create new paymentPlan with exist name', async () => {
   const client = getClient(users[0].token);
 
   const data = {
@@ -162,8 +162,8 @@ test('Should not create new package with exist name', async () => {
 
   const response = client.mutate({
     mutation: gql`
-      mutation CreatePackage($data: CreatePackageInput!) {
-        createPackage(data: $data) {
+      mutation CreatePaymentPlan($data: CreatePaymentPlanInput!) {
+        createPaymentPlan(data: $data) {
           name
           price
           period
@@ -178,7 +178,7 @@ test('Should not create new package with exist name', async () => {
   await (await expect(response)).rejects.toThrow('Name already exists');
 });
 
-test('Should not create new package with name.lenght <6', async () => {
+test('Should not create new paymentPlan with name.lenght <6', async () => {
   const client = getClient(users[0].token);
 
   const data = {
@@ -189,8 +189,8 @@ test('Should not create new package with name.lenght <6', async () => {
 
   const response = client.mutate({
     mutation: gql`
-      mutation CreatePackage($data: CreatePackageInput!) {
-        createPackage(data: $data) {
+      mutation CreatePaymentPlan($data: CreatePaymentPlanInput!) {
+        createPaymentPlan(data: $data) {
           name
           price
           period
@@ -207,7 +207,7 @@ test('Should not create new package with name.lenght <6', async () => {
   );
 });
 
-test('Should not create new package with name.lenght >300', async () => {
+test('Should not create new paymentPlan with name.lenght >300', async () => {
   const client = getClient(users[0].token);
 
   const data = {
@@ -218,8 +218,8 @@ test('Should not create new package with name.lenght >300', async () => {
 
   const response = client.mutate({
     mutation: gql`
-      mutation CreatePackage($data: CreatePackageInput!) {
-        createPackage(data: $data) {
+      mutation CreatePaymentPlan($data: CreatePaymentPlanInput!) {
+        createPaymentPlan(data: $data) {
           name
           price
           period
@@ -236,7 +236,7 @@ test('Should not create new package with name.lenght >300', async () => {
   );
 });
 
-test('Should not create new package without token', async () => {
+test('Should not create new paymentPlan without token', async () => {
   const client = getClient();
 
   const data = {
@@ -247,8 +247,8 @@ test('Should not create new package without token', async () => {
 
   const response = client.mutate({
     mutation: gql`
-      mutation CreatePackage($data: CreatePackageInput!) {
-        createPackage(data: $data) {
+      mutation CreatePaymentPlan($data: CreatePaymentPlanInput!) {
+        createPaymentPlan(data: $data) {
           name
           price
           period
@@ -263,9 +263,9 @@ test('Should not create new package without token', async () => {
   await (await expect(response)).rejects.toThrow('Unauthorized');
 });
 
-test('Should update package', async () => {
+test('Should update paymentPlan', async () => {
   const client = getClient(users[0].token);
-  const packageRoot = packages[0];
+  const paymentPlanRoot = paymentPlans[0];
 
   const data = {
     name: 'winter1',
@@ -275,8 +275,8 @@ test('Should update package', async () => {
 
   const response = client.mutate({
     mutation: gql`
-      mutation UpdatePackage($_id: ID!, $data: UpdatePackageInput) {
-        updatePackage(_id: $_id, data: $data) {
+      mutation UpdatePaymentPlan($_id: ID!, $data: UpdatePaymentPlanInput) {
+        updatePaymentPlan(_id: $_id, data: $data) {
           _id
           name
           price
@@ -285,17 +285,17 @@ test('Should update package', async () => {
       }
     `,
     variables: {
-      _id: packageRoot.document._id,
+      _id: paymentPlanRoot.document._id,
       data,
     },
   });
 
-  expect(isPartial(data, (await response)?.data?.updatePackage)).toBe(true);
+  expect(isPartial(data, (await response)?.data?.updatePaymentPlan)).toBe(true);
 });
 
-test('Should update package by onwer', async () => {
+test('Should update paymentPlan by onwer', async () => {
   const client = getClient(users[1].token);
-  const packageRoot = packages[0];
+  const paymentPlanRoot = paymentPlans[0];
 
   const data = {
     name: 'winter1',
@@ -305,8 +305,8 @@ test('Should update package by onwer', async () => {
 
   const response = client.mutate({
     mutation: gql`
-      mutation UpdatePackage($_id: ID!, $data: UpdatePackageInput) {
-        updatePackage(_id: $_id, data: $data) {
+      mutation UpdatePaymentPlan($_id: ID!, $data: UpdatePaymentPlanInput) {
+        updatePaymentPlan(_id: $_id, data: $data) {
           _id
           name
           price
@@ -315,17 +315,17 @@ test('Should update package by onwer', async () => {
       }
     `,
     variables: {
-      _id: packageRoot.document._id,
+      _id: paymentPlanRoot.document._id,
       data,
     },
   });
 
-  expect(isPartial(data, (await response)?.data?.updatePackage)).toBe(true);
+  expect(isPartial(data, (await response)?.data?.updatePaymentPlan)).toBe(true);
 });
 
-test('Should not update package by manager', async () => {
+test('Should not update paymentPlan by manager', async () => {
   const client = getClient(users[2].token);
-  const packageRoot = packages[0];
+  const paymentPlanRoot = paymentPlans[0];
 
   const data = {
     name: 'winter1',
@@ -335,8 +335,8 @@ test('Should not update package by manager', async () => {
 
   const response = client.mutate({
     mutation: gql`
-      mutation UpdatePackage($_id: ID!, $data: UpdatePackageInput) {
-        updatePackage(_id: $_id, data: $data) {
+      mutation UpdatePaymentPlan($_id: ID!, $data: UpdatePaymentPlanInput) {
+        updatePaymentPlan(_id: $_id, data: $data) {
           _id
           name
           price
@@ -345,7 +345,7 @@ test('Should not update package by manager', async () => {
       }
     `,
     variables: {
-      _id: packageRoot.document._id,
+      _id: paymentPlanRoot.document._id,
       data,
     },
   });
@@ -353,9 +353,9 @@ test('Should not update package by manager', async () => {
   await expect(response).rejects.toThrow('Unauthorized');
 });
 
-test('Should not update package by trainer', async () => {
+test('Should not update paymentPlan by trainer', async () => {
   const client = getClient(users[3].token);
-  const packageRoot = packages[0];
+  const paymentPlanRoot = paymentPlans[0];
 
   const data = {
     name: 'winter1',
@@ -365,8 +365,8 @@ test('Should not update package by trainer', async () => {
 
   const response = client.mutate({
     mutation: gql`
-      mutation UpdatePackage($_id: ID!, $data: UpdatePackageInput) {
-        updatePackage(_id: $_id, data: $data) {
+      mutation UpdatePaymentPlan($_id: ID!, $data: UpdatePaymentPlanInput) {
+        updatePaymentPlan(_id: $_id, data: $data) {
           _id
           name
           price
@@ -375,7 +375,7 @@ test('Should not update package by trainer', async () => {
       }
     `,
     variables: {
-      _id: packageRoot.document._id,
+      _id: paymentPlanRoot.document._id,
       data,
     },
   });
@@ -383,9 +383,9 @@ test('Should not update package by trainer', async () => {
   await expect(response).rejects.toThrow('Unauthorized');
 });
 
-test('Should not update package by customer', async () => {
+test('Should not update paymentPlan by customer', async () => {
   const client = getClient(users[4].token);
-  const packageRoot = packages[0];
+  const paymentPlanRoot = paymentPlans[0];
 
   const data = {
     name: 'winter1',
@@ -395,8 +395,8 @@ test('Should not update package by customer', async () => {
 
   const response = client.mutate({
     mutation: gql`
-      mutation UpdatePackage($_id: ID!, $data: UpdatePackageInput) {
-        updatePackage(_id: $_id, data: $data) {
+      mutation UpdatePaymentPlan($_id: ID!, $data: UpdatePaymentPlanInput) {
+        updatePaymentPlan(_id: $_id, data: $data) {
           _id
           name
           price
@@ -405,7 +405,7 @@ test('Should not update package by customer', async () => {
       }
     `,
     variables: {
-      _id: packageRoot.document._id,
+      _id: paymentPlanRoot.document._id,
       data,
     },
   });
@@ -413,9 +413,9 @@ test('Should not update package by customer', async () => {
   await expect(response).rejects.toThrow('Unauthorized');
 });
 
-test('Should not update package with name.lenght <6', async () => {
+test('Should not update paymentPlan with name.lenght <6', async () => {
   const client = getClient(users[0].token);
-  const packageRoot = packages[0];
+  const paymentPlanRoot = paymentPlans[0];
 
   const data = {
     name: 'win1',
@@ -425,8 +425,8 @@ test('Should not update package with name.lenght <6', async () => {
 
   const response = client.mutate({
     mutation: gql`
-      mutation UpdatePackage($_id: ID!, $data: UpdatePackageInput) {
-        updatePackage(_id: $_id, data: $data) {
+      mutation UpdatePaymentPlan($_id: ID!, $data: UpdatePaymentPlanInput) {
+        updatePaymentPlan(_id: $_id, data: $data) {
           _id
           name
           price
@@ -435,7 +435,7 @@ test('Should not update package with name.lenght <6', async () => {
       }
     `,
     variables: {
-      _id: packageRoot.document._id,
+      _id: paymentPlanRoot.document._id,
       data,
     },
   });
@@ -445,9 +445,9 @@ test('Should not update package with name.lenght <6', async () => {
   );
 });
 
-test('Should not update package with name.lenght >30', async () => {
+test('Should not update paymentPlan with name.lenght >30', async () => {
   const client = getClient(users[0].token);
-  const packageRoot = packages[0];
+  const paymentPlanRoot = paymentPlans[0];
 
   const data = {
     name: 'winter1winter1winter1winter1winter1',
@@ -457,8 +457,8 @@ test('Should not update package with name.lenght >30', async () => {
 
   const response = client.mutate({
     mutation: gql`
-      mutation UpdatePackage($_id: ID!, $data: UpdatePackageInput) {
-        updatePackage(_id: $_id, data: $data) {
+      mutation UpdatePaymentPlan($_id: ID!, $data: UpdatePaymentPlanInput) {
+        updatePaymentPlan(_id: $_id, data: $data) {
           _id
           name
           price
@@ -467,7 +467,7 @@ test('Should not update package with name.lenght >30', async () => {
       }
     `,
     variables: {
-      _id: packageRoot.document._id,
+      _id: paymentPlanRoot.document._id,
       data,
     },
   });
@@ -477,9 +477,9 @@ test('Should not update package with name.lenght >30', async () => {
   );
 });
 
-test('Should update package with same name', async () => {
+test('Should update paymentPlan with same name', async () => {
   const client = getClient(users[0].token);
-  const packageRoot = packages[0];
+  const paymentPlanRoot = paymentPlans[0];
 
   const data = {
     name: 'winter1',
@@ -489,8 +489,8 @@ test('Should update package with same name', async () => {
 
   const response = client.mutate({
     mutation: gql`
-      mutation UpdatePackage($_id: ID!, $data: UpdatePackageInput) {
-        updatePackage(_id: $_id, data: $data) {
+      mutation UpdatePaymentPlan($_id: ID!, $data: UpdatePaymentPlanInput) {
+        updatePaymentPlan(_id: $_id, data: $data) {
           _id
           name
           price
@@ -499,17 +499,17 @@ test('Should update package with same name', async () => {
       }
     `,
     variables: {
-      _id: packageRoot.document._id,
+      _id: paymentPlanRoot.document._id,
       data,
     },
   });
 
-  expect(isPartial(data, (await response)?.data?.updatePackage)).toBe(true);
+  expect(isPartial(data, (await response)?.data?.updatePaymentPlan)).toBe(true);
 });
 
-test('Should not update package with exist name', async () => {
+test('Should not update paymentPlan with exist name', async () => {
   const client = getClient(users[0].token);
-  const packageRoot = packages[0];
+  const paymentPlanRoot = paymentPlans[0];
 
   const data = {
     name: 'winter2',
@@ -519,8 +519,8 @@ test('Should not update package with exist name', async () => {
 
   const response = client.mutate({
     mutation: gql`
-      mutation UpdatePackage($_id: ID!, $data: UpdatePackageInput) {
-        updatePackage(_id: $_id, data: $data) {
+      mutation UpdatePaymentPlan($_id: ID!, $data: UpdatePaymentPlanInput) {
+        updatePaymentPlan(_id: $_id, data: $data) {
           _id
           name
           price
@@ -529,7 +529,7 @@ test('Should not update package with exist name', async () => {
       }
     `,
     variables: {
-      _id: packageRoot.document._id,
+      _id: paymentPlanRoot.document._id,
       data,
     },
   });
@@ -537,9 +537,9 @@ test('Should not update package with exist name', async () => {
   await (await expect(response)).rejects.toThrow('Name already exists');
 });
 
-test('Should not update package without token', async () => {
+test('Should not update paymentPlan without token', async () => {
   const client = getClient();
-  const packageRoot = packages[0];
+  const paymentPlanRoot = paymentPlans[0];
 
   const data = {
     name: 'winter1',
@@ -549,8 +549,8 @@ test('Should not update package without token', async () => {
 
   const response = client.mutate({
     mutation: gql`
-      mutation UpdatePackage($_id: ID!, $data: UpdatePackageInput) {
-        updatePackage(_id: $_id, data: $data) {
+      mutation UpdatePaymentPlan($_id: ID!, $data: UpdatePaymentPlanInput) {
+        updatePaymentPlan(_id: $_id, data: $data) {
           _id
           name
           price
@@ -559,7 +559,7 @@ test('Should not update package without token', async () => {
       }
     `,
     variables: {
-      _id: packageRoot.document._id,
+      _id: paymentPlanRoot.document._id,
       data,
     },
   });
@@ -567,14 +567,14 @@ test('Should not update package without token', async () => {
   await (await expect(response)).rejects.toThrow('Unauthorized');
 });
 
-test('Should delete package', async () => {
+test('Should delete paymentPlan', async () => {
   const client = getClient(users[0].token);
-  const packageRoot = packages[4];
+  const paymentPlanRoot = paymentPlans[4];
 
   const response = client.mutate({
     mutation: gql`
-      mutation DeletePackage($_id: ID!) {
-        deletePackage(_id: $_id) {
+      mutation DeletePaymentPlan($_id: ID!) {
+        deletePaymentPlan(_id: $_id) {
           _id
           name
           price
@@ -583,26 +583,26 @@ test('Should delete package', async () => {
       }
     `,
     variables: {
-      _id: packageRoot.document._id,
+      _id: paymentPlanRoot.document._id,
     },
   });
 
   expect(
     isPartial(
-      packageRoot.document._id.toString(),
-      (await response)?.data?.deletePackage._id.toString()
+      paymentPlanRoot.document._id.toString(),
+      (await response)?.data?.deletePaymentPlan._id.toString()
     )
   ).toBe(true);
 });
 
-test('Should delete package by onwer', async () => {
+test('Should delete paymentPlan by onwer', async () => {
   const client = getClient(users[1].token);
-  const packageRoot = packages[3];
+  const paymentPlanRoot = paymentPlans[3];
 
   const response = client.mutate({
     mutation: gql`
-      mutation DeletePackage($_id: ID!) {
-        deletePackage(_id: $_id) {
+      mutation DeletePaymentPlan($_id: ID!) {
+        deletePaymentPlan(_id: $_id) {
           _id
           name
           price
@@ -611,26 +611,26 @@ test('Should delete package by onwer', async () => {
       }
     `,
     variables: {
-      _id: packageRoot.document._id,
+      _id: paymentPlanRoot.document._id,
     },
   });
 
   expect(
     isPartial(
-      packageRoot.document._id.toString(),
-      (await response)?.data?.deletePackage._id.toString()
+      paymentPlanRoot.document._id.toString(),
+      (await response)?.data?.deletePaymentPlan._id.toString()
     )
   ).toBe(true);
 });
 
-test('Should not delete package by manager', async () => {
+test('Should not delete paymentPlan by manager', async () => {
   const client = getClient(users[2].token);
-  const packageRoot = packages[2];
+  const paymentPlanRoot = paymentPlans[2];
 
   const response = client.mutate({
     mutation: gql`
-      mutation DeletePackage($_id: ID!) {
-        deletePackage(_id: $_id) {
+      mutation DeletePaymentPlan($_id: ID!) {
+        deletePaymentPlan(_id: $_id) {
           _id
           name
           price
@@ -639,21 +639,21 @@ test('Should not delete package by manager', async () => {
       }
     `,
     variables: {
-      _id: packageRoot.document._id,
+      _id: paymentPlanRoot.document._id,
     },
   });
 
   await expect(response).rejects.toThrow('Unauthorized');
 });
 
-test('Should not delete package by trainer', async () => {
+test('Should not delete paymentPlan by trainer', async () => {
   const client = getClient(users[3].token);
-  const packageRoot = packages[1];
+  const paymentPlanRoot = paymentPlans[1];
 
   const response = client.mutate({
     mutation: gql`
-      mutation DeletePackage($_id: ID!) {
-        deletePackage(_id: $_id) {
+      mutation DeletePaymentPlan($_id: ID!) {
+        deletePaymentPlan(_id: $_id) {
           _id
           name
           price
@@ -662,21 +662,21 @@ test('Should not delete package by trainer', async () => {
       }
     `,
     variables: {
-      _id: packageRoot.document._id,
+      _id: paymentPlanRoot.document._id,
     },
   });
 
   await expect(response).rejects.toThrow('Unauthorized');
 });
 
-test('Should not delete package by customer', async () => {
+test('Should not delete paymentPlan by customer', async () => {
   const client = getClient(users[4].token);
-  const packageRoot = packages[0];
+  const paymentPlanRoot = paymentPlans[0];
 
   const response = client.mutate({
     mutation: gql`
-      mutation DeletePackage($_id: ID!) {
-        deletePackage(_id: $_id) {
+      mutation DeletePaymentPlan($_id: ID!) {
+        deletePaymentPlan(_id: $_id) {
           _id
           name
           price
@@ -685,21 +685,21 @@ test('Should not delete package by customer', async () => {
       }
     `,
     variables: {
-      _id: packageRoot.document._id,
+      _id: paymentPlanRoot.document._id,
     },
   });
 
   await expect(response).rejects.toThrow('Unauthorized');
 });
 
-test('Should not delete package without token', async () => {
+test('Should not delete paymentPlan without token', async () => {
   const client = getClient();
-  const packageRoot = packages[4];
+  const paymentPlanRoot = paymentPlans[4];
 
   const response = client.mutate({
     mutation: gql`
-      mutation DeletePackage($_id: ID!) {
-        deletePackage(_id: $_id) {
+      mutation DeletePaymentPlan($_id: ID!) {
+        deletePaymentPlan(_id: $_id) {
           _id
           name
           price
@@ -708,7 +708,7 @@ test('Should not delete package without token', async () => {
       }
     `,
     variables: {
-      _id: packageRoot.document._id,
+      _id: paymentPlanRoot.document._id,
     },
   });
 

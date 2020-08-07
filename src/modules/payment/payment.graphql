@@ -2,7 +2,7 @@ type Payment {
   _id: ID!
   creator: User!
   customer: User!
-  package: Package!
+  paymentPlan: PaymentPlan!
 
   # Timestamp
   createdAt: String!
@@ -39,10 +39,10 @@ input PaymentsFilterInput {
 
 input CreatePaymentInput {
   customerId: ID!
-  packageId: ID!
+  paymentPlanId: ID!
 }
 
 input UpdatePaymentInput {
   customerId: ID
-  packageId: ID
+  paymentPlanId: ID
 }
