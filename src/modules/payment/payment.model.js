@@ -19,8 +19,8 @@ const paymentSchema = new Schema(
       type: Schema.Types.ObjectId,
       validate: validateCustomerRequired,
     },
-    package: {
-      ref: 'Package',
+    paymentPlan: {
+      ref: 'PaymentPlan',
       required: true,
       type: {
         name: {
