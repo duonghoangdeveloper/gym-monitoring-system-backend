@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 
-// import { warningStatus } from '../../common/enums';
+import { url } from '../../common/fields';
+// import { warningStatuses } from '../../common/enums';
 // import { generateSchemaEnumField } from '../../common/services';
 import {
   validateCustomerRequired,
@@ -22,10 +23,14 @@ const warningSchema = new mongoose.Schema(
     },
 
     image: {
-      required: true,
-      trim: true,
-      type: String,
-      validate: validateImage,
+      _id: false,
+      key: {
+        type: String,
+      },
+      timestamps: false,
+      url: {
+        ...url,
+      },
     },
 
     note: {
@@ -37,7 +42,7 @@ const warningSchema = new mongoose.Schema(
       required: true,
       trim: true,
       type: String,
-      // ...generateSchemaEnumField(warningStatus),
+      // ...generateSchemaEnumField(warningStatuses),
     },
 
     supporter: {

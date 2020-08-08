@@ -4,9 +4,8 @@ type Warning{
   supporter: User
 
   # Warning info
-  image: String!
+  image: File!
   content: String!
-  note: String
   status: Status!
   
   # Timestamp
@@ -22,7 +21,7 @@ type Query {
 type Mutation {
   createWarning(data: CreateWarningInput!): Warning!
   deleteWarning(_id: ID!): Warning!
-  acceptWarning(_id: ID!, data: UpdateWarningInput): Warning!
+  acceptWarning(_id: ID!): Warning!
 }
 
 type Warnings {
@@ -44,14 +43,6 @@ input WarningsSearchInput {
 input CreateWarningInput {
   customerId: ID
   content: String
-  image: String!
-}
-
-input UpdateWarningInput {  
-  customerId: ID
-  content: String
-  note: String
-  supporterId: ID!
 }
 
 enum Status {  

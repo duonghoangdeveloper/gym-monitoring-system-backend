@@ -1,6 +1,5 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import moment from 'moment';
 import mongoose, { Schema } from 'mongoose';
 
 import { userGenders, userRoles } from '../../common/enums';
@@ -13,7 +12,6 @@ import {
   validateUsername,
 } from './user.validators';
 
-const now = moment().toISOString();
 const userSchema = new Schema(
   {
     activationToken: {
@@ -45,9 +43,9 @@ const userSchema = new Schema(
     },
 
     expiredDate: {
-      default: now,
+      default: new Date(),
       trim: true,
-      type: String,
+      type: Date,
     },
 
     gender: {

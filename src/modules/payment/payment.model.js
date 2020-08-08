@@ -53,15 +53,16 @@ paymentSchema.index({ createdAt: 1 }, { unique: true });
 paymentSchema.index({ customer: 1 }, { unique: true });
 paymentSchema.index({ creator: 1 }, { unique: true });
 
-paymentSchema.pre('save', async function(next) {
-  const payment = this;
-  const customerId = payment.customer;
+// const recaculateExpiredDate = async function(next) {
+//   const payment = this;
+//   const customerId = payment.customer.toString();
+//   const customer = await getUserById(customerId);
+//   // const paymentPlan = await getPaymentPlanById(payment.paymentPlan?._id);
+//   await updateUserExpiredDate(customer);
+//   next();
+// };
 
-  const customer = await getUserById(customerId);
-  const paymentPlan = await getPaymentPlanById(payment.paymentPlan?._id);
-  await updateUserExpiredDate(customer, paymentPlan);
-
-  next();
-});
+// paymentSchema.pre('save', recaculateExpiredDate);
+// paymentSchema.pre('remove', recaculateExpiredDate);
 
 export const Payment = mongoose.model('Payment', paymentSchema);

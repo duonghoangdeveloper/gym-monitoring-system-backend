@@ -29,15 +29,12 @@ export const validatePaymentPlanRequired = async paymentPlanId => {
   }
 };
 
-export const validateUpdatePermission = async createTime => {
-  const createdMoment = moment(createTime);
+export const validateUpdatePermission = async createdTime => {
+  const createdMoment = moment(createdTime);
   const nowMoment = moment();
 
   const diffInMiliSec = nowMoment.diff(createdMoment);
   const diffObj = moment.duration(diffInMiliSec);
-
-  console.log('createTime: ', createTime);
-  console.log('nowMoment : ', nowMoment.toISOString());
 
   if (diffObj.days() > 1) {
     throwError('Out of date to update', 409);

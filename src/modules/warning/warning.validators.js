@@ -25,12 +25,6 @@ export const validateSupporterRequired = async staffId => {
   }
 };
 
-export const validateTitle = async title => {
-  if (title.length > 50) {
-    throwError('Title length must be 50 at maximum', 422);
-  }
-};
-
 export const validateStatus = async status => {
   if (!warningStatuses.includes(status)) {
     throwError('Status is invalid', 422);
@@ -38,7 +32,7 @@ export const validateStatus = async status => {
 };
 
 export const validateImage = async image => {
-  if (!validator.isURL(image)) {
+  if (!validator.isURL(image.url)) {
     throwError('Image is invalid', 422);
   }
 };

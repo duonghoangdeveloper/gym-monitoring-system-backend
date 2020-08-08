@@ -5,43 +5,34 @@ import { getDocumentById, mongooseQuery } from '../../common/services';
 import { Warning } from './warning.model';
 import {
   validateCustomerRequired,
-  validateImage,
-  // validateStatus,
   validateSupporterRequired,
 } from './warning.validators';
-// refreshWarningStatus
-const updateStatusByTime = async warning => {
+
+const refreshStatus = async warning => {
   const createdAt = moment(warning.createdAt);
   const now = moment();
-
   const diff = now.diff(createdAt);
-
   const diffDuration = moment.duration(diff);
 
-  // console.log('warning: ', warning);
-  // console.log('warning.createdAt: ', warning.createdAt);
-  // console.log('createdAt: ', createdAt);
-  // console.log('now: ', now);
-  // console.log('diff: ', diff);
-  // console.log('diffDuration: ', diffDuration.seconds);
-
-  if (diffDuration.minutes() > 5) {
+  if (diffDuration.minutes() > 5 && warning.status === 'PENDING') {
     warning.status = 'FAILED';
-    await warning.save();
     const updatedWarning = await warning.save();
     return updatedWarning;
   }
+
   return warning;
 };
 
 export const getWarningById = async (_id, projection) => {
   const warning = getDocumentById('Warning', _id, projection);
-  return updateStatusByTime(warning);
+  await refreshStatus(warning);
+  return warning;
 };
 // update status of warning to FAILED / SUCCESSED
 
 export const getWarnings = async (query, initialFind) => {
   const warnings = mongooseQuery('Warning', query, initialFind);
+  await Promise.all(warnings.map(warning => refreshStatus(warning)));
   return warnings;
   // update status of warnings to FAILED / SUCCESSED using map
 };
@@ -52,12 +43,15 @@ export const createWarning = async data => {
   if (!isNil(customerId)) {
     validateCustomerRequired(customerId);
   }
-  validateImage(image);
+  // validateImage(image);
 
   const warning = new Warning({
     content,
     customer: customerId,
-    image,
+    image: {
+      url:
+        'https://i.pinimg.com/originals/df/a6/e6/dfa6e62d42775848a01048ed114f23b0.jpg',
+    },
     status: 'PENDING',
   });
 
@@ -65,23 +59,12 @@ export const createWarning = async data => {
   return createdWarning;
 };
 
-export const updateWarning = async (warning, data, supporter) => {
-  const { content, customerId, note } = data;
-  const supporterId = supporter._id;
+export const acceptWarning = async (warning, supporter) => {
+  const supporterId = supporter._id.toString();
 
-  if (!isNil(customerId)) {
-    await validateCustomerRequired(customerId);
-    warning.customer = customerId;
-  }
   if (!isNil(supporterId)) {
     await validateSupporterRequired(supporterId);
     warning.supporter = supporterId;
-  }
-  if (!isNil(content)) {
-    warning.content = content;
-  }
-  if (!isNil(note)) {
-    warning.note = note;
   }
   warning.status = 'SUCCEEDED';
 
@@ -93,3 +76,9 @@ export const deleteWarning = async warning => {
   const deletedWarning = await warning.remove();
   return deletedWarning;
 };
+
+// export const sendWarningNotification = async () => {};
+
+// setInterval(() => {
+//   sendWarningNotification();
+// }, 20000);

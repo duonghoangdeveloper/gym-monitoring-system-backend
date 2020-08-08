@@ -4,26 +4,22 @@ import {
   generateDocumentsPayload,
 } from '../../common/services';
 import {
+  acceptWarning,
   createWarning,
   deleteWarning,
   getWarningById,
   getWarnings,
-  updateWarning,
 } from './warning.services';
 
 export const Mutation = {
-  async acceptWarning(_, { _id, data }, { req }) {
+  async acceptWarning(_, { _id }, { req }) {
     const supporter = checkRole(req.user, [
       'TRAINER',
       'GYM_OWNER',
       'SYSTEM_ADMIN',
     ]);
     const warningToUpdate = await getWarningById(_id);
-    const updatedWarning = await updateWarning(
-      warningToUpdate,
-      data,
-      supporter
-    );
+    const updatedWarning = await acceptWarning(warningToUpdate, supporter);
     return generateDocumentPayload(updatedWarning);
   },
 
