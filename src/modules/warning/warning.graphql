@@ -1,0 +1,52 @@
+type Warning{
+  _id: ID!
+  customer: User
+  supporter: User
+
+  # Warning info
+  image: File!
+  content: String!
+  status: Status!
+  
+  # Timestamp
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Query {
+  warning(_id: ID!): Warning!
+  warnings(query: WarningsQueryInput): Warnings!
+}
+
+type Mutation {
+  createWarning(data: CreateWarningInput!): Warning!
+  deleteWarning(_id: ID!): Warning!
+  acceptWarning(_id: ID!): Warning!
+}
+
+type Warnings {
+  data: [Warning!]!
+  total: Int!
+}
+
+input WarningsQueryInput {
+  skip: Int
+  limit: Int
+  sort: String
+  search: WarningsSearchInput
+}
+
+input WarningsSearchInput {
+  content: String
+}
+
+input CreateWarningInput {
+  customerId: ID
+  content: String
+}
+
+enum Status {  
+  PENDING
+  FAILED
+  SUCCESSED
+}

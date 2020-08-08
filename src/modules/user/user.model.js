@@ -42,6 +42,12 @@ const userSchema = new Schema(
       validate: validateEmail,
     },
 
+    expiredDate: {
+      default: new Date(),
+      trim: true,
+      type: Date,
+    },
+
     gender: {
       ...generateSchemaEnumField(userGenders),
     },
