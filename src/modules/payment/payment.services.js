@@ -12,6 +12,7 @@ import {
   validateCreatorRequired,
   validateCustomerRequired,
   validatePaymentPlanRequired,
+  validateUpdatePermission,
 } from './payment.validators';
 
 export const getPaymentById = async (_id, projection) =>
@@ -39,14 +40,7 @@ export const createPayment = async data => {
 export const updatePayment = async (payment, data) => {
   const { creatorId, customerId, paymentPlanId } = data;
 
-  const createdMoment = moment(payment.createdAt);
-  const nowMoment = moment();
-
-  const diff = nowMoment.diff(createdMoment);
-  const diffDuration = moment.duration(diff);
-  if (diffDuration.days() > 1) {
-    throwError('Out of date to update', 409);
-  }
+  await validateUpdatePermission(payment.createdAt);
 
   if (!isNil(creatorId)) {
     await validateCreatorRequired(creatorId);

@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import isNil from 'lodash.isnil';
 // import request from 'request';
+import moment from 'moment';
 import sharp from 'sharp';
 
 import { userRoles } from '../../common/enums';
@@ -131,6 +132,24 @@ export const updateUser = async (user, data) => {
   return updatedUser;
 };
 
+export const updateUserExpiredDate = async (user, paymentPlan) => {
+  console.log('user.expiredDate: ', user.expiredDate);
+  const nowMoment = moment();
+  const expiredMoment = moment(user.expiredDate);
+  const extendMonths = paymentPlan.period;
+
+  const time = getHigherMoment(expiredMoment, nowMoment);
+  time.add({ months: extendMonths });
+  console.log('extendMonths: ', extendMonths);
+  console.log('time: ', time);
+
+  user.expiredDate = time.toISOString();
+  console.log('user.expiredDate.new: ', user.expiredDate);
+
+  const updatedUser = await user.save();
+  return updatedUser;
+};
+
 export const checkUpdaterRoleAuthorization = (updaterRole, updatedRole) => {
   if (
     userRoles.indexOf(updaterRole) < userRoles.indexOf(updatedRole) ||
@@ -141,9 +160,9 @@ export const checkUpdaterRoleAuthorization = (updaterRole, updatedRole) => {
 };
 
 export const checkFacesEnough = (role, faces) => {
-  if (role === 'SYSTEM_ADMIN' && faces.length !== 0) {
-    throwError(`Admin don't need to register face`, 400);
-  }
+  // if (role === 'SYSTEM_ADMIN' && faces.length !== 0) {
+  //   throwError(`Admin don't need to register face`, 400);
+  // }
   if (faces.length !== 9) {
     throwError(`Not enough 9 registered face images`, 400);
   }
@@ -243,4 +262,11 @@ const uploadAvatar = async (user, stream) => {
   await user.save();
 
   return user;
+};
+
+const getHigherMoment = (time1, time2) => {
+  if (time1.diff(time2) > 0) {
+    return time1;
+  }
+  return time2;
 };

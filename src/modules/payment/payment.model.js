@@ -1,5 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 
+import { getPaymentPlanById } from '../payment-plan/payment-plan.services';
+import { getUserById, updateUserExpiredDate } from '../user/user.services';
 import {
   validateCreatorRequired,
   validateCustomerRequired,
@@ -50,5 +52,16 @@ const paymentSchema = new Schema(
 paymentSchema.index({ createdAt: 1 }, { unique: true });
 paymentSchema.index({ customer: 1 }, { unique: true });
 paymentSchema.index({ creator: 1 }, { unique: true });
+
+paymentSchema.pre('save', async function(next) {
+  const payment = this;
+  const customerId = payment.customer;
+
+  const customer = await getUserById(customerId);
+  const paymentPlan = await getPaymentPlanById(payment.paymentPlan?._id);
+  await updateUserExpiredDate(customer, paymentPlan);
+
+  next();
+});
 
 export const Payment = mongoose.model('Payment', paymentSchema);
