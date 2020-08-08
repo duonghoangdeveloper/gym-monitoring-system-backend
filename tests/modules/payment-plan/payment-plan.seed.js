@@ -1,6 +1,6 @@
-import { createPackage } from '../../../src/modules/package/package.services';
+import { createPaymentPlan } from '../../../src/modules/payment-plan/payment-plan.services';
 
-export const packages = [
+export const paymentPlans = [
   {
     document: null,
     input: {
@@ -43,11 +43,11 @@ export const packages = [
   },
 ];
 
-export const seedPackages = async () => {
+export const seedPaymentPlans = async () => {
   await Promise.all(
-    packages.map(async _package => {
-      const document = await createPackage({ ..._package.input });
-      _package.document = document;
+    paymentPlans.map(async paymentPlan => {
+      const document = await createPaymentPlan({ ...paymentPlan.input });
+      paymentPlan.document = document;
     })
   );
 };

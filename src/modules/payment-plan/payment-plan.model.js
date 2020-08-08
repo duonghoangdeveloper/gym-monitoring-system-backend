@@ -4,9 +4,9 @@ import {
   validateName,
   validatePeriod,
   validatePrice,
-} from './package.validators';
+} from './payment-plan.validators';
 
-const packageSchema = new Schema(
+const paymentPlanSchema = new Schema(
   {
     name: {
       required: true,
@@ -33,9 +33,9 @@ const packageSchema = new Schema(
   }
 );
 
-packageSchema.index({ createdAt: 1 });
-packageSchema.index({ name: 1 }, { unique: true });
-packageSchema.index({ price: 1 });
-packageSchema.index({ period: 1 });
+paymentPlanSchema.index({ createdAt: 1 });
+paymentPlanSchema.index({ name: 1 }, { unique: true });
+paymentPlanSchema.index({ price: 1 });
+paymentPlanSchema.index({ period: 1 });
 
-export const Package = mongoose.model('Package', packageSchema);
+export const PaymentPlan = mongoose.model('PaymentPlan', paymentPlanSchema);

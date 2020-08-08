@@ -1,4 +1,4 @@
-import { Package } from '../../common/models';
+import { PaymentPlan } from '../../common/models';
 import { throwError } from '../../common/services';
 import { User } from '../user/user.model';
 
@@ -20,9 +20,9 @@ export const validateCustomerRequired = async customerId => {
     throwError('Customer not found', 404);
   }
 };
-export const validatePackageRequired = async packageId => {
-  const packageExists = await Package.exists({ _id: packageId });
-  if (!packageExists) {
-    throwError('Package not found', 404);
+export const validatePaymentPlanRequired = async paymentPlanId => {
+  const paymentPlanExists = await PaymentPlan.exists({ _id: paymentPlanId });
+  if (!paymentPlanExists) {
+    throwError('PaymentPlan not found', 404);
   }
 };

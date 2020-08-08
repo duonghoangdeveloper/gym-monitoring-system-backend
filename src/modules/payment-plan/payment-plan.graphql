@@ -1,0 +1,49 @@
+type PaymentPlan {
+  _id: ID!
+  name: String!
+  price: Int
+  period: Int
+  
+  # Timestamp
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Query {
+  paymentPlan(_id: ID!): PaymentPlan!
+  paymentPlans(query: PaymentPlansQueryInput): PaymentPlans!
+}
+
+type Mutation {
+  createPaymentPlan(data: CreatePaymentPlanInput!): PaymentPlan!
+  updatePaymentPlan(_id: ID!, data: UpdatePaymentPlanInput): PaymentPlan!
+  deletePaymentPlan(_id: ID!): PaymentPlan!
+}
+
+type PaymentPlans {
+  data: [PaymentPlan!]!
+  total: Int!
+}
+
+input PaymentPlansQueryInput {
+  skip: Int
+  limit: Int
+  sort: String
+  search: PaymentPlansSearchInput
+}
+
+input PaymentPlansSearchInput {
+  name: String
+}
+
+input CreatePaymentPlanInput {
+  name: String!
+  price: Int!
+  period: Int!
+}
+
+input UpdatePaymentPlanInput {
+  name: String
+  price: Int
+  period: Int
+}

@@ -1,5 +1,5 @@
 import { throwError } from '../../common/services';
-import { Package } from './package.model';
+import { PaymentPlan } from './payment-plan.model';
 
 export const validateName = async name => {
   if (name.length < 6) {
@@ -11,7 +11,7 @@ export const validateName = async name => {
 };
 
 export const validateNameExists = async name => {
-  const nameExists = await Package.exists({ name });
+  const nameExists = await PaymentPlan.exists({ name });
   if (nameExists) {
     throwError('Name already exists', 409);
   }
