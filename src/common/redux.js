@@ -6,6 +6,11 @@ import { validateObjectId } from './services';
 const { createStore } = require('redux');
 
 const INITIAL_STATE = {
+  checkIn: {
+    lastCheckIn: null,
+    lastFace: null,
+    updatedAt: Date.now(),
+  },
   common: {
     fps: 30,
   },
@@ -14,20 +19,27 @@ const INITIAL_STATE = {
   usersAttendance: {
     updatedAt: Date.now(),
   },
+  webcam: null,
 };
 
 export const TYPES = {
   ADD_SCREEN: 'ADD_SCREEN',
   ADD_SOCKET: 'ADD_SOCKET',
+  ADD_WEBCAM: 'ADD_WEBCAM',
   REMOVE_SCREEN: 'REMOVE_SCREEN',
   REMOVE_SOCKET: 'REMOVE_SOCKET',
+  REMOVE_WEBCAM: 'REMOVE_WEBCAM',
+  UPDATE_CHECK_IN: 'UPDATE_CHECK_IN',
   UPDATE_FPS: 'UPDATE_FPS',
   UPDATE_SCREEN_DETECTION_STATUS: 'UPDATE_SCREEN_DETECTION_STATUS',
   UPDATE_SCREEN_SNAPSHOT: 'UPDATE_SCREEN_SNAPSHOT',
+  UPDATE_SOCKET_CHECK_IN_STATUS: 'UPDATE_SOCKET_CHECK_IN_STATUS',
   UPDATE_SOCKET_SCREENS_STATUS: 'UPDATE_SOCKET_SCREENS_STATUS',
   UPDATE_SOCKET_USERS_ATTENDANCE_STATUS:
     'UPDATE_SOCKET_USERS_ATTENDANCE_STATUS',
   UPDATE_USER_ATTENDANCE: 'UPDATE_USER_ATTENDANCE',
+  UPDATE_WEBCAM_DETECTION_STATUS: 'UPDATE_WEBCAM_DETECTION_STATUS',
+  UPDATE_WEBCAM_SNAPSHOT: 'UPDATE_WEBCAM_SNAPSHOT',
 };
 
 const reducer = (state = INITIAL_STATE, action) => {
@@ -36,6 +48,11 @@ const reducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         screens: [...state.screens, action.payload.screen],
+      };
+    case TYPES.ADD_WEBCAM:
+      return {
+        ...state,
+        webcam: action.payload.webcam,
       };
     case TYPES.ADD_SOCKET:
       return {
@@ -62,6 +79,20 @@ const reducer = (state = INITIAL_STATE, action) => {
         sockets: state.sockets.filter(
           ({ socket }) => socket !== action.payload.socket
         ),
+      };
+    case TYPES.REMOVE_WEBCAM:
+      return {
+        ...state,
+        webcam: null,
+      };
+    case TYPES.UPDATE_CHECK_IN:
+      return {
+        ...state,
+        checkIn: {
+          ...state.checkIn,
+          ...action.payload,
+          updatedAt: Date.now(),
+        },
       };
     case TYPES.UPDATE_FPS:
       return {
@@ -99,6 +130,18 @@ const reducer = (state = INITIAL_STATE, action) => {
             : screen
         ),
       };
+    case TYPES.UPDATE_SOCKET_CHECK_IN_STATUS:
+      return {
+        ...state,
+        sockets: state.sockets.map(socketObj =>
+          socketObj.socket === action.payload.socket
+            ? {
+                ...socketObj,
+                checkInStatus: action.payload.checkInStatus,
+              }
+            : socketObj
+        ),
+      };
     case TYPES.UPDATE_SOCKET_SCREENS_STATUS:
       return {
         ...state,
@@ -131,6 +174,28 @@ const reducer = (state = INITIAL_STATE, action) => {
           action.payload.faces,
           action.payload.updatedAt
         ),
+      };
+    case TYPES.UPDATE_WEBCAM_DETECTION_STATUS:
+      return {
+        ...state,
+        webcam: state.webcam
+          ? {
+              ...state.webcam,
+              detectionStatus: action.payload.detectionStatus,
+            }
+          : null,
+      };
+    case TYPES.UPDATE_WEBCAM_SNAPSHOT:
+      return {
+        ...state,
+        webcam: {
+          ...state.webcam,
+          snapshot:
+            !state.webcam.snapshot ||
+            action.payload.snapshot.timestamp > state.webcam.snapshot.timestamp
+              ? action.payload.snapshot
+              : state.webcam.snapshot,
+        },
       };
     default:
       return state;
@@ -215,3 +280,5 @@ const decayUsersAttendance = () => {
 };
 
 setInterval(decayUsersAttendance, 9000);
+
+// setInterval(() => console.log(store.getState()), 3000);

@@ -10,6 +10,37 @@ AWS.config.update({
 
 const s3 = new AWS.S3();
 
+export const uploadBase64S3 = (key, base64, contentType = 'image/jpeg') => {
+  if (!key) {
+    throwError('Key is not provided', 500);
+  }
+
+  const params = {
+    ACL: 'public-read',
+    Body: Buffer.from(base64.replace(/^data:image\/\w+;base64,/, ''), 'base64'),
+    Bucket: S3_BUCKET,
+    ContentEncoding: 'base64',
+    ContentType: contentType,
+    Key: key.toLowerCase(),
+  };
+
+  return new Promise((resolve, reject) => {
+    s3.upload(params, (err, data) => {
+      if (err) {
+        try {
+          deleteFileS3(key);
+        } catch (_) {
+          // No hope :(
+        }
+        reject(err);
+      }
+      if (data) {
+        resolve(data);
+      }
+    });
+  });
+};
+
 export const uploadFileS3 = (
   key,
   stream,
@@ -30,6 +61,11 @@ export const uploadFileS3 = (
   return new Promise((resolve, reject) => {
     s3.upload(params, (err, data) => {
       if (err) {
+        try {
+          deleteFileS3(key);
+        } catch (_) {
+          // No hope :(
+        }
         reject(err);
       }
       if (data) {
