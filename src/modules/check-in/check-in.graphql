@@ -1,0 +1,34 @@
+type CheckIn {
+  _id: ID!
+  user: User!
+  image: File!
+
+  # Timestamp
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Query {
+  checkIn(_id: ID!): CheckIn!
+  checkIns(query: CheckInsQueryInput): CheckIns!
+}
+
+type Mutation {
+  deleteCheckIn(_id: ID!): CheckIn!
+}
+
+type CheckIns {
+  data: [CheckIn!]!
+  total: Int!
+}
+
+input CheckInsQueryInput {
+  skip: Int
+  limit: Int
+  sort: String
+  filter: CheckInsFilterInput
+}
+
+input CheckInsFilterInput {
+  user: [ID!]
+}

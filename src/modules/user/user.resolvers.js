@@ -8,6 +8,8 @@ import {
 } from '../../common/services';
 import { uploadFaces } from '../face/face.services';
 import { getFeedbacks } from '../feedback/feedback.services';
+import { getPayments } from '../payment/payment.services';
+import { getWarnings } from '../warning/warning.services';
 import {
   activateUser,
   changeOnlineStatus,
@@ -116,10 +118,6 @@ export const Query = {
 };
 
 export const User = {
-  async createdPayments({ _id: creatorId }, { query }, { req }) {
-    // Role >= Manager moi duoc xem
-  },
-
   async feedbacks({ _id: userId }, { query }, { req }) {
     const feedbacksQuery = {
       ...query,
@@ -142,8 +140,47 @@ export const User = {
     return generateDocumentsPayload({ documents: [], total: 0 });
   },
 
-  async payments({ _id: customerId }, { query }, { req }) {
-    // Role >= Manager: xem duoc
-    // Role == Customer: chi xem duoc cua minh, nghia la customerId === user.id (user tu checkRole)
+  async payments({ _id: userId }, { query }, { req }) {
+    const paymentsQuery = {
+      ...query,
+      filter: {
+        ...query?.filter,
+        customer: [userId],
+      },
+    };
+
+    try {
+      checkRole(req.user, ['CUSTOMER']);
+      if (req.user._id.toString() === userId) {
+        const { documents, total } = await getPayments(paymentsQuery);
+        return generateDocumentsPayload({ documents, total });
+      }
+    } catch (e) {
+      // Do nothing
+    }
+
+    return generateDocumentsPayload({ documents: [], total: 0 });
+  },
+
+  async warnings({ _id: userId }, { query }, { req }) {
+    const warningsQuery = {
+      ...query,
+      filter: {
+        ...query?.filter,
+        customer: [userId],
+      },
+    };
+
+    try {
+      checkRole(req.user, ['CUSTOMER']);
+      if (req.user._id.toString() === userId) {
+        const { documents, total } = await getWarnings(warningsQuery);
+        return generateDocumentsPayload({ documents, total });
+      }
+    } catch (e) {
+      // Do nothing
+    }
+
+    return generateDocumentsPayload({ documents: [], total: 0 });
   },
 };

@@ -1,11 +1,6 @@
 import isNil from 'lodash.isnil';
-import moment from 'moment';
 
-import {
-  getDocumentById,
-  mongooseQuery,
-  throwError,
-} from '../../common/services';
+import { getDocumentById, mongooseQuery } from '../../common/services';
 import { getPaymentPlanById } from '../payment-plan/payment-plan.services';
 import { Payment } from './payment.model';
 import {

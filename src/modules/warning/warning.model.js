@@ -5,7 +5,6 @@ import { url } from '../../common/fields';
 // import { generateSchemaEnumField } from '../../common/services';
 import {
   validateCustomerRequired,
-  validateImage,
   validateSupporterRequired,
 } from './warning.validators';
 
