@@ -10,8 +10,8 @@ import {
 } from './warning.validators';
 
 const refreshStatus = async warning => {
-  const now = moment();
   const createdAt = moment(warning.createdAt);
+  const now = moment();
   const diff = now.diff(createdAt);
   const diffDuration = moment.duration(diff);
 
@@ -20,6 +20,7 @@ const refreshStatus = async warning => {
     const updatedWarning = await warning.save();
     return updatedWarning;
   }
+
   return warning;
 };
 
@@ -28,23 +29,22 @@ export const getWarningById = async (_id, projection) => {
   await refreshStatus(warning);
   return warning;
 };
+// update status of warning to FAILED / SUCCESSED
 
 export const getWarnings = async (query, initialFind) => {
-  const warnings = await mongooseQuery('Warning', query, initialFind);
-  await Promise.all(
-    Object.values(warnings.documents).map(async warning =>
-      refreshStatus(warning)
-    )
-  );
+  const warnings = mongooseQuery('Warning', query, initialFind);
+  await Promise.all(warnings.map(warning => refreshStatus(warning)));
   return warnings;
+  // update status of warnings to FAILED / SUCCESSED using map
 };
 
 export const createWarning = async data => {
-  const { content, customerId } = data;
+  const { content, customerId, image } = data;
 
   if (!isNil(customerId)) {
     validateCustomerRequired(customerId);
   }
+  // validateImage(image);
 
   const warning = new Warning({
     content,
@@ -77,13 +77,12 @@ export const deleteWarning = async warning => {
   const deletedWarning = await warning.remove();
   return deletedWarning;
 };
-<<<<<<< HEAD
 
 export const sendWarningNotification = async (pushTokens, warning) => {
   const expo = new Expo();
 
   const messages = [];
-  for (const pushToken of ['ExponentPushToken[IM0KQTJ0vC9jhGRPiUEWjq]']) {
+  for (const pushToken of pushTokens) {
     console.log(pushToken);
     if (!Expo.isExpoPushToken(pushToken)) {
       console.error(`Push token ${pushToken} is not a valid Expo push token`);
@@ -112,5 +111,3 @@ export const sendWarningNotification = async (pushTokens, warning) => {
 // setInterval(() => {
 //   sendWarningNotification();
 // }, 20000);
-=======
->>>>>>> master
