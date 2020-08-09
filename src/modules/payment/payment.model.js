@@ -1,7 +1,8 @@
 import mongoose, { Schema } from 'mongoose';
 
-import { getUserById } from '../user/user.services';
 // expiredDate
+import { getPaymentPlanById } from '../payment-plan/payment-plan.services';
+import { getUserById, updateUserExpiredDate } from '../user/user.services';
 import {
   validateCreatorRequired,
   validateCustomerRequired,
@@ -21,8 +22,8 @@ const paymentSchema = new Schema(
       type: Schema.Types.ObjectId,
       validate: validateCustomerRequired,
     },
-    package: {
-      ref: 'Package',
+    paymentPlan: {
+      ref: 'PaymentPlan',
       required: true,
       type: {
         name: {
@@ -50,15 +51,19 @@ const paymentSchema = new Schema(
 );
 
 paymentSchema.index({ createdAt: 1 }, { unique: true });
-paymentSchema.index({ customer: 1 }, { unique: true });
+paymentSchema.index({ customer: 1 }, {});
 paymentSchema.index({ creator: 1 }, { unique: true });
 
-// Hash the plain text password before saving
-// paymentSchema.pre('save', async function(next) {
+// const recaculateExpiredDate = async function(next) {
 //   const payment = this;
-//   const userId = payment.customer;
-//   const customerToRefresh = getUserById(userId);
-//   await refreshExpiredDate(customerToRefresh);
+//   const customerId = payment.customer.toString();
+//   const customer = await getUserById(customerId);
+//   // const paymentPlan = await getPaymentPlanById(payment.paymentPlan?._id);
+//   await updateUserExpiredDate(customer);
 //   next();
-// });
+// };
+
+// paymentSchema.pre('save', recaculateExpiredDate);
+// paymentSchema.pre('remove', recaculateExpiredDate);
+
 export const Payment = mongoose.model('Payment', paymentSchema);

@@ -6,13 +6,13 @@ import {
   mongooseQuery,
   throwError,
 } from '../../common/services';
-import { getPackageById } from '../package/package.services';
-import { getUserById } from '../user/user.services';
+import { getPaymentPlanById } from '../payment-plan/payment-plan.services';
 import { Payment } from './payment.model';
 import {
   validateCreatorRequired,
   validateCustomerRequired,
-  validatePackageRequired,
+  validatePaymentPlanRequired,
+  validateUpdatePermission,
 } from './payment.validators';
 
 export const getPaymentById = async (_id, projection) =>
@@ -22,7 +22,7 @@ export const getPayments = async (query, initialFind) =>
   mongooseQuery('Payment', query, initialFind);
 
 export const createPayment = async data => {
-  const { creatorId, customerId, packageId } = data;
+  const { creatorId, customerId, paymentPlanId } = data;
 
   validateCreatorRequired(creatorId);
   validateCustomerRequired(customerId);
@@ -30,7 +30,7 @@ export const createPayment = async data => {
   const payment = new Payment({
     creator: creatorId,
     customer: customerId,
-    package: await getPackageById(packageId),
+    paymentPlan: await getPaymentPlanById(paymentPlanId),
   });
 
   const createdPayment = await payment.save();
@@ -38,21 +38,9 @@ export const createPayment = async data => {
 };
 
 export const updatePayment = async (payment, data) => {
-  const { creatorId, customerId, packageId } = data;
+  const { creatorId, customerId, paymentPlanId } = data;
 
-  const createdMoment = moment(payment.createdAt);
-  const nowMoment = moment();
-
-  // const diffDays = nowMoment.diff(createdMoment, 'days');
-  // if (diffDays > 1) {
-  //   throwError('Out of date to update', 404);
-  // }
-
-  const diff = nowMoment.diff(createdMoment);
-  const diffDuration = moment.duration(diff);
-  if (diffDuration.days() > 1) {
-    throwError('Out of date to update', 409);
-  }
+  await validateUpdatePermission(payment.createdAt);
 
   if (!isNil(creatorId)) {
     await validateCreatorRequired(creatorId);
@@ -64,9 +52,9 @@ export const updatePayment = async (payment, data) => {
     payment.customer = customerId;
   }
 
-  if (!isNil(packageId)) {
-    await validatePackageRequired(packageId);
-    payment.package = await getPackageById(packageId);
+  if (!isNil(paymentPlanId)) {
+    await validatePaymentPlanRequired(paymentPlanId);
+    payment.paymentPlan = await getPaymentPlanById(paymentPlanId);
   }
 
   const updatedPayment = await payment.save();

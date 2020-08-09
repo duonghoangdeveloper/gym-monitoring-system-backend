@@ -1,4 +1,6 @@
-import { Package } from '../../common/models';
+import moment from 'moment';
+
+import { PaymentPlan } from '../../common/models';
 import { throwError } from '../../common/services';
 import { User } from '../user/user.model';
 
@@ -20,9 +22,21 @@ export const validateCustomerRequired = async customerId => {
     throwError('Customer not found', 404);
   }
 };
-export const validatePackageRequired = async packageId => {
-  const packageExists = await Package.exists({ _id: packageId });
-  if (!packageExists) {
-    throwError('Package not found', 404);
+export const validatePaymentPlanRequired = async paymentPlanId => {
+  const paymentPlanExists = await PaymentPlan.exists({ _id: paymentPlanId });
+  if (!paymentPlanExists) {
+    throwError('PaymentPlan not found', 404);
+  }
+};
+
+export const validateUpdatePermission = async createdTime => {
+  const createdMoment = moment(createdTime);
+  const nowMoment = moment();
+
+  const diffInMiliSec = nowMoment.diff(createdMoment);
+  const diffObj = moment.duration(diffInMiliSec);
+
+  if (diffObj.days() > 1) {
+    throwError('Out of date to update', 409);
   }
 };

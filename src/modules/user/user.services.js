@@ -1,9 +1,11 @@
 import bcrypt from 'bcryptjs';
 import isNil from 'lodash.isnil';
 // import request from 'request';
+import moment from 'moment';
 import sharp from 'sharp';
 
 import { userRoles } from '../../common/enums';
+import { Payment } from '../../common/models';
 import { deleteFileS3, getFileS3, uploadFileS3 } from '../../common/s3';
 import {
   getDocumentById,
@@ -131,6 +133,42 @@ export const updateUser = async (user, data) => {
   return updatedUser;
 };
 
+export const updateUserExpiredDate = async user => {
+  // Query het payment cua user len
+  const payments = await Payment.find({ customer: user._id.toString() });
+
+  // Co user createdAt, co cac payments cua user do (vidu 4 payments), moi payment co createdAt va period
+  // Output newExpiredDate
+  // VD: tao ngay 1/1, payment 1 tao 3/1, keo dai 7 ngay => expiredDate: 10/1
+  // VD: tao ngay 1/1, payment 1 tao 3/1, keo dai 7 ngay
+  //                   payment 2 tao 4/1, keo dai 7 ngay => expiredDate: 17/1
+  // VD: tao ngay 1/1, payment 1 tao 3/1, keo dai 7 ngay
+  //                   payment 2 tao 4/1, keo dai 7 ngay
+  //                   payment 3 tao 1/2, keo dai 7 ngay => expiredDate: 8/2
+
+  // user.expiredDate = newExpiredDAte?
+  // const updatedUser = await user.save();
+  // return updatedUser;
+};
+
+// export const updateUserExpiredDate = async (user, paymentPlan) => {
+//   console.log('user.expiredDate: ', user.expiredDate);
+//   const nowMoment = moment();
+//   const expiredMoment = moment(user.expiredDate);
+//   const extendMonths = paymentPlan.period;
+
+//   const time = getLaterMoment(expiredMoment, nowMoment);
+//   time.add({ months: extendMonths });
+//   console.log('extendMonths: ', extendMonths);
+//   console.log('time: ', time);
+
+//   user.expiredDate = time.toISOString();
+//   console.log('user.expiredDate.new: ', user.expiredDate);
+
+//   const updatedUser = await user.save();
+//   return updatedUser;
+// };
+
 export const checkUpdaterRoleAuthorization = (updaterRole, updatedRole) => {
   if (
     userRoles.indexOf(updaterRole) < userRoles.indexOf(updatedRole) ||
@@ -244,6 +282,10 @@ const uploadAvatar = async (user, stream) => {
 
   return user;
 };
-// export const refreshExpiredDate = async user => {
-//   const userPayments = await Payment.find({ customer: user._id.toString() });
-// };
+
+const getLaterMoment = (time1, time2) => {
+  if (time1.diff(time2) > 0) {
+    return time1;
+  }
+  return time2;
+};
