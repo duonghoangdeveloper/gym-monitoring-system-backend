@@ -32,14 +32,17 @@ export const getWarningById = async (_id, projection) => {
 // update status of warning to FAILED / SUCCESSED
 
 export const getWarnings = async (query, initialFind) => {
-  const warnings = mongooseQuery('Warning', query, initialFind);
-  await Promise.all(warnings.map(warning => refreshStatus(warning)));
+  const warnings = await mongooseQuery('Warning', query, initialFind);
+  await Promise.all(
+    Object.values(warnings.documents).map(async warning =>
+      refreshStatus(warning)
+    )
+  );
   return warnings;
-  // update status of warnings to FAILED / SUCCESSED using map
 };
 
 export const createWarning = async data => {
-  const { content, customerId, image } = data;
+  const { content, customerId } = data;
 
   if (!isNil(customerId)) {
     validateCustomerRequired(customerId);
