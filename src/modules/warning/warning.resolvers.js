@@ -18,9 +18,9 @@ export const Mutation = {
       'GYM_OWNER',
       'SYSTEM_ADMIN',
     ]);
-    const warningToUpdate = await getWarningById(_id);
-    const updatedWarning = await acceptWarning(warningToUpdate, supporter);
-    return generateDocumentPayload(updatedWarning);
+    const warningToAccept = await getWarningById(_id);
+    const acceptedWarning = await acceptWarning(warningToAccept, supporter);
+    return generateDocumentPayload(acceptedWarning);
   },
 
   async createWarning(_, { data }) {
