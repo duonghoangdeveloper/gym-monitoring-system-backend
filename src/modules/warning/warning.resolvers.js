@@ -10,6 +10,7 @@ import {
   deleteWarning,
   getWarningById,
   getWarnings,
+  sendWarningNotification,
 } from './warning.services';
 
 export const Mutation = {
@@ -34,6 +35,10 @@ export const Mutation = {
     const warningToDelete = await getWarningById(_id);
     const deletedWarning = await deleteWarning(warningToDelete);
     return generateDocumentPayload(deletedWarning);
+  },
+  async sendWaringsNotification(_, { deviceTokens }, { req }) {
+    await sendWarningNotification(deviceTokens, null);
+    return null;
   },
 };
 

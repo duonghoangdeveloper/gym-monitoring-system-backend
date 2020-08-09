@@ -29,6 +29,10 @@ const userSchema = new Schema(
       },
     },
 
+    deviceToken: {
+      type: String,
+    },
+
     displayName: {
       default: 'New user',
       trim: true,
@@ -72,7 +76,6 @@ const userSchema = new Schema(
     role: {
       ...generateSchemaEnumField(userRoles),
     },
-
     tokens: {
       default: [],
       required: true,
@@ -83,7 +86,6 @@ const userSchema = new Schema(
         },
       ],
     },
-
     username: {
       required: true,
       trim: true,

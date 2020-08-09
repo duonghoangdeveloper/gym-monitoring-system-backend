@@ -14,13 +14,13 @@ export const createFeedback = async (customer, data) => {
   const { content, staffIds, title } = data;
 
   validateContent(content);
-  validateTitle(title);
+  // validateTitle(title);
 
   const feedback = new Feedback({
     content,
     customer: customer._id,
     staffIds,
-    title,
+    // title,
   });
 
   const createdFeedback = await feedback.save();
@@ -31,7 +31,7 @@ export const getFeedbacks = async (query, initialFind) =>
   mongooseQuery('Feedback', query, initialFind);
 
 export const updateFeedback = async (feedback, data) => {
-  const { content, customer, staffIds, title } = data;
+  const { content, customer, staffIds /* , title */ } = data;
 
   if (content) {
     validateContent(content);
@@ -44,10 +44,10 @@ export const updateFeedback = async (feedback, data) => {
   //   feedback.customerID = customer;
   // }
 
-  if (title) {
-    validateTitle(title);
-    feedback.title = title;
-  }
+  // if (title) {
+  //   validateTitle(title);
+  //   feedback.title = title;
+  // }
 
   const updatedFeedback = await feedback.save();
   return updatedFeedback;
