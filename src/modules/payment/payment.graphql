@@ -1,5 +1,7 @@
 type Payment {
   _id: ID!
+
+  # Payment info
   creator: User!
   customer: User!
   paymentPlan: PaymentPlan!

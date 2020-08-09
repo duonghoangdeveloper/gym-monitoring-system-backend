@@ -12,9 +12,11 @@ type User {
   phone: String
   avatar: File
   isOnline: Boolean
+  expiredDate: String
 
   feedbacks(query: FeedbacksQueryInput): Feedbacks!
   payments(query: PaymentsQueryInput): Payments!
+  warnings(query: WarningsQueryInput): Warnings!
   createdPayments(query: PaymentsQueryInput): Payments!
 
   # Timestamp
@@ -62,10 +64,10 @@ type UserErrors {
   email: [String!]
   phone: [String!]
 }
-
 input SignInInput {
   username: String!
   password: String!
+  deviceToken: String
 }
 
 input UsersQueryInput {
@@ -112,7 +114,7 @@ input UpdateProfileInput {
   displayName: String
   phone: String
   email: String
-  gender: String
+  gender: Gender
 }
 
 input UpdatePasswordInput {

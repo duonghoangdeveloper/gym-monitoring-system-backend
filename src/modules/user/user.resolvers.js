@@ -45,7 +45,7 @@ export const Mutation = {
   async createUser(_, { data }, { req }) {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     checkUpdaterRoleAuthorization(req.user.role, data.role);
-    checkFacesEnough(req.user.role, data.faces);
+    checkFacesEnough(data.role, data.faces);
     const createdUser = await createUser(data);
     await uploadFaces(createdUser, data.faces);
     return generateDocumentPayload(createdUser);
