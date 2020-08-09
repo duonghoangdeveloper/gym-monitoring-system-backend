@@ -14,12 +14,11 @@ const refreshStatus = async warning => {
   const diff = now.diff(createdAt);
   const diffDuration = moment.duration(diff);
 
-  if (diffDuration.minutes() > 5 && warning.status === 'PENDING') {
+  if (diffDuration.minutes() > 1 && warning.status === 'PENDING') {
     warning.status = 'FAILED';
     const updatedWarning = await warning.save();
     return updatedWarning;
   }
-
   return warning;
 };
 
@@ -30,8 +29,12 @@ export const getWarningById = async (_id, projection) => {
 };
 
 export const getWarnings = async (query, initialFind) => {
-  const warnings = mongooseQuery('Warning', query, initialFind);
-  await Promise.all(warnings.map(warning => refreshStatus(warning)));
+  const warnings = await mongooseQuery('Warning', query, initialFind);
+  await Promise.all(
+    Object.values(warnings.documents).map(async warning =>
+      refreshStatus(warning)
+    )
+  );
   return warnings;
 };
 
@@ -64,6 +67,7 @@ export const acceptWarning = async (warning, supporter) => {
     warning.supporter = supporterId;
   }
   warning.status = 'SUCCEEDED';
+  console.log(warning);
 
   const updatedWarning = await warning.save();
   return updatedWarning;

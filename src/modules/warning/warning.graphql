@@ -33,11 +33,12 @@ input WarningsQueryInput {
   skip: Int
   limit: Int
   sort: String
-  search: WarningsSearchInput
+  filter: WarningsFilterInput
 }
 
-input WarningsSearchInput {
-  content: String
+input WarningsFilterInput {
+  creator: [ID!]
+  customer: [ID!]
 }
 
 input CreateWarningInput {
@@ -48,5 +49,5 @@ input CreateWarningInput {
 enum Status {
   PENDING
   FAILED
-  SUCCESSED
+  SUCCEEDED
 }

@@ -12,7 +12,7 @@ type User {
   phone: String
   avatar: File
   isOnline: Boolean
-  epiryDate: String
+  expiryDate: String
 
   feedbacks(query: FeedbacksQueryInput): Feedbacks!
   payments(query: PaymentsQueryInput): Payments!

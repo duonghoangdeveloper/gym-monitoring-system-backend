@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 
-import { getPaymentPlanById } from '../payment-plan/payment-plan.services';
-import { getUserById, updateUserEpiryDate } from '../user/user.services';
+// import { getPaymentPlanById } from '../payment-plan/payment-plan.services';
+import { getUserById, updateUserExpiryDate } from '../user/user.services';
 import {
   validateCreatorRequired,
   validateCustomerRequired,
@@ -53,26 +53,26 @@ paymentSchema.index({ createdAt: 1 }, { unique: true });
 paymentSchema.index({ customer: 1 }, { unique: true });
 paymentSchema.index({ creator: 1 }, { unique: true });
 
-// paymentSchema.post('save', recaculateEpiryDate);
-// paymentSchema.post('remove', recaculateEpiryDate);
 paymentSchema.post('save', async function(next) {
   const payment = this;
   const customerId = payment.customer.toString();
   const customer = await getUserById(customerId);
-  await updateUserEpiryDate(customer);
-  // next();
+  await updateUserExpiryDate(customer);
+});
+paymentSchema.post('remove', async function(next) {
+  const payment = this;
+  const customerId = payment.customer.toString();
+  const customer = await getUserById(customerId);
+  await updateUserExpiryDate(customer);
 });
 
-// const recaculateEpiryDate = function(next) {
-//   console.log(123);
-// };
-
-// const recaculateEpiryDate = async function(next) {
+// paymentSchema.post('save', recaculateExpiryDate);
+// paymentSchema.post('remove', recaculateExpiryDate);
+// const recaculateExpiryDate = async function(next) {
 //   const payment = this;
 //   const customerId = payment.customer.toString();
 //   const customer = await getUserById(customerId);
-//   await updateUserEpiryDate(customer);
-//   next();
+//   await updateUserExpiryDate(customer);
 // };
 
 export const Payment = mongoose.model('Payment', paymentSchema);
