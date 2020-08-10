@@ -17,7 +17,6 @@ const userSchema = new Schema(
     activationToken: {
       type: String,
     },
-
     avatar: {
       _id: false,
       key: {
