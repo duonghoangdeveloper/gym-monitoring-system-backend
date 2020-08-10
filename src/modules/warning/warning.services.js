@@ -9,8 +9,8 @@ import {
 } from './warning.validators';
 
 const refreshStatus = async warning => {
-  const createdAt = moment(warning.createdAt);
   const now = moment();
+  const createdAt = moment(warning.createdAt);
   const diff = now.diff(createdAt);
   const diffDuration = moment.duration(diff);
 
@@ -19,7 +19,6 @@ const refreshStatus = async warning => {
     const updatedWarning = await warning.save();
     return updatedWarning;
   }
-
   return warning;
 };
 
@@ -28,22 +27,23 @@ export const getWarningById = async (_id, projection) => {
   await refreshStatus(warning);
   return warning;
 };
-// update status of warning to FAILED / SUCCESSED
 
 export const getWarnings = async (query, initialFind) => {
-  const warnings = mongooseQuery('Warning', query, initialFind);
-  await Promise.all(warnings.map(warning => refreshStatus(warning)));
+  const warnings = await mongooseQuery('Warning', query, initialFind);
+  await Promise.all(
+    Object.values(warnings.documents).map(async warning =>
+      refreshStatus(warning)
+    )
+  );
   return warnings;
-  // update status of warnings to FAILED / SUCCESSED using map
 };
 
 export const createWarning = async data => {
-  const { content, customerId, image } = data;
+  const { content, customerId } = data;
 
   if (!isNil(customerId)) {
     validateCustomerRequired(customerId);
   }
-  // validateImage(image);
 
   const warning = new Warning({
     content,
@@ -76,9 +76,3 @@ export const deleteWarning = async warning => {
   const deletedWarning = await warning.remove();
   return deletedWarning;
 };
-
-// export const sendWarningNotification = async () => {};
-
-// setInterval(() => {
-//   sendWarningNotification();
-// }, 20000);

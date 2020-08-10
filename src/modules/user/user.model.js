@@ -41,7 +41,7 @@ const userSchema = new Schema(
       validate: validateEmail,
     },
 
-    expiredDate: {
+    expiryDate: {
       default: new Date(),
       trim: true,
       type: Date,

@@ -3,6 +3,7 @@ import {
   generateDocumentPayload,
   generateDocumentsPayload,
 } from '../../common/services';
+import { getUserById } from '../user/user.services';
 import {
   acceptWarning,
   createWarning,
@@ -18,9 +19,9 @@ export const Mutation = {
       'GYM_OWNER',
       'SYSTEM_ADMIN',
     ]);
-    const warningToUpdate = await getWarningById(_id);
-    const updatedWarning = await acceptWarning(warningToUpdate, supporter);
-    return generateDocumentPayload(updatedWarning);
+    const warningToAccept = await getWarningById(_id);
+    const acceptedWarning = await acceptWarning(warningToAccept, supporter);
+    return generateDocumentPayload(acceptedWarning);
   },
 
   async createWarning(_, { data }) {
@@ -46,5 +47,19 @@ export const Query = {
     checkRole(req.user);
     const warnings = await getWarnings(query);
     return generateDocumentsPayload(warnings);
+  },
+};
+
+export const Warning = {
+  async customer({ customer }, _, { req }) {
+    // checkRole(req.user, ['CUSTOMER', 'MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    const foundCustomer = await getUserById(customer);
+    return generateDocumentPayload(foundCustomer);
+  },
+
+  async supporter({ supporter }, _, { req }) {
+    // checkRole(req.user, ['CUSTOMER', 'MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    const foundCreator = await getUserById(supporter);
+    return generateDocumentPayload(foundCreator);
   },
 };
