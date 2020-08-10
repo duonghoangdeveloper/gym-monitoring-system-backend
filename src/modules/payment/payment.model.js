@@ -1,5 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 
+// expiredDate
+import { getPaymentPlanById } from '../payment-plan/payment-plan.services';
 // import { getPaymentPlanById } from '../payment-plan/payment-plan.services';
 import { getUserById, updateUserExpiryDate } from '../user/user.services';
 import {
@@ -50,7 +52,7 @@ const paymentSchema = new Schema(
 );
 
 paymentSchema.index({ createdAt: 1 }, { unique: true });
-paymentSchema.index({ customer: 1 }, { unique: true });
+paymentSchema.index({ customer: 1 }, {});
 paymentSchema.index({ creator: 1 }, { unique: true });
 
 paymentSchema.post('save', async function(next) {

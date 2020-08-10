@@ -1,6 +1,7 @@
 import atob from 'atob';
 import Blob from 'cross-blob';
 import { isNil } from 'lodash';
+import moment from 'moment';
 
 import { userRoles } from './enums';
 import * as models from './models';
@@ -30,7 +31,7 @@ export const checkRole = (user, roles = userRoles) => {
 };
 
 // 3 functions below for quering many documents
-const generateMongooseFilter = filter => {
+const generateMongooseFind = (filter, createdBetween) => {
   const mongooseFilter = {};
 
   if (typeof filter === 'object' && filter !== null) {
@@ -43,6 +44,16 @@ const generateMongooseFilter = filter => {
         }
       }
     });
+  }
+
+  if (
+    moment(createdBetween?.from, moment.ISO_8601, true).isValid() &&
+    moment(createdBetween?.to, moment.ISO_8601, true).isValid()
+  ) {
+    mongooseFilter.createdAt = {
+      $gt: createdBetween.from,
+      $lt: createdBetween.to,
+    };
   }
 
   return mongooseFilter;
@@ -82,7 +93,8 @@ export const mongooseQuery = async (modelName, query, initialFind) => {
     throwError('Invalid model name', 500);
   }
 
-  const { filter, isActive, limit, search, skip, sort } = query || {};
+  const { createdBetween, filter, isActive, limit, search, skip, sort } =
+    query || {};
 
   const sortArgs = sort || '-createdAt';
   const skipNumber = parseInt(skip, 10) || 0;
@@ -90,7 +102,7 @@ export const mongooseQuery = async (modelName, query, initialFind) => {
 
   const findFilter = {
     ...initialFind,
-    ...generateMongooseFilter(filter),
+    ...generateMongooseFind(filter, createdBetween),
     ...generateMongooseSearch(search),
     ...generateActivationQuery(isActive),
   };
@@ -125,6 +137,7 @@ export const getDocumentById = async (modelName, _id, projection) => {
   const document = await models[modelName].findById(_id, projection);
 
   if (!document) {
+    console.log(_id);
     throwError(`${modelName} not found`, 404);
   }
 
