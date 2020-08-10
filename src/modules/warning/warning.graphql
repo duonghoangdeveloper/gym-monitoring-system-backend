@@ -38,8 +38,9 @@ input WarningsQueryInput {
 }
 
 input WarningsFilterInput {
-  creator: [ID!]
-  customer: [ID!]
+  supporter: [ID]
+  customer: [ID]
+  status: [String]
 }
 
 input CreateWarningInput {
