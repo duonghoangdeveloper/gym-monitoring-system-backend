@@ -2,6 +2,7 @@ import { Expo } from 'expo-server-sdk';
 import isNil from 'lodash.isnil';
 import moment from 'moment';
 
+import { uploadBase64S3 } from '../../common/s3';
 import { getDocumentById, mongooseQuery } from '../../common/services';
 import { getAllOnlineTrainer } from '../user/user.services';
 import { Warning } from './warning.model';
@@ -33,10 +34,13 @@ export const getWarningById = async (_id, projection) => {
 // update status of warning to FAILED / SUCCESSED
 
 export const getWarnings = async (query, initialFind) => {
-  const warnings = mongooseQuery('Warning', query, initialFind);
-  await Promise.all(warnings.map(warning => refreshStatus(warning)));
+  const warnings = await mongooseQuery('Warning', query, initialFind);
+  await Promise.all(
+    Object.values(warnings.documents).map(async warning =>
+      refreshStatus(warning)
+    )
+  );
   return warnings;
-  // update status of warnings to FAILED / SUCCESSED using map
 };
 
 export const createWarning = async data => {
@@ -50,12 +54,13 @@ export const createWarning = async data => {
   const warning = new Warning({
     content,
     customer: customerId,
-    image: {
-      url:
-        'https://i.pinimg.com/originals/df/a6/e6/dfa6e62d42775848a01048ed114f23b0.jpg',
-    },
     status: 'PENDING',
   });
+  const s3Data = await uploadBase64S3(`warning/${warning._id}`, image);
+  warning.image = {
+    key: s3Data.Key,
+    url: s3Data.Location,
+  };
 
   const createdWarning = await warning.save();
   return createdWarning;

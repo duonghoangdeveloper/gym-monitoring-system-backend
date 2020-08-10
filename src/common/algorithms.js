@@ -1,6 +1,7 @@
 export const detectDangeous = ({ barbells, faces, poses }) => {
   // console.log(poses);
   // console.log(barbells);
+  console.log(faces);
   const people = poses
     .filter(
       pose =>
@@ -13,32 +14,32 @@ export const detectDangeous = ({ barbells, faces, poses }) => {
       barbell: barbells.find(
         ({ bottom, left, right, top }) =>
           checkInside(
-            calculateBodyPart(person.leftWrist)?.x,
-            calculateBodyPart(person.leftWrist)?.y,
+            calculateBodyPart(person.leftWrist) ?.x,
+            calculateBodyPart(person.leftWrist) ?.y,
             top,
             right,
             bottom,
             left
           ) ||
           checkInside(
-            calculateBodyPart(person.rightWrist)?.x,
-            calculateBodyPart(person.rightWrist)?.y,
+            calculateBodyPart(person.rightWrist) ?.x,
+            calculateBodyPart(person.rightWrist) ?.y,
             top,
             right,
             bottom,
             left
           ) ||
           checkInside(
-            calculateBodyPart(person.rightShoulder)?.x,
-            calculateBodyPart(person.rightShoulder)?.y,
+            calculateBodyPart(person.rightShoulder) ?.x,
+            calculateBodyPart(person.rightShoulder) ?.y,
             top,
             right,
             bottom,
             left
           ) ||
           checkInside(
-            calculateBodyPart(person.rightShoulder)?.x,
-            calculateBodyPart(person.rightShoulder)?.y,
+            calculateBodyPart(person.rightShoulder) ?.x,
+            calculateBodyPart(person.rightShoulder) ?.y,
             top,
             right,
             bottom,
@@ -54,11 +55,12 @@ export const detectDangeous = ({ barbells, faces, poses }) => {
       rightWrist: calculateBodyPart(person.rightWrist),
     }));
 
-  if (people.some(person => person.barbell)) {
-    if (Math.random() < 0.4) {
-      return true;
-    }
-  }
+  // if (people.some(person => person.barbell)) {
+  //   console.log(people);
+  //   if (Math.random() < 0.25) {
+  //     return true;
+  //   }
+  // }
 
   return false;
 

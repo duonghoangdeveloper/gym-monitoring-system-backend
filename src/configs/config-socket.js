@@ -13,6 +13,10 @@ import { PYTHON_SERVER_URI_APIS } from '../common/constants';
 import { store, TYPES } from '../common/redux';
 import { validateObjectId } from '../common/services';
 import { createCheckIn } from '../modules/check-in/check-in.services';
+import {
+  createWarning,
+  sendWarningNotificationToOnlineTrainers,
+} from '../modules/warning/warning.services';
 // import { base64toBlob } from '../common/services';
 
 /**
@@ -117,7 +121,14 @@ export const configSocket = app => {
                 }),
                 {}
               );
-            detectDangeous(gymData);
+            if (detectDangeous(gymData)) {
+              console.log('Hasagi');
+              const createdWarning = await createWarning({
+                content: 'Wrong position',
+                image,
+              });
+              await sendWarningNotificationToOnlineTrainers(createdWarning);
+            }
             // console.log(gymData);
             // store.dispatch({
             //   payload: {
