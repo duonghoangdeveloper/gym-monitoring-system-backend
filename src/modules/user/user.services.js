@@ -209,6 +209,14 @@ export const checkFacesEnough = (role, faces) => {
 //   return uploadAvatar(user, stream);
 // };
 
+export const getAllOnlineTrainer = async () => {
+  const trainers = await await User.find({
+    deviceToken: { $ne: null },
+    isOnline: true,
+  });
+  return trainers;
+};
+
 export const updateAvatarWithFileUpload = async (user, file) => {
   const { createReadStream, mimetype } = await file;
   if (mimetype !== 'image/jpeg' && mimetype !== 'image/png') {
