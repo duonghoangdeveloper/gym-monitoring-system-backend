@@ -3,6 +3,7 @@ import isNil from 'lodash.isnil';
 import moment from 'moment';
 
 import { getDocumentById, mongooseQuery } from '../../common/services';
+import { getAllOnlineTrainer } from '../user/user.services';
 import { Warning } from './warning.model';
 import {
   validateCustomerRequired,
@@ -89,6 +90,39 @@ export const sendWarningNotification = async (pushTokens, warning) => {
     }
     messages.push({
       body: 'This is a test notification',
+      data: { withSome: 'data' },
+      sound: 'default',
+      to: pushToken,
+    });
+  }
+  const chunks = expo.chunkPushNotifications(messages);
+  const tickets = [];
+  (async () => {
+    for (const chunk of chunks) {
+      try {
+        const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+        tickets.push(...ticketChunk);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  })();
+};
+
+export const sendWarningNotificationToOnlineTrainers = async warning => {
+  const expo = new Expo();
+  const trainers = await getAllOnlineTrainer();
+  console.log(123, trainers);
+  const trainersPushTokens = trainers.map(({ deviceToken }) => deviceToken);
+  console.log(trainersPushTokens);
+  const messages = [];
+  for (const pushToken of trainersPushTokens) {
+    console.log(pushToken);
+    if (!Expo.isExpoPushToken(pushToken)) {
+      console.error(`Push token ${pushToken} is not a valid Expo push token`);
+    }
+    messages.push({
+      body: 'This is warning notification',
       data: { withSome: 'data' },
       sound: 'default',
       to: pushToken,
