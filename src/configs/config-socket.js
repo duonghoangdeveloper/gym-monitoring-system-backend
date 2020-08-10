@@ -8,7 +8,8 @@ import socketio from 'socket.io';
 import { Readable } from 'stream';
 import { debounce } from 'throttle-debounce';
 
-import { PYTHON_SERVER_URI } from '../common/constants';
+import { detectDangeous } from '../common/algorithms';
+import { PYTHON_SERVER_URI_APIS } from '../common/constants';
 import { store, TYPES } from '../common/redux';
 import { validateObjectId } from '../common/services';
 import { createCheckIn } from '../modules/check-in/check-in.services';
@@ -80,29 +81,53 @@ export const configSocket = app => {
             type: TYPES.UPDATE_SCREEN_DETECTION_STATUS,
           });
           try {
-            const formData = new FormData();
-            formData.append('image', screenToDetect.snapshot.data, {
-              contentType: 'image/jpeg',
-              filename: 'snapshot',
-            });
-            const result = await axios.post(
-              `${PYTHON_SERVER_URI}/detect-gym-object/`,
-              formData,
-              {
-                headers: {
-                  ...formData.getHeaders(),
-                  Authorization: `Bearer ${TOKEN}`,
+            const image = screenToDetect.snapshot.data.toString('base64');
+            const combineResult = await Promise.all([
+              axios.post(
+                PYTHON_SERVER_URI_APIS.RECOGNIZE_PEOPLE,
+                {
+                  image,
                 },
-              }
-            );
-            store.dispatch({
-              payload: {
-                faces: result.data.faces ?? [],
-                updatedAt: screenToDetect.snapshot.timestamp,
-              },
-              type: TYPES.UPDATE_USER_ATTENDANCE,
-            });
+                {
+                  headers: {
+                    Authorization: `Bearer ${TOKEN}`,
+                    'Content-Type': 'application/json',
+                  },
+                }
+              ),
+              axios.post(
+                PYTHON_SERVER_URI_APIS.DETECT_BARBELLS,
+                {
+                  image,
+                },
+                {
+                  headers: {
+                    Authorization: `Bearer ${TOKEN}`,
+                    'Content-Type': 'application/json',
+                  },
+                }
+              ),
+            ]);
+            const gymData = combineResult
+              .map(result => result.data)
+              .reduce(
+                (accumulator, currentValue) => ({
+                  ...accumulator,
+                  ...currentValue,
+                }),
+                {}
+              );
+            detectDangeous(gymData);
+            // console.log(gymData);
+            // store.dispatch({
+            //   payload: {
+            //     faces: result.data.faces ?? [],
+            //     updatedAt: screenToDetect.snapshot.timestamp,
+            //   },
+            //   type: TYPES.UPDATE_USER_ATTENDANCE,
+            // });
           } catch (_) {
+            console.log(_);
             // Do nothing
           }
           store.dispatch({
@@ -190,7 +215,7 @@ export const configSocket = app => {
           const updateCheckInPayload = {};
           try {
             const result = await axios.post(
-              `${PYTHON_SERVER_URI}/check-in/`,
+              PYTHON_SERVER_URI_APIS.CHECK_IN,
               {
                 image: currentWebcam.snapshot.data,
               },
@@ -216,8 +241,8 @@ export const configSocket = app => {
                 if (createdCheckIn) {
                   updateCheckInPayload.lastCheckIn = {
                     _id: createdCheckIn._id,
+                    lastFace: userId,
                     timestamp: Date.now(),
-                    userId,
                   };
                 }
               }
