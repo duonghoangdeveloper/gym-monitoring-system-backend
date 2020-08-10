@@ -1,5 +1,6 @@
 import atob from 'atob';
 import Blob from 'cross-blob';
+import { isNil } from 'lodash';
 import moment from 'moment';
 
 import { userRoles } from './enums';
@@ -77,12 +78,23 @@ const generateMongooseSearch = search => {
 
   return {};
 };
+const generateActivationQuery = isActive =>
+  isNil(isActive)
+    ? {}
+    : isActive
+    ? {
+        activationToken: null,
+      }
+    : {
+        activationToken: { $ne: null },
+      };
 export const mongooseQuery = async (modelName, query, initialFind) => {
   if (!models[modelName]) {
     throwError('Invalid model name', 500);
   }
 
-  const { createdBetween, filter, limit, search, skip, sort } = query || {};
+  const { createdBetween, filter, isActive, limit, search, skip, sort } =
+    query || {};
 
   const sortArgs = sort || '-createdAt';
   const skipNumber = parseInt(skip, 10) || 0;
@@ -92,6 +104,7 @@ export const mongooseQuery = async (modelName, query, initialFind) => {
     ...initialFind,
     ...generateMongooseFind(filter, createdBetween),
     ...generateMongooseSearch(search),
+    ...generateActivationQuery(isActive),
   };
 
   const [documents, total] = await Promise.all([

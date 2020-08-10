@@ -21,6 +21,7 @@ type Query {
 type Mutation {
   createWarning(data: CreateWarningInput!): Warning!  
   acceptWarning(_id: ID!): Warning!
+  sendWaringsNotification(deviceTokens: [String!]!): Warning
   deleteWarning(_id: ID!): Warning!
 }
 

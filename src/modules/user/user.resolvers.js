@@ -11,10 +11,12 @@ import { getFeedbacks } from '../feedback/feedback.services';
 import { getPayments } from '../payment/payment.services';
 import { getWarnings } from '../warning/warning.services';
 import {
+  activateUser,
   changeOnlineStatus,
   checkFacesEnough,
   checkUpdaterRoleAuthorization,
   createUser,
+  deactivateUser,
   getUserById,
   getUsers,
   signIn,
@@ -25,6 +27,14 @@ import {
 } from './user.services';
 
 export const Mutation = {
+  async activateUser(_, { _id }, { req }) {
+    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    const user = await getUserById(_id);
+    checkUpdaterRoleAuthorization(req.user.role, user.role);
+    const removedUser = await activateUser(user);
+    return generateDocumentPayload(removedUser);
+  },
+
   async changeOnlineStatus(_, { _id, status }, { req }) {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const trainerToUpdate = await getUserById(_id);
@@ -41,6 +51,13 @@ export const Mutation = {
     const createdUser = await createUser(data);
     await uploadFaces(createdUser, data.faces);
     return generateDocumentPayload(createdUser);
+  },
+  async deactivateUser(_, { _id }, { req }) {
+    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    const user = await getUserById(_id);
+    checkUpdaterRoleAuthorization(req.user.role, user.role);
+    const removedUser = await deactivateUser(user);
+    return generateDocumentPayload(removedUser);
   },
   async signIn(_, { data }) {
     const { token, user } = await signIn(data);
@@ -80,7 +97,7 @@ export const Query = {
     return generateDocumentPayload(user);
   },
   async users(_, { query }, { req }) {
-    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    checkRole(req.user, ['CUSTOMER', 'MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const users = await getUsers(query);
     return generateDocumentsPayload(users);
   },
