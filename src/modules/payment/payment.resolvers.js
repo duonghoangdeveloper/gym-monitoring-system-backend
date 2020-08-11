@@ -78,10 +78,11 @@ export const Query = {
         ...query,
         filter: { customer: [user._id.toString()] },
       });
+
       return generateDocumentsPayload(customerPayments);
     }
-
     const payments = await getPayments(query);
+
     return generateDocumentsPayload(payments);
   },
 };

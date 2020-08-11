@@ -46,6 +46,15 @@ export const users = [
     },
     token: null,
   },
+  {
+    document: null,
+    input: {
+      password: '123456',
+      role: 'CUSTOMER',
+      username: 'customer2',
+    },
+    token: null,
+  },
 ];
 
 export const seedUsers = async () => {

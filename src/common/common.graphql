@@ -18,3 +18,8 @@ type File {
 }
 
 scalar Upload
+
+input CreatedBetweenInput {
+  from: String!
+  to: String!
+}

@@ -4,7 +4,7 @@ import {
   generateDocumentPayload,
   generateDocumentsPayload,
 } from '../../common/services';
-// import { getUserById } from '../user/user.services';
+import { getUserById } from '../user/user.services';
 import {
   createFeedback,
   deleteFeedback,
@@ -35,7 +35,7 @@ export const Mutation = {
   async updateFeedbackByCustomer(_, { _id, data }, { req }) {
     checkRole(req.user, ['CUSTOMER']);
     const feedbackToUpdate = await getFeedbackById(_id);
-    checkBelongingness(feedbackToUpdate, req.user._id);
+    checkBelongingness(feedbackToUpdate, req.user._id.toString(), 'customer');
     const updatedFeedback = await updateFeedback(feedbackToUpdate, data);
     return generateDocumentPayload(updatedFeedback);
   },

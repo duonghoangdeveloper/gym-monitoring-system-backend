@@ -36,6 +36,7 @@ export const uploadFaces = async (user, files) => {
     const createdFaces = await Face.create(faces);
     return createdFaces;
   } catch (_) {
+    console.log('error', _);
     try {
       await Promise.all([deleteDirectoryS3(`face/${user._id}`), user.remove()]);
     } catch (__) {
