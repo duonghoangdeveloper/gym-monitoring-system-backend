@@ -48,6 +48,7 @@ export const signIn = async data => {
 
 export const signOut = async (user, token) => {
   user.tokens = user.tokens.filter(t => t !== token);
+  user.deviceToken = null;
   const signedOutUser = await user.save();
   return signedOutUser;
 };
