@@ -31,14 +31,20 @@ input PaymentsQueryInput {
   skip: Int
   limit: Int
   sort: String
+  # search: PaymentsSearchInput
   filter: PaymentsFilterInput
+  createdBetween: CreatedBetweenInput
 }
 
 input PaymentsFilterInput {
   creator: [ID!]
   customer: [ID!]
 }
-
+# input PaymentsSearchInput {
+#    creator: [User!]
+#   customer: [User!]
+#   package: [Package!]
+# }
 input CreatePaymentInput {
   customerId: ID!
   paymentPlanId: ID!

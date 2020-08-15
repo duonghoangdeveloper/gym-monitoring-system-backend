@@ -11,6 +11,7 @@ import {
   getWarningById,
   getWarnings,
   sendWarningNotification,
+  sendWarningNotificationToOnlineTrainers,
 } from './warning.services';
 
 export const Mutation = {
@@ -37,7 +38,7 @@ export const Mutation = {
     return generateDocumentPayload(deletedWarning);
   },
   async sendWaringsNotification(_, { deviceTokens }, { req }) {
-    await sendWarningNotification(deviceTokens, null);
+    await sendWarningNotificationToOnlineTrainers(null);
     return null;
   },
 };
