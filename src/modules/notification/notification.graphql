@@ -18,8 +18,9 @@ type Query {
 
 type Mutation {
   createNotification(data: CreateNotificationInput!): Notification!
+  updateNotification(_id: ID!, data: UpdateNotificationInput!): Notification!
   deleteNotification(_id: ID!): Notification!
-  sendWaringsNotification(deviceTokens: [String!]!): Notification
+  # sendWaringsNotification(deviceTokens: [String!]!): Notification 
 }
 
 type Notifications {
@@ -33,7 +34,7 @@ input NotificationsQueryInput {
   sort: String
   filter: NotificationsFilterInput
   search: NotificationsSearchInput
-  createdBetween: CreatedBetweenInput
+  # createdBetween: CreatedBetweenInput
   lastId: ID
 }
 
@@ -42,12 +43,18 @@ input NotificationsFilterInput {
 }
 
 input CreateNotificationInput {
-  user: ID
+  userId: ID
   content: String
 }
+
+input UpdateNotificationInput {
+  status: String
+}
+
 input NotificationsSearchInput{
   status: String
 }
+
 enum Status {
   NEW
   SEEN

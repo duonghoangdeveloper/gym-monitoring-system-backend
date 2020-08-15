@@ -20,6 +20,7 @@ export const getNotificationById = async (_id, projection) => {
   await refreshStatus(notification);
   return notification;
 };
+
 export const getNotifications = async (query, initialFind) =>
   mongooseQuery('Notification', query, initialFind);
 
@@ -38,6 +39,13 @@ export const createNotification = async data => {
 
   const createdNotification = await notification.save();
   return createdNotification;
+};
+
+export const updateNotification = async (notification, data) => {
+  const { status } = data;
+  notification.status = status;
+  const updatedNotification = await notification.save();
+  return updatedNotification;
 };
 
 export const deleteNotification = async notification => {

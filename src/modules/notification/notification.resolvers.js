@@ -9,8 +9,9 @@ import {
   deleteNotification,
   getNotificationById,
   getNotifications,
-  sendNotificationNotification,
-  sendNotificationNotificationToOnlineTrainers,
+  updateNotification,
+  // sendNotificationNotification,
+  // sendNotificationNotificationToOnlineTrainers,
 } from './notification.services';
 
 export const Mutation = {
@@ -25,10 +26,21 @@ export const Mutation = {
     const deletedNotification = await deleteNotification(notificationToDelete);
     return generateDocumentPayload(deletedNotification);
   },
-  async sendWaringsNotification(_, { deviceTokens }, { req }) {
-    await sendNotificationNotificationToOnlineTrainers(null);
-    return null;
+
+  async updateNotification(_, { _id, data }, { req }) {
+    checkRole(req.user);
+    const notificationToUpdate = await getNotificationById(_id);
+    const updatedNotification = await updateNotification(
+      notificationToUpdate,
+      data
+    );
+    return generateDocumentPayload(updatedNotification);
   },
+
+  // async sendWaringsNotification(_, { deviceTokens }, { req }) {
+  //   await sendNotificationNotificationToOnlineTrainers(null);
+  //   return null;
+  // },
 };
 
 export const Query = {
