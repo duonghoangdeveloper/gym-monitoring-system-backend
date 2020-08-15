@@ -32,11 +32,6 @@ const warningSchema = new mongoose.Schema(
       },
     },
 
-    note: {
-      trim: true,
-      type: String,
-    },
-
     status: {
       required: true,
       trim: true,
