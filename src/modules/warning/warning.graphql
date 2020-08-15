@@ -50,6 +50,7 @@ input CreateWarningInput {
   content: String
 }
 input WarningsSearchInput{
+  content: String
    status: String
 }
 enum Status {

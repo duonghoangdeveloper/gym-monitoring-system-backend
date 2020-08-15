@@ -26,6 +26,8 @@ type User {
 type Query {
   auth: User!
   users(query: UsersQueryInput): Users!
+  usersCount(query: UsersCountInput): Int!
+  usersCounts(queries: [UsersCountInput!]): [Int]!
   validateUser(data: ValidateUserInput): UserErrors!
 }
 
@@ -62,6 +64,7 @@ type UserErrors {
   email: [String!]
   phone: [String!]
 }
+
 input SignInInput {
   username: String!
   password: String!
@@ -72,6 +75,13 @@ input UsersQueryInput {
   skip: Int
   limit: Int
   sort: String
+  search: UsersSearchInput
+  filter: UsersFilterInput
+  createdBetween: CreatedBetweenInput
+  isActive: Boolean
+}
+
+input UsersCountInput {
   search: UsersSearchInput
   filter: UsersFilterInput
   createdBetween: CreatedBetweenInput

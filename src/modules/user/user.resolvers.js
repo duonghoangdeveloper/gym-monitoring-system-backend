@@ -15,6 +15,7 @@ import {
   changeOnlineStatus,
   checkFacesEnough,
   checkUpdaterRoleAuthorization,
+  countUsers,
   createUser,
   deactivateUser,
   getUserById,
@@ -97,9 +98,20 @@ export const Query = {
     return generateDocumentPayload(user);
   },
   async users(_, { query }, { req }) {
-    checkRole(req.user, ['CUSTOMER', 'MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const users = await getUsers(query);
     return generateDocumentsPayload(users);
+  },
+  async usersCount(_, { query }, { req }) {
+    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    const usersCount = await countUsers(query);
+    return usersCount || 0;
+  },
+  async usersCounts(_, { queries }, { req }) {
+    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    console.log(queries);
+    const usersCounts = Promise.all(queries.map(query => countUsers(query)));
+    return usersCounts || [];
   },
   async validateUser(_, { data }) {
     const errorMapping = {};
