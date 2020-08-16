@@ -92,10 +92,16 @@ input UsersSearchInput {
   username: String
   displayName: String
   email: String
+  role: Role
+
+
 }
 
 input UsersFilterInput {
   role: [Role!]
+
+  
+
 }
 
 input CreateUserInput {
