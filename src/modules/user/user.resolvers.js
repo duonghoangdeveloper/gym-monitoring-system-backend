@@ -37,14 +37,23 @@ export const Mutation = {
   },
 
   async changeOnlineStatus(_, { _id, status }, { req }) {
-    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
-    const trainerToUpdate = await getUserById(_id);
-    if (trainerToUpdate.role === 'TRAINER') {
-      const updatedTrainer = await changeOnlineStatus(trainerToUpdate, status);
+    checkRole(req.user, ['TRAINER', 'MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    if (req.user.role !== 'TRAINER') {
+      const trainerToUpdate = await getUserById(_id);
+      if (trainerToUpdate.role === 'TRAINER') {
+        const updatedTrainer = await changeOnlineStatus(
+          trainerToUpdate,
+          status
+        );
+        return updatedTrainer;
+      }
+    } else {
+      const updatedTrainer = await changeOnlineStatus(req.user, status);
       return updatedTrainer;
     }
     throwError('Only trainer online status can be updated', 400);
   },
+
   async createUser(_, { data }, { req }) {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     checkUpdaterRoleAuthorization(req.user.role, data.role);

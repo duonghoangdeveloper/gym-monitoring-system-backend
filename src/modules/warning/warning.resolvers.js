@@ -57,15 +57,13 @@ export const Query = {
 };
 
 export const Warning = {
-  async customer({ customer }, _, { req }) {
-    // checkRole(req.user, ['CUSTOMER', 'MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+  async customer({ customer }) {
     const foundCustomer = await getUserById(customer);
     return generateDocumentPayload(foundCustomer);
   },
 
-  async supporter({ supporter }, _, { req }) {
-    // checkRole(req.user, ['CUSTOMER', 'MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
-    const foundCreator = await getUserById(supporter);
-    return generateDocumentPayload(foundCreator);
+  async supporter({ supporter }) {
+    const foundSupporter = await getUserById(supporter);
+    return generateDocumentPayload(foundSupporter);
   },
 };
