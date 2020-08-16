@@ -19,10 +19,10 @@ type Query {
 }
 
 type Mutation {
-  createWarning(data: CreateWarningInput!): Warning!  
   acceptWarning(_id: ID!): Warning!
-  sendWaringsNotification(deviceTokens: [String!]!): Warning
+  createWarning(data: CreateWarningInput!): Warning!  
   deleteWarning(_id: ID!): Warning!
+  sendWaringsNotification(deviceTokens: [String!]!): Warning
 }
 
 type Warnings {
@@ -35,23 +35,21 @@ input WarningsQueryInput {
   limit: Int
   sort: String
   filter: WarningsFilterInput
-  search: WarningsSearchInput
-  createdBetween: CreatedBetweenInput
-
+  # createdBetween: CreatedBetweenInput
+  lastId: ID
 }
 
 input WarningsFilterInput {
-  creator: [ID!]
-  customer: [ID!]
+  customer: [ID]
+  supporter: [ID]
+  status: [String]
 }
 
 input CreateWarningInput {
   customerId: ID
   content: String
 }
-input WarningsSearchInput{
-   status: String
-}
+
 enum Status {
   PENDING
   FAILED

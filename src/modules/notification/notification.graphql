@@ -1,0 +1,61 @@
+type Notification{
+  _id: ID!
+  user: User!
+
+  # Notification info
+  content: String!
+  status: NotificationStatus!
+  
+  # Timestamp
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Query {
+  notification(_id: ID!): Notification!
+  notifications(query: NotificationsQueryInput): Notifications!
+}
+
+type Mutation {
+  createNotification(data: CreateNotificationInput!): Notification!
+  updateNotification(_id: ID!, data: UpdateNotificationInput!): Notification!
+  deleteNotification(_id: ID!): Notification!
+  # sendWaringsNotification(deviceTokens: [String!]!): Notification 
+}
+
+type Notifications {
+  data: [Notification!]!
+  total: Int!
+}
+
+input NotificationsQueryInput {
+  skip: Int
+  limit: Int
+  sort: String
+  filter: NotificationsFilterInput
+  search: NotificationsSearchInput
+  # createdBetween: CreatedBetweenInput
+  lastId: ID
+}
+
+input NotificationsFilterInput {
+  user: [ID]
+}
+
+input CreateNotificationInput {
+  userId: ID
+  content: String
+}
+
+input UpdateNotificationInput {
+  status: String
+}
+
+input NotificationsSearchInput{
+  status: String
+}
+
+enum NotificationStatus {
+  NEW
+  SEEN
+}
