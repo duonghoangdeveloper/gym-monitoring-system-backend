@@ -53,10 +53,7 @@ export const deleteNotification = async notification => {
   return deletedNotification;
 };
 
-export const sendNotificationNotification = async (
-  pushTokens,
-  notification
-) => {
+export const sendNotification = async (pushTokens, notification) => {
   const expo = new Expo();
 
   const messages = [];
@@ -86,7 +83,7 @@ export const sendNotificationNotification = async (
   })();
 };
 
-export const sendNotificationNotificationToOnlineTrainers = async notification => {
+export const sendNotificationToOnlineTrainers = async notification => {
   const expo = new Expo();
   const trainers = await getAllOnlineTrainer();
   console.log(123, trainers);

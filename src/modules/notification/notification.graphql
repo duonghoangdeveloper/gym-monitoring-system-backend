@@ -1,10 +1,10 @@
 type Notification{
   _id: ID!
-  user: User
+  user: User!
 
   # Notification info
   content: String!
-  status: Status!
+  status: NotificationStatus!
   
   # Timestamp
   createdAt: String!
@@ -55,7 +55,7 @@ input NotificationsSearchInput{
   status: String
 }
 
-enum Status {
+enum NotificationStatus {
   NEW
   SEEN
 }
