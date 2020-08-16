@@ -10,8 +10,6 @@ import {
   getNotificationById,
   getNotifications,
   updateNotification,
-  // sendNotification,
-  // sendNotificationToOnlineTrainers,
 } from './notification.services';
 
 export const Mutation = {
@@ -36,11 +34,6 @@ export const Mutation = {
     );
     return generateDocumentPayload(updatedNotification);
   },
-
-  // async sendNotification(_, { deviceTokens }, { req }) {
-  //   await sendNotificationNotificationToOnlineTrainers(null);
-  //   return null;
-  // },
 };
 
 export const Query = {
