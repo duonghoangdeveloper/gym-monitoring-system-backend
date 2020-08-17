@@ -65,6 +65,33 @@ export const signOutAll = async user => {
   return signedOutUser;
 };
 
+export const createDummyUser = async (amount, role) => {
+  const users = [];
+  for (let i = 0; i < amount; i++) {
+    const username = `Dummy${i}${role}`;
+    const password = `Dummy${i}${role}`;
+    const displayName = `Dummy${i}${role}`;
+    const gender = 'OTHER';
+    const email = `dummy${i}${role}@abc.com`;
+    const phone = `0909090909${i}`;
+    try {
+      const createdUser = await createUser({
+        displayName,
+        email,
+        gender,
+        password,
+        phone,
+        role,
+        username,
+      });
+      users.push(createdUser);
+    } catch (e) {
+      // console.log(e);
+    }
+  }
+  return users;
+};
+
 export const createUser = async data => {
   const { displayName, email, gender, password, phone, role, username } = data;
 
@@ -74,12 +101,12 @@ export const createUser = async data => {
 
   if (!isNil(email)) {
     await validateEmail(email);
-    await validateEmailExists(email);
+    // await validateEmailExists(email);
   }
 
   if (!isNil(phone)) {
     await validatePhone(phone);
-    await validatePhoneExists(phone);
+    // await validatePhoneExists(phone);
   }
 
   if (!isNil(role)) {
@@ -245,6 +272,11 @@ export const changeOnlineStatus = async (trainer, status) => {
 export const deleteUser = async user => {
   const deletedUser = await user.remove();
   return deletedUser;
+};
+
+export const deleteUsers = async users => {
+  await users.map(user => user.remove());
+  return users.length;
 };
 
 export const updatePassword = async (user, data) => {
