@@ -1,10 +1,10 @@
-import atob from 'atob';
 import Blob from 'cross-blob';
 import { isNil } from 'lodash';
 import moment from 'moment';
 
 import { userRoles } from './enums';
 import * as models from './models';
+import { store } from './redux';
 import { validatorMapping } from './validators';
 
 export const throwError = (message, statusCode = 500, data) => {
@@ -47,8 +47,8 @@ const generateMongooseFind = (filter, createdBetween) => {
   }
 
   if (
-    moment(createdBetween?.from, moment.ISO_8601, true).isValid() &&
-    moment(createdBetween?.to, moment.ISO_8601, true).isValid()
+    moment(createdBetween ?.from, moment.ISO_8601, true).isValid() &&
+    moment(createdBetween ?.to, moment.ISO_8601, true).isValid()
   ) {
     mongooseFilter.createdAt = {
       $gt: createdBetween.from,
@@ -82,10 +82,10 @@ const generateActivationQuery = isActive =>
   isNil(isActive)
     ? {}
     : isActive
-    ? {
+      ? {
         activationToken: null,
       }
-    : {
+      : {
         activationToken: { $ne: null },
       };
 const generateQueryArguments = (modelName, query, initialFind) => {
@@ -227,7 +227,7 @@ export const validateField = async (model, field, value) => {
     throwError('Invalid model name', 500);
   }
 
-  const validators = validatorMapping[model]?.[field] ?? [];
+  const validators = validatorMapping[model] ?.[field] ?? [];
   const errors = (
     await Promise.all(
       validators.map(async validator => {
@@ -266,4 +266,11 @@ export const base64toBlob = dataURI => {
   }
 
   return new Blob([ia], { type: mimeString });
+};
+
+export const getFPS = () => {
+  const fps = !Number.isNaN(Number(store.getState().common.fps))
+    ? Number(store.getState().common.fps)
+    : 30;
+  return fps < 30 ? fps : 30;
 };

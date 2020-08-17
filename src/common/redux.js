@@ -6,6 +6,7 @@ import { validateObjectId } from './services';
 const { createStore } = require('redux');
 
 const INITIAL_STATE = {
+  cameras: [],
   checkIn: {
     lastCheckIn: null,
     lastFace: null,
@@ -14,7 +15,6 @@ const INITIAL_STATE = {
   common: {
     fps: 30,
   },
-  screens: [],
   sockets: [],
   usersAttendance: {
     updatedAt: Date.now(),
@@ -23,36 +23,32 @@ const INITIAL_STATE = {
 };
 
 export const TYPES = {
-  ADD_SCREEN: 'ADD_SCREEN',
+  ADD_CAMERA: 'ADD_CAMERA',
   ADD_SOCKET: 'ADD_SOCKET',
   ADD_WEBCAM: 'ADD_WEBCAM',
-  REMOVE_SCREEN: 'REMOVE_SCREEN',
+  REMOVE_CAMERA: 'REMOVE_CAMERA',
   REMOVE_SOCKET: 'REMOVE_SOCKET',
   REMOVE_WEBCAM: 'REMOVE_WEBCAM',
+  UPDATE_CAMERA: 'UPDATE_CAMERA',
   UPDATE_CHECK_IN: 'UPDATE_CHECK_IN',
-  UPDATE_FPS: 'UPDATE_FPS',
-  UPDATE_SCREEN_DETECTION_STATUS: 'UPDATE_SCREEN_DETECTION_STATUS',
-  UPDATE_SCREEN_SNAPSHOT: 'UPDATE_SCREEN_SNAPSHOT',
-  UPDATE_SOCKET_CHECK_IN_STATUS: 'UPDATE_SOCKET_CHECK_IN_STATUS',
-  UPDATE_SOCKET_SCREENS_STATUS: 'UPDATE_SOCKET_SCREENS_STATUS',
-  UPDATE_SOCKET_USERS_ATTENDANCE_STATUS:
-    'UPDATE_SOCKET_USERS_ATTENDANCE_STATUS',
+  UPDATE_COMMON: 'UPDATE_COMMON',
+  UPDATE_SOCKET: 'UPDATE_SOCKET',
   UPDATE_USER_ATTENDANCE: 'UPDATE_USER_ATTENDANCE',
-  UPDATE_WEBCAM_DETECTION_STATUS: 'UPDATE_WEBCAM_DETECTION_STATUS',
-  UPDATE_WEBCAM_SNAPSHOT: 'UPDATE_WEBCAM_SNAPSHOT',
+  UPDATE_WEBCAM: 'UPDATE_WEBCAM',
 };
 
 const reducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case TYPES.ADD_SCREEN:
+    case TYPES.ADD_CAMERA:
       return {
         ...state,
-        screens: [...state.screens, action.payload.screen],
-      };
-    case TYPES.ADD_WEBCAM:
-      return {
-        ...state,
-        webcam: action.payload.webcam,
+        cameras: [
+          ...state.cameras,
+          {
+            ...action.payload,
+            updatedAt: Date.now(),
+          },
+        ],
       };
     case TYPES.ADD_SOCKET:
       return {
@@ -60,17 +56,24 @@ const reducer = (state = INITIAL_STATE, action) => {
         sockets: [
           ...state.sockets,
           {
-            screensStatus: 'READY',
-            socket: action.payload.socket,
-            usersAttendanceStatus: 'READY',
+            ...action.payload,
+            updatedAt: Date.now(),
           },
         ],
       };
-    case TYPES.REMOVE_SCREEN:
+    case TYPES.ADD_WEBCAM:
       return {
         ...state,
-        screens: state.screens.filter(
-          screen => screen.key !== action.payload.key
+        webcam: {
+          ...action.payload,
+          updatedAt: Date.now(),
+        },
+      };
+    case TYPES.REMOVE_CAMERA:
+      return {
+        ...state,
+        cameras: state.cameras.filter(
+          camera => camera.key !== action.payload.key
         ),
       };
     case TYPES.REMOVE_SOCKET:
@@ -85,6 +88,19 @@ const reducer = (state = INITIAL_STATE, action) => {
         ...state,
         webcam: null,
       };
+    case TYPES.UPDATE_CAMERA:
+      return {
+        ...state,
+        cameras: state.cameras.map(camera =>
+          camera.key === action.payload.key
+            ? {
+              ...camera,
+              ...action.payload,
+              updatedAt: Date.now(),
+            }
+            : camera
+        ),
+      };
     case TYPES.UPDATE_CHECK_IN:
       return {
         ...state,
@@ -94,108 +110,49 @@ const reducer = (state = INITIAL_STATE, action) => {
           updatedAt: Date.now(),
         },
       };
-    case TYPES.UPDATE_FPS:
+    case TYPES.UPDATE_COMMON:
       return {
         ...state,
         common: {
           ...state.common,
-          fps: action.payload.fps,
+          ...action.payload,
+          updatedAt: Date.now(),
         },
       };
-    case TYPES.UPDATE_SCREEN_DETECTION_STATUS:
-      return {
-        ...state,
-        screens: state.screens.map(screen =>
-          screen.key === action.payload.key
-            ? {
-                ...screen,
-                detectionStatus: action.payload.detectionStatus,
-              }
-            : screen
-        ),
-      };
-    case TYPES.UPDATE_SCREEN_SNAPSHOT:
-      return {
-        ...state,
-        screens: state.screens.map(screen =>
-          screen.key === action.payload.key
-            ? {
-                ...screen,
-                snapshot:
-                  !screen.snapshot ||
-                  action.payload.snapshot.timestamp > screen.snapshot.timestamp
-                    ? action.payload.snapshot
-                    : screen.snapshot,
-              }
-            : screen
-        ),
-      };
-    case TYPES.UPDATE_SOCKET_CHECK_IN_STATUS:
+    case TYPES.UPDATE_SOCKET:
       return {
         ...state,
         sockets: state.sockets.map(socketObj =>
           socketObj.socket === action.payload.socket
             ? {
-                ...socketObj,
-                checkInStatus: action.payload.checkInStatus,
-              }
-            : socketObj
-        ),
-      };
-    case TYPES.UPDATE_SOCKET_SCREENS_STATUS:
-      return {
-        ...state,
-        sockets: state.sockets.map(socketObj =>
-          socketObj.socket === action.payload.socket
-            ? {
-                ...socketObj,
-                screensStatus: action.payload.screensStatus,
-              }
-            : socketObj
-        ),
-      };
-    case TYPES.UPDATE_SOCKET_USERS_ATTENDANCE_STATUS:
-      return {
-        ...state,
-        sockets: state.sockets.map(socketObj =>
-          socketObj.socket === action.payload.socket
-            ? {
-                ...socketObj,
-                usersAttendanceStatus: action.payload.usersAttendanceStatus,
-              }
+              ...socketObj,
+              ...action.payload,
+              updatedAt: Date.now(),
+            }
             : socketObj
         ),
       };
     case TYPES.UPDATE_USER_ATTENDANCE:
       return {
         ...state,
-        usersAttendance: generateNewUsersAttendance(
-          state.usersAttendance,
-          action.payload.faces,
-          action.payload.updatedAt
-        ),
+        usersAttendance: {
+          ...generateNewUsersAttendance(
+            state.usersAttendance,
+            action.payload.faces
+          ),
+          updatedAt: Date.now(),
+        },
       };
-    case TYPES.UPDATE_WEBCAM_DETECTION_STATUS:
+    case TYPES.UPDATE_WEBCAM:
       return {
         ...state,
         webcam: state.webcam
           ? {
-              ...state.webcam,
-              detectionStatus: action.payload.detectionStatus,
-            }
+            ...state.webcam,
+            ...action.payload,
+            updatedAt: Date.now(),
+          }
           : null,
-      };
-    case TYPES.UPDATE_WEBCAM_SNAPSHOT:
-      return {
-        ...state,
-        webcam: {
-          ...state.webcam,
-          snapshot:
-            !state.webcam.snapshot ||
-            action.payload.snapshot.timestamp > state.webcam.snapshot.timestamp
-              ? action.payload.snapshot
-              : state.webcam.snapshot,
-        },
       };
     default:
       return state;
@@ -204,16 +161,11 @@ const reducer = (state = INITIAL_STATE, action) => {
 
 export const store = createStore(reducer);
 
-const generateNewUsersAttendance = (
-  currentUsersAttendance,
-  faces,
-  updatedAt
-) => {
+const generateNewUsersAttendance = (currentUsersAttendance, faces) => {
   const newUsersAttendance = {
     ...currentUsersAttendance,
-    updatedAt,
   };
-  const decay = (updatedAt - currentUsersAttendance.updatedAt) / 30000;
+  const decay = (Date.now() - currentUsersAttendance.updatedAt) / 30000;
   faces.forEach(({ label }) => {
     if (validateObjectId(label)) {
       if (isNil(newUsersAttendance[label])) {
@@ -229,8 +181,6 @@ const generateNewUsersAttendance = (
   });
   Object.keys(newUsersAttendance).forEach(label => {
     if (validateObjectId(label) && !isNil(newUsersAttendance[label])) {
-      // newUsersAttendance[label].score =
-      //   Math.round((newUsersAttendance[label].score - 0.1) * 10) / 10;
       newUsersAttendance[label].score =
         Math.round((newUsersAttendance[label].score - decay) * 100) / 100;
 
@@ -266,19 +216,29 @@ const generateNewUsersAttendance = (
   return newUsersAttendance;
 };
 
-const decayUsersAttendance = () => {
-  const usersAttendaceUpdatedAt = store.getState().usersAttendance.updatedAt;
-  if (usersAttendaceUpdatedAt <= Date.now() - 9000) {
+const refreshUsersAttendance = () => {
+  const usersAttendanceUpdatedAt = store.getState().usersAttendance.updatedAt;
+  if (usersAttendanceUpdatedAt <= Date.now() - 9000) {
     store.dispatch({
       payload: {
         faces: [],
-        updatedAt: Date.now() - 9000,
       },
       type: TYPES.UPDATE_USER_ATTENDANCE,
     });
   }
 };
 
-setInterval(decayUsersAttendance, 9000);
+const refreshCheckIn = () => {
+  const checkInUpdatedAt = store.getState().checkIn.updatedAt;
+  if (checkInUpdatedAt <= Date.now() - 9000) {
+    store.dispatch({
+      payload: {},
+      type: TYPES.UPDATE_CHECK_IN,
+    });
+  }
+};
+
+setInterval(refreshUsersAttendance, 9000);
+setInterval(refreshCheckIn, 9000);
 
 // setInterval(() => console.log(store.getState()), 3000);
