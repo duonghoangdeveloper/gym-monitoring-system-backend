@@ -15,6 +15,7 @@ import {
   changeOnlineStatus,
   checkFacesEnough,
   checkUpdaterRoleAuthorization,
+  countUsers,
   createUser,
   deactivateUser,
   getUserById,
@@ -36,14 +37,23 @@ export const Mutation = {
   },
 
   async changeOnlineStatus(_, { _id, status }, { req }) {
-    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
-    const trainerToUpdate = await getUserById(_id);
-    if (trainerToUpdate.role === 'TRAINER') {
-      const updatedTrainer = await changeOnlineStatus(trainerToUpdate, status);
+    checkRole(req.user, ['TRAINER', 'MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    if (req.user.role !== 'TRAINER') {
+      const trainerToUpdate = await getUserById(_id);
+      if (trainerToUpdate.role === 'TRAINER') {
+        const updatedTrainer = await changeOnlineStatus(
+          trainerToUpdate,
+          status
+        );
+        return updatedTrainer;
+      }
+    } else {
+      const updatedTrainer = await changeOnlineStatus(req.user, status);
       return updatedTrainer;
     }
     throwError('Only trainer online status can be updated', 400);
   },
+
   async createUser(_, { data }, { req }) {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     checkUpdaterRoleAuthorization(req.user.role, data.role);
@@ -97,9 +107,20 @@ export const Query = {
     return generateDocumentPayload(user);
   },
   async users(_, { query }, { req }) {
-    checkRole(req.user, ['CUSTOMER', 'MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const users = await getUsers(query);
     return generateDocumentsPayload(users);
+  },
+  async usersCount(_, { query }, { req }) {
+    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    const usersCount = await countUsers(query);
+    return usersCount || 0;
+  },
+  async usersCounts(_, { queries }, { req }) {
+    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    console.log(queries);
+    const usersCounts = Promise.all(queries.map(query => countUsers(query)));
+    return usersCounts || [];
   },
   async validateUser(_, { data }) {
     const errorMapping = {};
