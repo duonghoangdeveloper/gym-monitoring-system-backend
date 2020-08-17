@@ -57,6 +57,7 @@ export const createWarning = async data => {
     status: 'PENDING',
   });
   const s3Data = await uploadBase64S3(`warning/${warning._id}`, image);
+  console.log(s3Data);
   warning.image = {
     key: s3Data.Key,
     url: s3Data.Location,

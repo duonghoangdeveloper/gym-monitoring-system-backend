@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken';
+
 export const S3_BUCKET = 'gym-monitoring-system';
 
 export const PYTHON_SERVER_URI_APIS = {
@@ -5,3 +7,8 @@ export const PYTHON_SERVER_URI_APIS = {
   DETECT_BARBELLS: 'http://localhost:8001/detect-barbells/',
   RECOGNIZE_PEOPLE: 'http://localhost:8000/recognize-people/',
 };
+
+export const TOKEN = jwt.sign(
+  { message: 'Hello world!' },
+  process.env.JWT_SECRET
+);
