@@ -8,7 +8,7 @@ import {
 } from '../../common/services';
 import { uploadFaces } from '../face/face.services';
 import { getFeedbacks } from '../feedback/feedback.services';
-import { getPayments } from '../payment/payment.services';
+import { createPayment, getPayments } from '../payment/payment.services';
 import { getWarnings } from '../warning/warning.services';
 import {
   activateUser,
@@ -60,6 +60,13 @@ export const Mutation = {
     checkFacesEnough(data.role, data.faces);
     const createdUser = await createUser(data);
     await uploadFaces(createdUser, data.faces);
+    if (data.paymentPlanId && data.role === 'CUSTOMER') {
+      await createPayment({
+        creatorId: req.user._id.toString(),
+        customerId: createdUser._id.toString(),
+        paymentPlanId: data.paymentPlanId,
+      });
+    }
     return generateDocumentPayload(createdUser);
   },
   async deactivateUser(_, { _id }, { req }) {
