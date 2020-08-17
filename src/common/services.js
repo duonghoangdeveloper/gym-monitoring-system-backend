@@ -88,7 +88,7 @@ const generateActivationQuery = isActive =>
     : {
         activationToken: { $ne: null },
       };
-export const mongooseQuery = async (modelName, query, initialFind) => {
+const generateQueryArguments = (modelName, query, initialFind) => {
   if (!models[modelName]) {
     throwError('Invalid model name', 500);
   }
@@ -107,16 +107,36 @@ export const mongooseQuery = async (modelName, query, initialFind) => {
     ...generateActivationQuery(isActive),
   };
 
+  return {
+    find: findFilter,
+    limit: limitNumber,
+    skip: skipNumber,
+    sort: sortArgs,
+  };
+};
+export const mongooseQuery = async (modelName, query, initialFind) => {
+  const { find, limit, skip, sort } = generateQueryArguments(
+    modelName,
+    query,
+    initialFind
+  );
+
   const [documents, total] = await Promise.all([
     models[modelName]
-      .find(findFilter)
-      .sort(sortArgs)
-      .skip(skipNumber)
-      .limit(limitNumber),
-    models[modelName].countDocuments(findFilter),
+      .find(find)
+      .sort(sort)
+      .skip(skip)
+      .limit(limit),
+    models[modelName].countDocuments(find),
   ]);
 
   return { documents, total };
+};
+export const mongooseCount = async (modelName, query, initialFind) => {
+  const { find } = generateQueryArguments(modelName, query, initialFind);
+
+  const documentCount = models[modelName].countDocuments(find);
+  return documentCount;
 };
 
 // To count all document in a collection
@@ -137,7 +157,7 @@ export const getDocumentById = async (modelName, _id, projection) => {
   const document = await models[modelName].findById(_id, projection);
 
   if (!document) {
-    console.log(_id);
+    // console.log(_id);
     throwError(`${modelName} not found`, 404);
   }
 
