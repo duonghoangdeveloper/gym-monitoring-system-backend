@@ -8,3 +8,4 @@ export const userRoles = [
 
 export const userGenders = ['MALE', 'FEMALE', 'OTHER'];
 export const warningStatuses = ['PENDING', 'FAILED', 'SUCCEEDED'];
+export const notificationStatuses = ['NEW', 'SEEN'];

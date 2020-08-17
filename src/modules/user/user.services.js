@@ -10,6 +10,7 @@ import { Payment } from '../../common/models';
 import { deleteFileS3, getFileS3, uploadFileS3 } from '../../common/s3';
 import {
   getDocumentById,
+  mongooseCount,
   mongooseQuery,
   throwError,
 } from '../../common/services';
@@ -30,6 +31,12 @@ import {
   validateUsernameExists,
   validateUsernameUpdate,
 } from './user.validators';
+
+export const countUsers = async (query, initialFind) =>
+  mongooseCount('User', query, initialFind);
+
+export const getUsers = async (query, initialFind) =>
+  mongooseQuery('User', query, initialFind);
 
 export const getUserById = async (_id, projection) =>
   getDocumentById('User', _id, projection);
@@ -98,9 +105,6 @@ export const createUser = async data => {
   const createdUser = await user.save();
   return createdUser;
 };
-
-export const getUsers = async (query, initialFind) =>
-  mongooseQuery('User', query, initialFind);
 
 export const deactivateUser = async user => {
   if (user.activationToken) {
