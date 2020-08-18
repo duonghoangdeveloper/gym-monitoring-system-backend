@@ -44,6 +44,7 @@ export const getWarnings = async (query, initialFind) => {
 };
 
 export const createWarning = async data => {
+  // const { content, customerId, image } = data;
   const { content, customerId } = data;
 
   if (!isNil(customerId)) {
@@ -56,12 +57,12 @@ export const createWarning = async data => {
     customer: customerId,
     status: 'PENDING',
   });
-  const s3Data = await uploadBase64S3(`warning/${warning._id}`, image);
-  console.log(s3Data);
-  warning.image = {
-    key: s3Data.Key,
-    url: s3Data.Location,
-  };
+  // const s3Data = await uploadBase64S3(`warning/${warning._id}`, image);
+  // console.log(s3Data);
+  // warning.image = {
+  //   key: s3Data.Key,
+  //   url: s3Data.Location,
+  // };
 
   const createdWarning = await warning.save();
   return createdWarning;
@@ -74,7 +75,7 @@ export const acceptWarning = async (warning, supporter) => {
     await validateSupporterRequired(supporterId);
     warning.supporter = supporterId;
   }
-  warning.status = 'SUCCEEDED';
+  warning.status = 'ACCEPTED';
 
   const updatedWarning = await warning.save();
   return updatedWarning;

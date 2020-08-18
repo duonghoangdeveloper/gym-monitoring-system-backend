@@ -6,7 +6,7 @@ type Warning{
   # Warning info
   image: File!
   content: String!
-  status: Status!
+  status: WarningStatus!
   
   # Timestamp
   createdAt: String!
@@ -43,7 +43,7 @@ input WarningsQueryInput {
 input WarningsFilterInput {
   customer: [ID]
   supporter: [ID]
-  status: [String]
+  status: [WarningStatus]
 }
 
 input CreateWarningInput {
@@ -55,8 +55,8 @@ input WarningsSearchInput{
    status: String
 }
 
-enum Status {
+enum WarningStatus {
   PENDING
   FAILED
-  SUCCEEDED
+  ACCEPTED
 }
