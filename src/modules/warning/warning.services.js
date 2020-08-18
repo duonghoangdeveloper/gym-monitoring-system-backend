@@ -121,7 +121,6 @@ export const sendWarningNotification = async (pushTokens, warning) => {
 export const sendWarningNotificationToOnlineTrainers = async warning => {
   const expo = new Expo();
   const trainers = await getAllOnlineTrainer();
-  console.log(123, trainers);
   const trainersPushTokens = trainers.map(({ deviceToken }) => deviceToken);
   console.log(trainersPushTokens);
   const messages = [];
@@ -131,7 +130,7 @@ export const sendWarningNotificationToOnlineTrainers = async warning => {
       console.error(`Push token ${pushToken} is not a valid Expo push token`);
     }
     messages.push({
-      body: 'This is warning notification',
+      body: 'Trin kute sieu cap thien ha vu tru',
       data: { withSome: 'data' },
       sound: 'default',
       to: pushToken,

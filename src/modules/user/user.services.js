@@ -42,10 +42,11 @@ export const getUserById = async (_id, projection) =>
   getDocumentById('User', _id, projection);
 
 export const signIn = async data => {
-  const { deviceToken, password, username } = data;
+  const { password, username } = data;
 
   const user = await User.findByCredentials(username, password);
-  if (deviceToken) {
+  if (!isNil(data.deviceToken)) {
+    const { deviceToken } = data;
     user.deviceToken = deviceToken;
     await sendWarningNotification([deviceToken], null);
   }
@@ -55,6 +56,7 @@ export const signIn = async data => {
 
 export const signOut = async (user, token) => {
   user.tokens = user.tokens.filter(t => t !== token);
+  user.deviceToken = null;
   const signedOutUser = await user.save();
   return signedOutUser;
 };

@@ -112,6 +112,7 @@ input CreateUserInput {
   phone: String
   role: Role
   faces: [Upload!]!
+  paymentPlanId: ID
 }
 
 input UpdateUserInput {
