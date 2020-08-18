@@ -56,12 +56,15 @@ export const createWarning = async data => {
     customer: customerId,
     status: 'PENDING',
   });
-  const s3Data = await uploadBase64S3(`warning/${warning._id}`, image);
-  console.log(s3Data);
-  warning.image = {
-    key: s3Data.Key,
-    url: s3Data.Location,
-  };
+
+  if (!isNil(image)) {
+    const s3Data = await uploadBase64S3(`warning/${warning._id}`, image);
+    console.log(s3Data);
+    warning.image = {
+      key: s3Data.Key,
+      url: s3Data.Location,
+    };
+  }
 
   const createdWarning = await warning.save();
   return createdWarning;
@@ -118,7 +121,6 @@ export const sendWarningNotification = async (pushTokens, warning) => {
 export const sendWarningNotificationToOnlineTrainers = async warning => {
   const expo = new Expo();
   const trainers = await getAllOnlineTrainer();
-  console.log(123, trainers);
   const trainersPushTokens = trainers.map(({ deviceToken }) => deviceToken);
   console.log(trainersPushTokens);
   const messages = [];
@@ -128,7 +130,7 @@ export const sendWarningNotificationToOnlineTrainers = async warning => {
       console.error(`Push token ${pushToken} is not a valid Expo push token`);
     }
     messages.push({
-      body: 'This is warning notification',
+      body: 'Trin kute sieu cap thien ha vu tru',
       data: { withSome: 'data' },
       sound: 'default',
       to: pushToken,
