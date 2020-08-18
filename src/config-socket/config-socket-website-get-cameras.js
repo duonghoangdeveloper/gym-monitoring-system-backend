@@ -5,7 +5,7 @@ export const configSocketWebsiteGetCameras = socket => {
   const delay = 1000 / getFPS();
 
   const sendCameras = () => {
-    console.log(1);
+    // console.log(1);
     try {
       const { cameras, sockets } = store.getState();
       const { camerasStatus } = sockets.find(({ socket: s }) => s === socket);

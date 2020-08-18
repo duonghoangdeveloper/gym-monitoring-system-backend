@@ -102,7 +102,7 @@ export const Mutation = {
   async updateUser(_, { _id, data }, { req }) {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const userToUpdate = await getUserById(_id);
-    checkUpdaterRoleAuthorization(req.user.role, data.role);
+    checkUpdaterRoleAuthorization(req.user.role, userToUpdate.role);
     const updatedUser = await updateUser(userToUpdate, data);
     return generateDocumentPayload(updatedUser);
   },
@@ -114,7 +114,7 @@ export const Query = {
     return generateDocumentPayload(user);
   },
   async users(_, { query }, { req }) {
-    checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
+    checkRole(req.user, ['CUSTOMER', 'MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const users = await getUsers(query);
     return generateDocumentsPayload(users);
   },
