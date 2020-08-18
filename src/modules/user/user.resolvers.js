@@ -84,7 +84,6 @@ export const Mutation = {
   async deleteUsers(_, { query }, { req }) {
     checkRole(req.user, ['SYSTEM_ADMIN']);
     const users = await getUsers(query);
-    console.log(users.total);
     const deletedUsers = await deleteUsers(users.documents);
     return deletedUsers;
   },
