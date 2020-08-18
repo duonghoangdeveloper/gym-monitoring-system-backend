@@ -47,8 +47,8 @@ const generateMongooseFind = (filter, createdBetween) => {
   }
 
   if (
-    moment(createdBetween ?.from, moment.ISO_8601, true).isValid() &&
-    moment(createdBetween ?.to, moment.ISO_8601, true).isValid()
+    moment(createdBetween?.from, moment.ISO_8601, true).isValid() &&
+    moment(createdBetween?.to, moment.ISO_8601, true).isValid()
   ) {
     mongooseFilter.createdAt = {
       $gt: createdBetween.from,
@@ -82,10 +82,10 @@ const generateActivationQuery = isActive =>
   isNil(isActive)
     ? {}
     : isActive
-      ? {
+    ? {
         activationToken: null,
       }
-      : {
+    : {
         activationToken: { $ne: null },
       };
 const generateQueryArguments = (modelName, query, initialFind) => {
@@ -227,7 +227,7 @@ export const validateField = async (model, field, value) => {
     throwError('Invalid model name', 500);
   }
 
-  const validators = validatorMapping[model] ?.[field] ?? [];
+  const validators = validatorMapping[model]?.[field] ?? [];
   const errors = (
     await Promise.all(
       validators.map(async validator => {
