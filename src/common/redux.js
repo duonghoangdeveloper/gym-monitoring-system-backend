@@ -94,10 +94,10 @@ const reducer = (state = INITIAL_STATE, action) => {
         cameras: state.cameras.map(camera =>
           camera.key === action.payload.key
             ? {
-              ...camera,
-              ...action.payload,
-              updatedAt: Date.now(),
-            }
+                ...camera,
+                ...action.payload,
+                updatedAt: Date.now(),
+              }
             : camera
         ),
       };
@@ -125,10 +125,10 @@ const reducer = (state = INITIAL_STATE, action) => {
         sockets: state.sockets.map(socketObj =>
           socketObj.socket === action.payload.socket
             ? {
-              ...socketObj,
-              ...action.payload,
-              updatedAt: Date.now(),
-            }
+                ...socketObj,
+                ...action.payload,
+                updatedAt: Date.now(),
+              }
             : socketObj
         ),
       };
@@ -148,10 +148,10 @@ const reducer = (state = INITIAL_STATE, action) => {
         ...state,
         webcam: state.webcam
           ? {
-            ...state.webcam,
-            ...action.payload,
-            updatedAt: Date.now(),
-          }
+              ...state.webcam,
+              ...action.payload,
+              updatedAt: Date.now(),
+            }
           : null,
       };
     default:

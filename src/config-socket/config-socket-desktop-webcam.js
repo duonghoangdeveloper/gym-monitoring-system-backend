@@ -61,7 +61,7 @@ export const configSocketDesktopWebcam = socket => {
             const { checkIn } = store.getState();
             if (
               checkIn.lastFace === userId &&
-              (checkIn.lastCheckIn?.userId !== userId ||
+              (checkIn.lastCheckIn?._id !== userId ||
                 checkIn.lastCheckIn?.timestamp < Date.now() - 60000)
             ) {
               const createdCheckIn = await createCheckIn(
@@ -71,7 +71,6 @@ export const configSocketDesktopWebcam = socket => {
               if (createdCheckIn) {
                 updateCheckInPayload.lastCheckIn = {
                   _id: createdCheckIn._id,
-                  lastFace: userId,
                   timestamp: Date.now(),
                 };
               }
