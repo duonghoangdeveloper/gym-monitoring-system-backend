@@ -44,7 +44,7 @@ export const getWarnings = async (query, initialFind) => {
 };
 
 export const createWarning = async data => {
-  const { content, customerId } = data;
+  const { content, customerId, image } = data;
 
   if (!isNil(customerId)) {
     validateCustomerRequired(customerId);
