@@ -49,6 +49,7 @@ input WarningsFilterInput {
 input CreateWarningInput {
   customerId: ID
   content: String
+  image: String
 }
 input WarningsSearchInput{
   content: String

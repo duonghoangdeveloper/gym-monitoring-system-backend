@@ -43,6 +43,8 @@ type Mutation {
   changeOnlineStatus(_id: ID!, status: Boolean): User!
   deactivateUser(_id: ID!): User!
   activateUser(_id: ID!): User!
+  deleteUsers(query: UsersQueryInput):Int!
+  createDummyUser(amount: Int!, role:Role!):[User!]!
 }
 
 type Users {
@@ -99,9 +101,6 @@ input UsersSearchInput {
 
 input UsersFilterInput {
   role: [Role!]
-
-  
-
 }
 
 input CreateUserInput {

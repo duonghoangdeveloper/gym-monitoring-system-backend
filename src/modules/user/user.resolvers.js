@@ -16,8 +16,10 @@ import {
   checkFacesEnough,
   checkUpdaterRoleAuthorization,
   countUsers,
+  createDummyUser,
   createUser,
   deactivateUser,
+  deleteUsers,
   getUserById,
   getUsers,
   signIn,
@@ -54,6 +56,13 @@ export const Mutation = {
     throwError('Only trainer online status can be updated', 400);
   },
 
+  // create $amount of dummy user
+  async createDummyUser(_, { amount, role }, { req }) {
+    checkRole(req.user, ['SYSTEM_ADMIN']);
+    const createdUsers = await createDummyUser(amount, role);
+    return createdUsers;
+  },
+
   async createUser(_, { data }, { req }) {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     checkUpdaterRoleAuthorization(req.user.role, data.role);
@@ -69,6 +78,7 @@ export const Mutation = {
     }
     return generateDocumentPayload(createdUser);
   },
+
   async deactivateUser(_, { _id }, { req }) {
     checkRole(req.user, ['MANAGER', 'GYM_OWNER', 'SYSTEM_ADMIN']);
     const user = await getUserById(_id);
@@ -76,6 +86,15 @@ export const Mutation = {
     const removedUser = await deactivateUser(user);
     return generateDocumentPayload(removedUser);
   },
+
+  // Delete all user base on query input
+  async deleteUsers(_, { query }, { req }) {
+    checkRole(req.user, ['SYSTEM_ADMIN']);
+    const users = await getUsers(query);
+    const deletedUsers = await deleteUsers(users.documents);
+    return deletedUsers;
+  },
+
   async signIn(_, { data }) {
     const { token, user } = await signIn(data);
     return generateAuthPayload({ document: user, token });
