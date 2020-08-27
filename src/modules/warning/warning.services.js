@@ -77,7 +77,7 @@ export const acceptWarning = async (warning, supporter) => {
     await validateSupporterRequired(supporterId);
     warning.supporter = supporterId;
   }
-  warning.status = 'SUCCEEDED';
+  warning.status = 'ACCEPTED';
 
   const updatedWarning = await warning.save();
   return updatedWarning;
