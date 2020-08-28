@@ -3,6 +3,7 @@ import {
   generateDocumentPayload,
   generateDocumentsPayload,
 } from '../../common/services';
+import { getDangerousPostureById } from '../dangerous-posture/dangerous-posture.services';
 import { getUserById } from '../user/user.services';
 import {
   acceptWarning,
@@ -10,7 +11,6 @@ import {
   deleteWarning,
   getWarningById,
   getWarnings,
-  sendWarningNotification,
   sendWarningNotificationToOnlineTrainers,
 } from './warning.services';
 
@@ -66,6 +66,16 @@ export const Warning = {
     }
   },
 
+  async dangerousPosture({ dangerousPosture }) {
+    try {
+      const foundDangerousPosture = await getDangerousPostureById(
+        dangerousPosture
+      );
+      return generateDocumentPayload(foundDangerousPosture);
+    } catch (e) {
+      return null;
+    }
+  },
   async supporter({ supporter }) {
     try {
       const foundSupporter = await getUserById(supporter);
