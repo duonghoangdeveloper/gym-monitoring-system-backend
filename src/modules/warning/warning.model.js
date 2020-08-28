@@ -20,7 +20,11 @@ const warningSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       validate: validateCustomerRequired,
     },
-
+    dangerousPosture: {
+      ref: 'DangerousPosture',
+      required: true,
+      type: Schema.Types.ObjectId,
+    },
     image: {
       _id: false,
       key: {

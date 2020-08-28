@@ -1,0 +1,45 @@
+type DangerousPostureType {
+  _id: ID!
+  title: String!
+  description: String!
+  # Timestamp
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Query {
+  dangerousPostureType(_id: ID!): DangerousPostureType!
+  dangerousPostureTypes(query: DangerousPostureTypesQueryInput): DangerousPostureTypes!
+}
+
+type Mutation {
+  createDangerousPostureType(data: CreateDangerousPostureTypeInput!): DangerousPostureType!
+  updateDangerousPostureType(_id: ID!, data: UpdateDangerousPostureTypeInput): DangerousPostureType!
+  deleteDangerousPostureType(_id: ID!): DangerousPostureType!
+}
+
+type DangerousPostureTypes {
+  data: [DangerousPostureType!]!
+  total: Int!
+}
+
+input DangerousPostureTypesQueryInput {
+  skip: Int
+  limit: Int
+  sort: String
+  search: DangerousPostureTypesSearchInput
+}
+
+input DangerousPostureTypesSearchInput {
+  title: String
+}
+
+input CreateDangerousPostureTypeInput {
+  title: String!
+  description: String!
+}
+
+input UpdateDangerousPostureTypeInput {
+  title: String!
+  description: String!
+}

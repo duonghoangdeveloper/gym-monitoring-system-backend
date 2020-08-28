@@ -2,7 +2,7 @@ type Warning{
   _id: ID!
   customer: User
   supporter: User
-
+  dangerousPosture: DangerousPosture
   # Warning info
   image: File!
   content: String!
@@ -50,10 +50,15 @@ input CreateWarningInput {
   customerId: ID
   content: String
   image: String
+  dangerousPostureId: ID
+
 }
 input WarningsSearchInput{
   content: String
    status: String
+    dangerousPostureId: ID
+
+
 }
 
 enum WarningStatus {
