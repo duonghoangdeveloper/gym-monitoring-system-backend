@@ -1,7 +1,7 @@
 import isNil from 'lodash.isnil';
 
 import { getUserById } from '../modules/user/user.services';
-import { validateObjectId } from './services';
+import { reloadFacesPython, validateObjectId } from './services';
 
 const { createStore } = require('redux');
 
@@ -73,7 +73,7 @@ const reducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         cameras: state.cameras.filter(
-          camera => camera.key !== action.payload.key
+          camera => camera._id !== action.payload._id
         ),
       };
     case TYPES.REMOVE_SOCKET:
@@ -92,7 +92,7 @@ const reducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         cameras: state.cameras.map(camera =>
-          camera.key === action.payload.key
+          camera._id === action.payload._id
             ? {
                 ...camera,
                 ...action.payload,
@@ -240,5 +240,6 @@ const refreshCheckIn = () => {
 
 setInterval(refreshUsersAttendance, 9000);
 setInterval(refreshCheckIn, 9000);
+// setTimeout(() => reloadFacesPython(), 9000);
 
 // setInterval(() => console.log(store.getState()), 3000);

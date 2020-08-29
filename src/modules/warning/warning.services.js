@@ -44,7 +44,7 @@ export const getWarnings = async (query, initialFind) => {
 };
 
 export const createWarning = async data => {
-  const { content, customerId, image } = data;
+  const { cameraId, content, customerId, image } = data;
 
   if (!isNil(customerId)) {
     validateCustomerRequired(customerId);
@@ -52,6 +52,7 @@ export const createWarning = async data => {
   // validateImage(image);
 
   const warning = new Warning({
+    camera: cameraId,
     content,
     customer: customerId,
     status: 'PENDING',
@@ -77,7 +78,7 @@ export const acceptWarning = async (warning, supporter) => {
     await validateSupporterRequired(supporterId);
     warning.supporter = supporterId;
   }
-  warning.status = 'SUCCEEDED';
+  warning.status = 'ACCEPTED';
 
   const updatedWarning = await warning.save();
   return updatedWarning;
@@ -122,16 +123,16 @@ export const sendWarningNotificationToOnlineTrainers = async warning => {
   const expo = new Expo();
   const trainers = await getAllOnlineTrainer();
   const trainersPushTokens = trainers.map(({ deviceToken }) => deviceToken);
-  console.log(trainersPushTokens);
+  // console.log(trainersPushTokens);
   const messages = [];
   for (const pushToken of trainersPushTokens) {
-    console.log(pushToken);
+    // console.log(pushToken);
     if (!Expo.isExpoPushToken(pushToken)) {
-      console.error(`Push token ${pushToken} is not a valid Expo push token`);
+      // console.error(`Push token ${pushToken} is not a valid Expo push token`);
     }
     messages.push({
-      body: 'Trin kute sieu cap thien ha vu tru',
-      data: { withSome: 'data' },
+      body: `${warning.content}`,
+      data: { _id: warning._id.toString() },
       sound: 'default',
       to: pushToken,
     });
@@ -148,6 +149,7 @@ export const sendWarningNotificationToOnlineTrainers = async warning => {
       }
     }
   })();
+  console.log('Send NOTI');
 };
 
 // setInterval(() => {

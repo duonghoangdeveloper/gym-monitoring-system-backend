@@ -1,8 +1,12 @@
+import axios from 'axios';
+
+import { PYTHON_SERVER_URI_APIS, TOKEN } from '../../common/constants';
 import {
   checkRole,
   generateAuthPayload,
   generateDocumentPayload,
   generateDocumentsPayload,
+  reloadFacesPython,
   throwError,
   validateField,
 } from '../../common/services';
@@ -76,6 +80,7 @@ export const Mutation = {
         paymentPlanId: data.paymentPlanId,
       });
     }
+    reloadFacesPython();
     return generateDocumentPayload(createdUser);
   },
 

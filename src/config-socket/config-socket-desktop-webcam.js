@@ -10,7 +10,7 @@ import { getFPS, validateObjectId } from '../common/services';
 import { createCheckIn } from '../modules/check-in/check-in.services';
 
 export const configSocketDesktopWebcam = socket => {
-  const delay = 1000 / getFPS();
+  const delay = 1000;
 
   const handleDesktopWebcamStream = ({ screenshot }) => {
     const { webcam } = store.getState();
@@ -56,22 +56,25 @@ export const configSocketDesktopWebcam = socket => {
               },
             }
           );
+          console.log(result);
           const userId = result.data;
           if (validateObjectId(userId)) {
             const { checkIn } = store.getState();
             if (
               checkIn.lastFace === userId &&
-              (checkIn.lastCheckIn?._id !== userId ||
+              (checkIn.lastCheckIn?.userId !== userId ||
                 checkIn.lastCheckIn?.timestamp < Date.now() - 60000)
             ) {
               const createdCheckIn = await createCheckIn(
                 userId,
                 currentWebcam.screenshot.data.toString('base64')
               );
+              console.log('Check in');
               if (createdCheckIn) {
                 updateCheckInPayload.lastCheckIn = {
-                  _id: createdCheckIn._id,
+                  _id: createdCheckIn._id.toString(),
                   timestamp: Date.now(),
+                  userId: createdCheckIn.user.toString(),
                 };
               }
             }
@@ -81,7 +84,6 @@ export const configSocketDesktopWebcam = socket => {
           }
         } catch (_) {
           updateCheckInPayload.lastFace = null;
-          console.log(_);
           // Do nothing
         }
         store.dispatch({

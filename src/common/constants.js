@@ -6,6 +6,7 @@ export const PYTHON_SERVER_URI_APIS = {
   CHECK_IN: 'http://localhost:8000/check-in/',
   DETECT_BARBELLS: 'http://localhost:8001/detect-barbells/',
   RECOGNIZE_PEOPLE: 'http://localhost:8000/recognize-people/',
+  RELOAD_FACES: 'http://localhost:8000/reload-faces/',
 };
 
 export const TOKEN = jwt.sign(

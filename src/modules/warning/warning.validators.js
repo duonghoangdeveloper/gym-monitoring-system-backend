@@ -1,4 +1,5 @@
 import { throwError } from '../../common/services';
+import { Camera } from '../camera/camera.model';
 import { User } from '../user/user.model';
 
 export const validateCustomerRequired = async customerId => {
@@ -8,6 +9,15 @@ export const validateCustomerRequired = async customerId => {
   });
   if (!customerExists) {
     throwError('Customer not found', 404);
+  }
+};
+
+export const validateCameraRequired = async cameraId => {
+  const cameraExists = await Camera.exists({
+    _id: cameraId,
+  });
+  if (!cameraExists) {
+    throwError('Camera not found', 404);
   }
 };
 

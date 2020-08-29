@@ -1,3 +1,4 @@
+export * from '../modules/camera/camera.model';
 export * from '../modules/check-in/check-in.model';
 export * from '../modules/face/face.model';
 export * from '../modules/feedback/feedback.model';

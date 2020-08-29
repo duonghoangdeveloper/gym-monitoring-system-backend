@@ -1,7 +1,9 @@
+import axios from 'axios';
 import Blob from 'cross-blob';
 import { isNil } from 'lodash';
 import moment from 'moment';
 
+import { PYTHON_SERVER_URI_APIS, TOKEN } from './constants';
 import { userRoles } from './enums';
 import * as models from './models';
 import { store } from './redux';
@@ -273,4 +275,18 @@ export const getFPS = () => {
     ? Number(store.getState().common.fps)
     : 30;
   return fps < 30 ? fps : 30;
+};
+
+export const reloadFacesPython = () => {
+  axios
+    .post(
+      PYTHON_SERVER_URI_APIS.RELOAD_FACES,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      }
+    )
+    .catch(() => {});
 };

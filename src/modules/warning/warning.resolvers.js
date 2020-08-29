@@ -58,12 +58,20 @@ export const Query = {
 
 export const Warning = {
   async customer({ customer }) {
-    const foundCustomer = await getUserById(customer);
-    return generateDocumentPayload(foundCustomer);
+    try {
+      const foundCustomer = await getUserById(customer);
+      return generateDocumentPayload(foundCustomer);
+    } catch (e) {
+      return null
+    }
   },
 
   async supporter({ supporter }) {
-    const foundSupporter = await getUserById(supporter);
-    return generateDocumentPayload(foundSupporter);
+    try {
+      const foundSupporter = await getUserById(supporter);
+      return generateDocumentPayload(foundSupporter);
+    } catch (e) {
+      return null
+    }
   },
 };
