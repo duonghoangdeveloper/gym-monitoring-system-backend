@@ -3,6 +3,7 @@ import {
   generateDocumentPayload,
   generateDocumentsPayload,
 } from '../../common/services';
+import { getDangerousPostures } from '../dangerous-posture/dangerous-posture.services';
 import {
   createDangerousPostureType,
   deleteDangerousPostureType,
@@ -46,5 +47,35 @@ export const Query = {
     checkRole(req.user, ['TRAINER']);
     const dangerousPostureTypes = await getDangerousPostureTypes(query);
     return generateDocumentsPayload(dangerousPostureTypes);
+  },
+};
+
+export const DangerousPostureType = {
+  async dangerousPostures({ _id: dangerousPostureTypeId }, { query }, { req }) {
+    const dangerousPosturesQuery = {
+      ...query,
+      filter: {
+        ...query?.filter,
+        dangerousPostureType: [dangerousPostureTypeId],
+      },
+    };
+    try {
+      checkRole(req.user, [
+        'CUSTOMER',
+        'TRAINER',
+        'MANAGER',
+        'GYM_OWNER',
+        'SYSTEM_ADMIN',
+      ]);
+
+      const { documents, total } = await getDangerousPostures(
+        dangerousPosturesQuery
+      );
+      return generateDocumentsPayload({ documents, total });
+    } catch (e) {
+      // Do nothing
+    }
+
+    return generateDocumentsPayload({ documents: [], total: 0 });
   },
 };
