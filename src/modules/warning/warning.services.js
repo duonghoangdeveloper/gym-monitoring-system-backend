@@ -44,7 +44,7 @@ export const getWarnings = async (query, initialFind) => {
 };
 
 export const createWarning = async data => {
-  const { cameraId, content, customerId, image } = data;
+  const { cameraId, content, customerId, dangerousPostureId, image } = data;
 
   if (!isNil(customerId)) {
     validateCustomerRequired(customerId);
@@ -55,12 +55,12 @@ export const createWarning = async data => {
     camera: cameraId,
     content,
     customer: customerId,
+    dangerousPosture: dangerousPostureId,
     status: 'PENDING',
   });
 
   if (!isNil(image)) {
     const s3Data = await uploadBase64S3(`warning/${warning._id}`, image);
-    console.log(s3Data);
     warning.image = {
       key: s3Data.Key,
       url: s3Data.Location,

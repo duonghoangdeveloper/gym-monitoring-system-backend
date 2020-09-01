@@ -2,11 +2,11 @@ type Warning{
   _id: ID!
   customer: User
   supporter: User
-
+  dangerousPosture: DangerousPosture
   # Warning info
   image: File!
   content: String!
-  status: Status!
+  status: WarningStatus!
   
   # Timestamp
   createdAt: String!
@@ -43,7 +43,7 @@ input WarningsQueryInput {
 input WarningsFilterInput {
   customer: [ID]
   supporter: [ID]
-  status: [String]
+  status: [WarningStatus]
 }
 
 input CreateWarningInput {
@@ -51,13 +51,18 @@ input CreateWarningInput {
   cameraId: ID!
   content: String
   image: String
+  dangerousPostureId: ID
+
 }
 input WarningsSearchInput{
   content: String
    status: String
+    dangerousPostureId: ID
+
+
 }
 
-enum Status {
+enum WarningStatus {
   PENDING
   FAILED
   ACCEPTED

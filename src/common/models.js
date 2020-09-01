@@ -7,3 +7,5 @@ export * from '../modules/warning/warning.model';
 export * from '../modules/payment/payment.model';
 export * from '../modules/payment-plan/payment-plan.model';
 export * from '../modules/user/user.model';
+export * from '../modules/dangerous-posture-type/dangerous-posture-type.model';
+export * from '../modules/dangerous-posture/dangerous-posture.model';
