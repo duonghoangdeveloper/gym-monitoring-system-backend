@@ -18,8 +18,8 @@ export const configSocketWebsiteGetCameras = socket => {
           type: TYPES.UPDATE_SOCKET,
         });
         socket.emit('server-send-cameras', {
-          cameras: cameras.map(({ key, screenshot }) => ({
-            key,
+          cameras: cameras.map(({ _id, screenshot }) => ({
+            _id,
             screenshot,
           })),
         });

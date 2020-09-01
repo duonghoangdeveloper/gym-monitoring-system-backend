@@ -16,27 +16,27 @@ import {
 export const configSocketDesktopCameras = socket => {
   const delay = 1000 / getFPS();
 
-  const handleDesktopCameraStream = ({ fps, key, screenshot }) => {
-    const camera = store.getState().cameras.find(s => s.key === key);
+  const handleDesktopCameraStream = ({ _id, fps, screenshot }) => {
+    const camera = store.getState().cameras.find(s => s._id === _id);
     if (camera) {
       // Will destroy if the next 9000ms not receive any stream
       camera.selfDestroy();
       store.dispatch({
         payload: {
-          key,
+          _id,
           screenshot,
         },
         type: TYPES.UPDATE_CAMERA,
       });
     } else {
       const selfDestroy = debounce(9000, false, () => {
-        removeCamera(key);
+        removeCamera(_id);
       });
       const detectCamera = async cameraToDetect => {
         store.dispatch({
           payload: {
+            _id,
             detectionStatus: 'DETECTING',
-            key,
           },
           type: TYPES.UPDATE_CAMERA,
         });
@@ -99,35 +99,26 @@ export const configSocketDesktopCameras = socket => {
 
           store.dispatch({
             payload: {
+              _id,
               detectionData,
-              key,
             },
             type: TYPES.UPDATE_CAMERA,
           });
-          if (Math.random() < 0.5) {
-            console.log('Send')
+          if (detectDangeous(detectionData)) {
             const createdWarning = await createWarning({
-              content: 'Wrong position',
+              cameraId: _id,
+              content: 'Dangerous position',
               image: cameraToDetect.screenshot.data.toString('base64'),
             });
             await sendWarningNotificationToOnlineTrainers(createdWarning);
           }
-          // if (detectDangeous(detectionData)) {
-          //   console.log('Dangerous');
-          //   // const createdWarning = await createWarning({
-          //   //   content: 'Wrong position',
-          //   //   image,
-          //   // });
-          //   // await sendWarningNotificationToOnlineTrainers(createdWarning);
-          // }
         } catch (_) {
-          console.log(_);
           // Do nothing
         }
         store.dispatch({
           payload: {
+            _id,
             detectionStatus: 'READY',
-            key,
           },
           type: TYPES.UPDATE_CAMERA,
         });
@@ -135,7 +126,7 @@ export const configSocketDesktopCameras = socket => {
       const detectionInterval = setInterval(() => {
         const cameraToDetect = store
           .getState()
-          .cameras.find(s => s.key === key);
+          .cameras.find(s => s._id === _id);
         if (cameraToDetect && cameraToDetect.detectionStatus === 'READY') {
           detectCamera(cameraToDetect);
         }
@@ -143,10 +134,10 @@ export const configSocketDesktopCameras = socket => {
       // Create new camera
       store.dispatch({
         payload: {
+          _id,
           detectionData: null,
           detectionInterval,
           detectionStatus: 'READY',
-          key,
           screenshot,
           selfDestroy,
         },
@@ -159,7 +150,7 @@ export const configSocketDesktopCameras = socket => {
         type: TYPES.UPDATE_COMMON,
       });
     }
-    socket.emit('desktop-stream-camera-succeeded', { key });
+    socket.emit('desktop-stream-camera-succeeded', { _id });
   };
   const cameraObservable = fromEvent(socket, 'desktop-stream-camera');
   const cameraSubscriber = cameraObservable.subscribe({
@@ -167,8 +158,8 @@ export const configSocketDesktopCameras = socket => {
       handleDesktopCameraStream(data);
     },
   });
-  socket.on('desktop-pause-camera', ({ key }) => {
-    removeCamera(key);
+  socket.on('desktop-pause-camera', ({ _id }) => {
+    removeCamera(_id);
   });
 
   return () => {
@@ -176,12 +167,12 @@ export const configSocketDesktopCameras = socket => {
   };
 };
 
-const removeCamera = key => {
-  const cameraToRemove = store.getState().cameras.find(s => s.key === key);
+const removeCamera = _id => {
+  const cameraToRemove = store.getState().cameras.find(s => s._id === _id);
   clearInterval(cameraToRemove?.detectionInterval);
   store.dispatch({
     payload: {
-      key,
+      _id,
     },
     type: TYPES.REMOVE_CAMERA,
   });

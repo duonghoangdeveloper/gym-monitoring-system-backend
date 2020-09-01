@@ -2,7 +2,7 @@ import { store, TYPES } from '../common/redux';
 import { getFPS } from '../common/services';
 
 export const configSocketWebsiteGetCamerasDetection = socket => {
-  const delay = 1000;
+  const delay = 1000 / getFPS();
 
   const sendCamerasDetection = () => {
     try {

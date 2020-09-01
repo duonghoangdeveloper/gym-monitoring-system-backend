@@ -44,7 +44,7 @@ export const getWarnings = async (query, initialFind) => {
 };
 
 export const createWarning = async data => {
-  const { content, customerId, dangerousPostureId, image } = data;
+  const { cameraId, content, customerId, dangerousPostureId, image } = data;
 
   if (!isNil(customerId)) {
     validateCustomerRequired(customerId);
@@ -52,6 +52,7 @@ export const createWarning = async data => {
   // validateImage(image);
 
   const warning = new Warning({
+    camera: cameraId,
     content,
     customer: customerId,
     dangerousPosture: dangerousPostureId,
@@ -60,7 +61,6 @@ export const createWarning = async data => {
 
   if (!isNil(image)) {
     const s3Data = await uploadBase64S3(`warning/${warning._id}`, image);
-    console.log(s3Data);
     warning.image = {
       key: s3Data.Key,
       url: s3Data.Location,
@@ -123,16 +123,16 @@ export const sendWarningNotificationToOnlineTrainers = async warning => {
   const expo = new Expo();
   const trainers = await getAllOnlineTrainer();
   const trainersPushTokens = trainers.map(({ deviceToken }) => deviceToken);
-  console.log(trainersPushTokens);
+  // console.log(trainersPushTokens);
   const messages = [];
   for (const pushToken of trainersPushTokens) {
-    console.log(pushToken);
+    // console.log(pushToken);
     if (!Expo.isExpoPushToken(pushToken)) {
-      console.error(`Push token ${pushToken} is not a valid Expo push token`);
+      // console.error(`Push token ${pushToken} is not a valid Expo push token`);
     }
     messages.push({
-      body: 'Trin kute sieu cap thien ha vu tru',
-      data: { withSome: 'data' },
+      body: `${warning.content}`,
+      data: { _id: warning._id.toString() },
       sound: 'default',
       to: pushToken,
     });
@@ -149,6 +149,7 @@ export const sendWarningNotificationToOnlineTrainers = async warning => {
       }
     }
   })();
+  console.log('Send NOTI');
 };
 
 // setInterval(() => {

@@ -1,0 +1,48 @@
+type Camera {
+  _id: ID!
+  name: String!
+  macAddress: String!
+  username: String!
+  password: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Query {
+  camera(_id: ID!): Camera!
+  cameras(query: CamerasQueryInput): Cameras!
+}
+type Mutation {
+  createCamera(data: CreateCameraInput!): Camera!
+  updateCamera(_id: ID!, data: UpdateCameraInput): Camera!
+  deleteCamera(_id: ID!): Camera!
+}
+
+type Cameras {
+  data: [Camera!]!
+  total: Int!
+}
+
+input CamerasQueryInput {
+  skip: Int
+  limit: Int
+  sort: String
+  search: CamerasSearchInput
+  createdBetween: CreatedBetweenInput
+}
+
+input CamerasSearchInput {
+  name: String
+  macAddress: String
+}
+
+input CreateCameraInput {
+  name: String!
+  macAddress: String!
+  username: String!
+  password: String!
+}
+
+input UpdateCameraInput {
+  name: String
+}

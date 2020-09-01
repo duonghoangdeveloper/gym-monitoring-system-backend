@@ -12,9 +12,12 @@ export const getCheckIns = async (query, initialFind) =>
 export const createCheckIn = async (userId, base64) => {
   validateUserRequired(userId);
 
+  // validateNotCurrentCheckIn(userId);
+
   const checkIn = new CheckIn({
     user: userId,
   });
+
   const s3Data = await uploadBase64S3(`check-in/${checkIn._id}`, base64);
   checkIn.image = {
     key: s3Data.Key,

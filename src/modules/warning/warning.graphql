@@ -48,6 +48,7 @@ input WarningsFilterInput {
 
 input CreateWarningInput {
   customerId: ID
+  cameraId: ID!
   content: String
   image: String
   dangerousPostureId: ID

@@ -37,7 +37,7 @@ export const Mutation = {
     const deletedWarning = await deleteWarning(warningToDelete);
     return generateDocumentPayload(deletedWarning);
   },
-  async sendWaringsNotification(_, { deviceTokens }, { req }) {
+  async sendWaringsNotification() {
     await sendWarningNotificationToOnlineTrainers(null);
     return null;
   },

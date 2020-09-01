@@ -64,14 +64,12 @@ export const detectDangeous = ({ barbells, faces, poses }) => {
   // console.log(barbells);
   // console.log(faces);
   // console.log(poses);
-  console.log();
   const people = poses
     .filter(
       pose =>
-        pose.leftShoulder &&
-        pose.rightShoulder &&
-        pose.leftWrist &&
-        pose.rightWrist
+        // pose.leftShoulder &&
+        // pose.rightShoulder &&
+        pose.leftWrist && pose.rightWrist
     )
     .map(person => ({
       barbell: barbells.find(
@@ -93,38 +91,40 @@ export const detectDangeous = ({ barbells, faces, poses }) => {
             left
           )
       ),
-      face: faces.find(
-        ({ bottom, left, right, top }) =>
-          checkInside(
-            person.nose?.x,
-            person.nose?.y,
-            top,
-            right,
-            bottom,
-            left
-          ) ||
-          checkInside(
-            person.leftEye?.x,
-            person.leftEye?.y,
-            top,
-            right,
-            bottom,
-            left
-          ) ||
-          checkInside(
-            person.rightEye?.x,
-            person.rightEye?.y,
-            top,
-            right,
-            bottom,
-            left
-          )
-      ),
+      // face: faces.find(
+      //   ({ bottom, left, right, top }) =>
+      //     checkInside(
+      //       person.nose ?.x,
+      //       person.nose ?.y,
+      //       top,
+      //       right,
+      //       bottom,
+      //       left
+      //     ) ||
+      //     checkInside(
+      //       person.leftEye ?.x,
+      //       person.leftEye ?.y,
+      //       top,
+      //       right,
+      //       bottom,
+      //       left
+      //     ) ||
+      //     checkInside(
+      //       person.rightEye ?.x,
+      //       person.rightEye ?.y,
+      //       top,
+      //       right,
+      //       bottom,
+      //       left
+      //     )
+      // ),
       leftEye: person.leftEye,
+      leftHip: person.leftHip,
       leftShoulder: person.leftShoulder,
       leftWrist: person.leftWrist,
       nose: person.nose,
       rightEye: person.rightEye,
+      rightHip: person.rightHip,
       rightShoulder: person.rightShoulder,
       rightWrist: person.rightWrist,
     }))
@@ -178,7 +178,54 @@ export const detectDangeous = ({ barbells, faces, poses }) => {
       };
     });
 
-  console.log(people);
+  return people.some(person => {
+    const angleShoulder =
+      person.leftShoulder && person.rightShoulder
+        ? calculateAngleBetweenLines(
+            person.rightWrist,
+            person.leftWrist,
+            person.rightShoulder,
+            person.leftShoulder
+          )
+        : null;
+    const angleHip =
+      person.leftHip && person.rightHip
+        ? calculateAngleBetweenLines(
+            person.rightWrist,
+            person.leftWrist,
+            person.rightHip,
+            person.leftHip
+          )
+        : null;
+    // console.log(
+    //   'Wrist near barbell bar:',
+    //   person.averageDistanceLessThanOneForth / person.barbellLinesCount
+    // );
+    // console.log(
+    //   'Wrist parallel barbell bar:',
+    //   person.lessThan10Degree / person.barbellLinesCount
+    // );
+    // console.log('Wrist - shoulder angle:', angleShoulder);
+    // console.log('Wrist - hip angle:', angleHip);
+
+    // const THRESHOLD = 24;
+    const THRESHOLD = 8;
+
+    return (
+      person.averageDistanceLessThanOneForth / person.barbellLinesCount >=
+        0.5 &&
+      person.lessThan10Degree / person.barbellLinesCount > 0.5 &&
+      !(
+        angleShoulder &&
+        (Math.abs(angleShoulder) < THRESHOLD ||
+          Math.abs(angleShoulder - 180) < THRESHOLD)
+      ) &&
+      !(
+        angleHip &&
+        (Math.abs(angleHip) < THRESHOLD || Math.abs(angleHip - 180) < THRESHOLD)
+      )
+    );
+  });
 };
 
 const checkInside = (x, y, rectTop, rectRight, rectBottom, rectLeft) =>
