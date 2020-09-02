@@ -21,6 +21,7 @@ type Query {
 type Mutation {
   acceptWarning(_id: ID!): Warning!
   createWarning(data: CreateWarningInput!): Warning!  
+  updateWarning(_id:ID!, data: UpdateWarningInput!): Warning!  
   deleteWarning(_id: ID!): Warning!
   sendWaringsNotification(deviceTokens: [String!]!): Warning
 }
@@ -52,14 +53,16 @@ input CreateWarningInput {
   content: String
   image: String
   dangerousPostureId: ID
-
 }
+
+input UpdateWarningInput {
+  dangerousPostureId: ID
+}
+
 input WarningsSearchInput{
   content: String
-   status: String
-    dangerousPostureId: ID
-
-
+  status: String
+  dangerousPostureId: ID
 }
 
 enum WarningStatus {

@@ -31,7 +31,7 @@ export const getWarningById = async (_id, projection) => {
   await refreshStatus(warning);
   return warning;
 };
-// update status of warning to FAILED / SUCCESSED
+// update status of warning to FAILED / ACCEPTED
 
 export const getWarnings = async (query, initialFind) => {
   const warnings = await mongooseQuery('Warning', query, initialFind);
@@ -49,7 +49,6 @@ export const createWarning = async data => {
   if (!isNil(customerId)) {
     validateCustomerRequired(customerId);
   }
-  // validateImage(image);
 
   const warning = new Warning({
     camera: cameraId,
@@ -79,6 +78,15 @@ export const acceptWarning = async (warning, supporter) => {
     warning.supporter = supporterId;
   }
   warning.status = 'ACCEPTED';
+
+  const updatedWarning = await warning.save();
+  return updatedWarning;
+};
+
+export const updateWarning = async (warning, data) => {
+  const { dangerousPostureId } = data;
+
+  warning.dangerousPosture = dangerousPostureId;
 
   const updatedWarning = await warning.save();
   return updatedWarning;
