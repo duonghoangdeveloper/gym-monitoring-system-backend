@@ -51,8 +51,9 @@ export const Query = {
       });
       return generateDocumentsPayload(customerCheckIns);
     }
-
     const checkIns = await getCheckIns(query);
+
+    console.log(checkIns);
     return generateDocumentsPayload(checkIns);
   },
 };

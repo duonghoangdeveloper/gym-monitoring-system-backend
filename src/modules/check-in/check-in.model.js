@@ -5,6 +5,11 @@ import { validateUserRequired } from './check-in.validators';
 
 const checkInSchema = new Schema(
   {
+    expiryDate: {
+      required: true,
+      trim: true,
+      type: Date,
+    },
     image: {
       key: {
         required: true,

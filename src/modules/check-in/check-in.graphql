@@ -2,6 +2,7 @@ type CheckIn {
   _id: ID!
   user: User!
   image: File!
+  expiryDate: String
 
   # Timestamp
   createdAt: String!
@@ -27,6 +28,7 @@ input CheckInsQueryInput {
   limit: Int
   sort: String
   filter: CheckInsFilterInput
+  createdBetween: CreatedBetweenInput
 }
 
 input CheckInsFilterInput {

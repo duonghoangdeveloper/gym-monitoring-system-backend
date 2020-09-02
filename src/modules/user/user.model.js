@@ -4,6 +4,7 @@ import mongoose, { Schema } from 'mongoose';
 
 import { userGenders, userRoles } from '../../common/enums';
 import { url } from '../../common/fields';
+import { CheckIn } from '../../common/models';
 import { generateSchemaEnumField } from '../../common/services';
 import {
   validateDisplayName,
@@ -165,6 +166,13 @@ userSchema.pre('save', async function(next) {
 
   if (user.isModified('password')) {
     user.password = await bcrypt.hash(user.password, 8);
+  }
+
+  if (user.isModified('expiryDate')) {
+    await CheckIn.updateMany(
+      { user: user._id },
+      { expiryDate: user.expiryDate }
+    );
   }
 
   next();

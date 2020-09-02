@@ -1,5 +1,6 @@
 import { uploadBase64S3 } from '../../common/s3';
 import { getDocumentById, mongooseQuery } from '../../common/services';
+import { getUserById } from '../user/user.services';
 import { CheckIn } from './check-in.model';
 import { validateUserRequired } from './check-in.validators';
 
@@ -10,11 +11,10 @@ export const getCheckIns = async (query, initialFind) =>
   mongooseQuery('CheckIn', query, initialFind);
 
 export const createCheckIn = async (userId, base64) => {
-  validateUserRequired(userId);
-
-  // validateNotCurrentCheckIn(userId);
+  const user = await getUserById(userId);
 
   const checkIn = new CheckIn({
+    expiryDate: user.expiryDate,
     user: userId,
   });
 
