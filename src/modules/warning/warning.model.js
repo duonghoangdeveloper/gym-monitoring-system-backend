@@ -16,12 +16,10 @@ const warningSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       validate: validateCameraRequired,
     },
-
     content: {
       trim: true,
       type: String,
     },
-
     customer: {
       ref: 'User',
       type: Schema.Types.ObjectId,
@@ -29,7 +27,6 @@ const warningSchema = new mongoose.Schema(
     },
     dangerousPosture: {
       ref: 'DangerousPosture',
-      required: true,
       type: Schema.Types.ObjectId,
     },
     image: {
@@ -42,14 +39,12 @@ const warningSchema = new mongoose.Schema(
         ...url,
       },
     },
-
     status: {
       required: true,
       trim: true,
       type: String,
       // ...generateSchemaEnumField(warningStatuses),
     },
-
     supporter: {
       ref: 'User',
       type: Schema.Types.ObjectId,

@@ -1,8 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 
 // expiredDate
-import { getPaymentPlanById } from '../payment-plan/payment-plan.services';
-// import { getPaymentPlanById } from '../payment-plan/payment-plan.services';
 import { getUserById, updateUserExpiryDate } from '../user/user.services';
 import {
   validateCreatorRequired,
@@ -67,14 +65,5 @@ paymentSchema.post('remove', async function(next) {
   const customer = await getUserById(customerId);
   await updateUserExpiryDate(customer);
 });
-
-// paymentSchema.post('save', recaculateExpiryDate);
-// paymentSchema.post('remove', recaculateExpiryDate);
-// const recaculateExpiryDate = async function(next) {
-//   const payment = this;
-//   const customerId = payment.customer.toString();
-//   const customer = await getUserById(customerId);
-//   await updateUserExpiryDate(customer);
-// };
 
 export const Payment = mongoose.model('Payment', paymentSchema);

@@ -12,6 +12,7 @@ import {
   getWarningById,
   getWarnings,
   sendWarningNotificationToOnlineTrainers,
+  updateWarning,
 } from './warning.services';
 
 export const Mutation = {
@@ -37,9 +38,16 @@ export const Mutation = {
     const deletedWarning = await deleteWarning(warningToDelete);
     return generateDocumentPayload(deletedWarning);
   },
+
   async sendWaringsNotification() {
     await sendWarningNotificationToOnlineTrainers(null);
     return null;
+  },
+  async updateWarning(_, { _id, data }, { req }) {
+    checkRole(req.user, ['TRAINER']);
+    const warningToUpdate = await getWarningById(_id);
+    const updatedWarning = await updateWarning(warningToUpdate, data);
+    return generateDocumentPayload(updatedWarning);
   },
 };
 
@@ -65,7 +73,6 @@ export const Warning = {
       return null;
     }
   },
-
   async dangerousPosture({ dangerousPosture }) {
     try {
       const foundDangerousPosture = await getDangerousPostureById(
