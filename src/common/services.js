@@ -54,7 +54,7 @@ const generateMongooseFind = (filter, createdBetween) => {
       $lt: createdBetween.to,
     };
   }
-  console.log(mongooseFilter);
+  // console.log(mongooseFilter);
   return mongooseFilter;
 };
 const generateMongooseSearch = search => {
@@ -124,7 +124,7 @@ const generateQueryArguments = (modelName, query, initialFind) => {
     ...generateActivationQuery(isActive),
     ...generateIsOnlineQuery(isOnline),
   };
-  console.log(findFilter);
+  // console.log(findFilter);
   return {
     find: findFilter,
     limit: limitNumber,
