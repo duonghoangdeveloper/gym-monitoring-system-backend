@@ -12,14 +12,14 @@ export const validateCustomerRequired = async customerId => {
   }
 };
 
-export const validateCameraRequired = async cameraId => {
-  const cameraExists = await Camera.exists({
-    _id: cameraId,
-  });
-  if (!cameraExists) {
-    throwError('Camera not found', 404);
-  }
-};
+// export const validateCameraRequired = async cameraId => {
+//   const cameraExists = await Camera.exists({
+//     _id: cameraId,
+//   });
+//   if (!cameraExists) {
+//     throwError('Camera not found', 404);
+//   }
+// };
 
 export const validateSupporterRequired = async staffId => {
   const staffExists = await User.exists({

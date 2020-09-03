@@ -11,16 +11,14 @@ export const getFeedbackById = async (_id, projection) =>
   getDocumentById('Feedback', _id, projection);
 
 export const createFeedback = async (customer, data) => {
-  const { content, staffIds, title } = data;
+  const { content, staffIds } = data;
 
   validateContent(content);
-  // validateTitle(title);
 
   const feedback = new Feedback({
     content,
     customer: customer._id,
     staffIds,
-    // title,
   });
 
   const createdFeedback = await feedback.save();
