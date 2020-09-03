@@ -81,6 +81,7 @@ input UsersQueryInput {
   filter: UsersFilterInput
   createdBetween: CreatedBetweenInput
   isActive: Boolean
+  isOnline: Boolean
 }
 
 input UsersCountInput {
@@ -95,8 +96,6 @@ input UsersSearchInput {
   displayName: String
   email: String
   role: Role
-
-
 }
 
 input UsersFilterInput {

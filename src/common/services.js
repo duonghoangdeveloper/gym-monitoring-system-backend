@@ -47,7 +47,6 @@ const generateMongooseFind = (filter, createdBetween) => {
       }
     });
   }
-
   if (
     moment(createdBetween?.from, moment.ISO_8601, true).isValid() &&
     moment(createdBetween?.to, moment.ISO_8601, true).isValid()
@@ -57,7 +56,7 @@ const generateMongooseFind = (filter, createdBetween) => {
       $lt: createdBetween.to,
     };
   }
-
+  // console.log(mongooseFilter);
   return mongooseFilter;
 };
 const generateMongooseSearch = search => {
@@ -90,14 +89,32 @@ const generateActivationQuery = isActive =>
     : {
         activationToken: { $ne: null },
       };
+
+const generateIsOnlineQuery = isOnline =>
+  isNil(isOnline)
+    ? {}
+    : isOnline
+    ? {
+        isOnline: true,
+      }
+    : {
+        isOnline: false,
+      };
 const generateQueryArguments = (modelName, query, initialFind) => {
   if (!models[modelName]) {
     throwError('Invalid model name', 500);
   }
 
-  const { createdBetween, filter, isActive, limit, search, skip, sort } =
-    query || {};
-
+  const {
+    createdBetween,
+    filter,
+    isActive,
+    isOnline,
+    limit,
+    search,
+    skip,
+    sort,
+  } = query || {};
   const sortArgs = sort || '-createdAt';
   const skipNumber = parseInt(skip, 10) || 0;
   const limitNumber = parseInt(limit, 10) || 100;
@@ -107,8 +124,9 @@ const generateQueryArguments = (modelName, query, initialFind) => {
     ...generateMongooseFind(filter, createdBetween),
     ...generateMongooseSearch(search),
     ...generateActivationQuery(isActive),
+    ...generateIsOnlineQuery(isOnline),
   };
-
+  // console.log(findFilter);
   return {
     find: findFilter,
     limit: limitNumber,
