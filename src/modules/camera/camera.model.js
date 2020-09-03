@@ -1,5 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 
+import { Warning } from '../../common/models';
 import { validateMacAddress, validateName } from './camera.validators';
 
 const cameraSchema = new Schema(
@@ -33,5 +34,13 @@ const cameraSchema = new Schema(
 
 cameraSchema.index({ createdAt: 1 });
 cameraSchema.index({ macAddress: 1 }, { unique: true });
+
+cameraSchema.pre('remove', async function(next) {
+  const camera = this;
+
+  await Warning.updateMany({ camera: camera._id }, { camera: null });
+
+  next();
+});
 
 export const Camera = mongoose.model('Camera', cameraSchema);

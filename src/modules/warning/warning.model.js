@@ -4,7 +4,6 @@ import { url } from '../../common/fields';
 // import { warningStatuses } from '../../common/enums';
 // import { generateSchemaEnumField } from '../../common/services';
 import {
-  validateCameraRequired,
   validateCustomerRequired,
   validateSupporterRequired,
 } from './warning.validators';
@@ -14,7 +13,7 @@ const warningSchema = new mongoose.Schema(
     camera: {
       ref: 'Camera',
       type: Schema.Types.ObjectId,
-      validate: validateCameraRequired,
+      // validate: validateCameraRequired,
     },
     content: {
       trim: true,

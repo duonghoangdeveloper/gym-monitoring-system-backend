@@ -1,9 +1,12 @@
+import mongoose from 'mongoose';
+
 import {
   checkBelongingness,
   checkRole,
   generateDocumentPayload,
   generateDocumentsPayload,
 } from '../../common/services';
+import { User } from '../user/user.model';
 import { getUserById } from '../user/user.services';
 import {
   createFeedback,
@@ -59,12 +62,12 @@ export const Feedback = {
     const _customer = await getUserById(customer);
     return generateDocumentPayload(_customer);
   },
-  // async staffs({staffs}){
-  //   const result = [];
-  //   this.staffs.map(async (staff)  =>  {
-  //     result: ...generateDocumentPayload(await getUserById(staff));
-  //   }
 
-  //   return result;
-  // }
+  async staffs({ staffIds }) {
+    const staffs = await User.find({
+      _id: { $in: staffIds.map(id => mongoose.Types.ObjectId(id)) },
+    });
+
+    return staffs.map(staff => generateDocumentPayload(staff));
+  },
 };

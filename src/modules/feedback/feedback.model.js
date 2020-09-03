@@ -18,9 +18,8 @@ const feedbackSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
     },
 
-    staffs: {
+    staffIds: {
       default: [],
-      required: true,
       type: [
         {
           ref: 'User',
