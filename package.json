@@ -22,7 +22,7 @@
   "dependencies": {
     "apollo-boost": "^0.4.9",
     "apollo-server-express": "^2.16.1",
-    "aws-sdk": "^2.720.0",
+    "aws-sdk": "^2.814.0",
     "axios": "^0.19.2",
     "bcryptjs": "^2.4.3",
     "blob": "^0.1.0",
