@@ -38,7 +38,7 @@
     "form-data": "^3.0.0",
     "graphql-tools": "^6.0.15",
     "joi": "^14.3.1",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.19",
     "lodash.isnil": "^4.0.0",
     "merge-graphql-schemas": "^1.7.8",
